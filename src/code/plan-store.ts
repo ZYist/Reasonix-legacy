@@ -220,7 +220,7 @@ export interface PlanArchiveWithSession extends PlanArchiveSummary {
   sessionName: string;
 }
 
-/** Cross-session enumeration in a single dir scan — used by the dashboard plans panel where the per-session loop was O(N×M) and timed out for users with hundreds of sessions. */
+/** Cross-session plan archive enumeration in a single dir scan. */
 export function listAllPlanArchives(): PlanArchiveWithSession[] {
   const dir = sessionsDir();
   if (!existsSync(dir)) return [];

@@ -80,15 +80,6 @@ export const JA: TranslationSchema = {
     undoHint: "5秒以内に u を押すと元に戻せます",
     applied: "適用済み",
     rejected: "拒否されました",
-    noDashboard: "自動起動の埋め込みWebダッシュボードを抑制します。",
-    openDashboardHint:
-      "サーバーの準備ができ次第、デフォルトブラウザでダッシュボードURLを開きます。--no-dashboard が設定されている場合は何もしません。",
-    dashboardPortHint:
-      "ダッシュボードを固定ポート (1～65535) に固定します。再起動後も安定 — SSHトンネルに必要。デフォルト: エフェメラル。",
-    dashboardPortInvalid:
-      "▲ --dashboard-port={value} を無視します（1～65535の整数である必要があります）— エフェメラルにフォールバック",
-    dashboardAutoStartFailed:
-      "▲ ダッシュボードの自動起動に失敗しました ({reason}) — /dashboard を試すか、--no-dashboard で抑制してください",
     systemAppendHint:
       "コードシステムプロンプトに指示を追加します。デフォルトプロンプトを置き換えるのではなく、その後ろに追加します。",
     systemAppendFileHint:
@@ -358,11 +349,6 @@ export const JA: TranslationSchema = {
       description:
         "シェル許可リストの表示/編集（ビルトインは読取専用 · プロジェクト毎: ~/.reasonix/config.json）",
       argsHint: "[list|add <prefix>|remove <prefix|N>|clear confirm]",
-    },
-    dashboard: {
-      ...EN.slash.dashboard,
-      description: "埋め込みWebダッシュボードを起動 (127.0.0.1, トークン認証)",
-      argsHint: "[stop]",
     },
     update: {
       ...EN.slash.update,
@@ -724,7 +710,6 @@ export const JA: TranslationSchema = {
     flippedAutoSession: "▸ セッションの残りをAUTOモードに切り替えました（永続化）",
     flippedAutoWalk:
       "▸ AUTOモードに切り替え — 以降の編集は即時適用されます。ウォークを終了しました。",
-    dashboardStopped: "▸ ダッシュボードを停止しました。",
     notedMemory: "▸ メモ ({scope}) — {verb} {path}",
     notedScopeProject: "プロジェクト",
     notedScopeGlobal: "グローバル",
@@ -1190,23 +1175,6 @@ export const JA: TranslationSchema = {
       subcommands:
         "サブコマンド: /permissions add <prefix> · /permissions remove <prefix-or-N> · /permissions clear confirm",
     },
-    dashboard: {
-      ...EN.handlers.dashboard,
-      notAvailable:
-        "/dashboard はこのコンテキストでは利用できません（startDashboard コールバックが未接続）。",
-      stopNoCallback: "/dashboard stop: stop コールバックが未接続です。",
-      notRunning: "▸ ダッシュボードは実行されていません。",
-      stopping: "▸ ダッシュボードを停止中…",
-      alreadyRunning: "▸ ダッシュボードは既に実行中です:",
-      alreadyRunningHint: "任意のブラウザで開けます。`/dashboard stop` で停止します。",
-      ready: "▸ ダッシュボード準備完了:",
-      readyHint: "127.0.0.1 のみ · トークン認証。`/dashboard stop` でシャットダウン。",
-      failed: "▸ ダッシュボードの起動に失敗しました: {reason}",
-      starting: "▸ ダッシュボードサーバーを起動中…",
-      copied: "▸ ダッシュボードURLをクリップボードにコピーしました: {url}",
-      tokenResetting: "▸ ダッシュボードトークンを再生成中 — サーバーを再起動中…",
-      tokenReset: "▸ ダッシュボードトークンを再生成しました。新しいURL:",
-    },
     observability: {
       ...EN.handlers.observability,
       contextInfo: "context: ~{total} / {max} ({pct}%) · system {sys} · tools {tools} · log {log}",
@@ -1253,7 +1221,6 @@ export const JA: TranslationSchema = {
         "  mode    YOLO — 編集+シェルがプロンプトなしで自動実行（/undo でロールバック · Shift+Tab で切替）",
       statusModeAuto: "  mode    AUTO — 編集が即時適用（5秒以内に u で取消 · Shift+Tab で切替）",
       statusModeReview: "  mode    review — 編集は /apply または y のキュー（Shift+Tab で切替）",
-      statusDash: "  dash    {url}（ブラウザで開く · /dashboard stop）",
     },
     plans: {
       ...EN.handlers.plans,
@@ -1730,7 +1697,6 @@ export const JA: TranslationSchema = {
     ...EN.welcomeBanner,
     workspace: "\u25b8 ワークスペース",
     relaunchHint: "  （--dir <path> で再起動すると切替）",
-    dashboard: "\u25b8 Web",
   },
   ctxBreakdown: {
     ...EN.ctxBreakdown,

@@ -139,15 +139,6 @@ export const ru: TranslationSchema = {
     undoHint: "нажми u в течение 5 сек для отмены",
     applied: "применено",
     rejected: "отклонено",
-    noDashboard: "Подавить автозапуск встроенной веб-панели.",
-    openDashboardHint:
-      "Открыть URL панели в браузере сразу после готовности сервера. Не работает при --no-dashboard.",
-    dashboardPortHint:
-      "Фиксированный порт для панели (1–65535). Стабилен между перезапусками — требуется для SSH-туннелей. По умолч.: эфемерный.",
-    dashboardPortInvalid:
-      "▲ --dashboard-port={value} игнорируется (должен быть целым числом 1–65535) — используется эфемерный порт",
-    dashboardAutoStartFailed:
-      "▲ автозапуск панели не удался ({reason}) — попробуй /dashboard или передай --no-dashboard",
     systemAppendHint:
       "Добавить инструкции к системному промпту кода. НЕ заменяет стандартный промпт — добавляется после него.",
     systemAppendFileHint:
@@ -228,10 +219,6 @@ export const ru: TranslationSchema = {
       ...EN.slash.permissions,
       description:
         "показать / редактировать белый список команд (встроенные только для чтения · на проект: ~/.reasonix/config.json)",
-    },
-    dashboard: {
-      ...EN.slash.dashboard,
-      description: "запустить встроенную веб-панель (127.0.0.1, доступ по токену)",
     },
     update: {
       ...EN.slash.update,

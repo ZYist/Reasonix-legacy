@@ -148,15 +148,6 @@ export const de: TranslationSchema = {
     undoHint: "Drücke innerhalb von 5s zum Rückgängig-Machen",
     applied: "angewendet",
     rejected: "abgelehnt",
-    noDashboard: "Automatisch gestartetes eingebettetes Web-Dashboard unterdrücken.",
-    openDashboardHint:
-      "Dashboard-URL sofort im Standard-Browser öffnen, sobald der Server bereit ist. Keine Wirkung bei --no-dashboard.",
-    dashboardPortHint:
-      "Dashboard auf einen festen Port (1–65535) festlegen. Stabil über Neustarts hinweg — erforderlich für SSH-Tunnel. Standard: ephemeral.",
-    dashboardPortInvalid:
-      "▲ --dashboard-port={value} wird ignoriert (muss eine ganze Zahl 1–65535 sein) — Rückfall auf ephemeral",
-    dashboardAutoStartFailed:
-      "▲ Dashboard-Autostart fehlgeschlagen ({reason}) — /dashboard versuchen oder --no-dashboard zum Unterdrücken",
     systemAppendHint:
       "Anweisungen an den Code-System-Prompt anhängen. Ersetzt NICHT den Standard-Prompt — wird danach eingefügt.",
     systemAppendFileHint:
@@ -247,11 +238,6 @@ export const de: TranslationSchema = {
         "[Liste|<Präfix> hinzufügen|<Präfix|N> entfernen|Löschen (Bestätigung erforderlich)]",
       description:
         "Shell-Allowlist anzeigen / bearbeiten (builtin schreibgeschützt · pro Projekt: ~/.reasonix/config.json)",
-    },
-    dashboard: {
-      ...EN.slash.dashboard,
-      argsHint: "[Stopp]",
-      description: "Eingebettetes Web-Dashboard starten (127.0.0.1, token-gesichert)",
     },
     update: {
       ...EN.slash.update,
@@ -616,7 +602,6 @@ export const de: TranslationSchema = {
   },
   app: {
     ...EN.app,
-    dashboardStopped: "▸ Dashboard gestoppt.",
     notedScopeProject: "Projekt",
     notedScopeGlobal: "global",
     commandFailed: "! Befehl fehlgeschlagen",
@@ -1096,24 +1081,6 @@ export const de: TranslationSchema = {
       subcommands:
         "Unterbefehle: /permissions add <präfix> · /permissions remove <präfix-oder-N> · /permissions clear confirm",
     },
-    dashboard: {
-      ...EN.handlers.dashboard,
-      notAvailable:
-        "/dashboard ist in diesem Kontext nicht verfügbar (kein startDashboard-Callback angeschlossen).",
-      stopNoCallback: "/dashboard stop: kein Stop-Callback angeschlossen.",
-      notRunning: "▸ Dashboard läuft nicht.",
-      stopping: "▸ Dashboard wird gestoppt...",
-      alreadyRunning: "▸ Dashboard läuft bereits:",
-      alreadyRunningHint:
-        "Öffne es in einem beliebigen Browser. Tippe `/dashboard stop` zum Herunterfahren.",
-      ready: "▸ Dashboard bereit:",
-      readyHint: "127.0.0.1 only · token-gesichert. Tippe `/dashboard stop` zum Herunterfahren.",
-      failed: "▸ Dashboard konnte nicht gestartet werden: {reason}",
-      starting: "▸ starte Dashboard-Server...",
-      copied: "▸ Dashboard-URL in Zwischenablage kopiert: {url}",
-      tokenResetting: "▸ rotiere Dashboard-Token — starte Server neu...",
-      tokenReset: "▸ Dashboard-Token rotiert. Neue URL:",
-    },
     observability: {
       ...EN.handlers.observability,
       contextInfo:
@@ -1165,7 +1132,6 @@ export const de: TranslationSchema = {
         "  Modus    AUTO — Edits werden sofort angewandt (u zum Rückgängigmachen innerhalb von 5s · Shift+Tab zum Umschalten)",
       statusModeReview:
         "  Modus    review — Edits warten auf /apply oder y (Shift+Tab zum Umschalten)",
-      statusDash: "  Dash    {url} (im Browser öffnen · /dashboard stop)",
     },
     plans: {
       ...EN.handlers.plans,
@@ -1644,7 +1610,6 @@ export const de: TranslationSchema = {
     ...EN.welcomeBanner,
     workspace: "▸ Arbeitsbereich",
     relaunchHint: "  (mit --dir <pfad> neu starten zum Wechseln)",
-    dashboard: "▸ Web",
   },
   ctxBreakdown: {
     ...EN.ctxBreakdown,

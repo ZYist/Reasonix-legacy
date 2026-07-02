@@ -67,11 +67,6 @@ export interface TranslationSchema {
     undoHint: string;
     applied: string;
     rejected: string;
-    noDashboard: string;
-    openDashboardHint: string;
-    dashboardPortHint: string;
-    dashboardPortInvalid: string;
-    dashboardAutoStartFailed: string;
     systemAppendHint: string;
     systemAppendFileHint: string;
     resumedSession: string;
@@ -189,7 +184,6 @@ export interface TranslationSchema {
     autoApprovingRest: string;
     flippedAutoSession: string;
     flippedAutoWalk: string;
-    dashboardStopped: string;
     notedMemory: string;
     notedScopeProject: string;
     notedScopeGlobal: string;
@@ -679,7 +673,6 @@ export interface TranslationSchema {
   welcomeBanner: {
     workspace: string;
     relaunchHint: string;
-    dashboard: string;
   };
   ctxBreakdown: {
     title: string;

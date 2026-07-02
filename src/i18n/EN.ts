@@ -70,15 +70,6 @@ export const EN: TranslationSchema = {
     undoHint: "press u within 5s to undo",
     applied: "applied",
     rejected: "rejected",
-    noDashboard: "Suppress the auto-launched embedded web dashboard.",
-    openDashboardHint:
-      "Open the dashboard URL in your default browser as soon as the server is ready. No-op when --no-dashboard is set.",
-    dashboardPortHint:
-      "Pin the dashboard to a fixed port (1–65535). Stable across restarts — required for SSH tunnels. Default: ephemeral.",
-    dashboardPortInvalid:
-      "▲ ignoring --dashboard-port={value} (must be an integer 1–65535) — falling back to ephemeral",
-    dashboardAutoStartFailed:
-      "▲ dashboard auto-start failed ({reason}) — try /dashboard, or pass --no-dashboard to silence",
     systemAppendHint:
       "Append instructions to the code system prompt. Does NOT replace the default prompt — adds after it.",
     systemAppendFileHint:
@@ -322,10 +313,6 @@ export const EN: TranslationSchema = {
       description:
         "show / edit shell allowlist (builtin read-only · per-project: ~/.reasonix/config.json)",
       argsHint: "[list|add <prefix>|remove <prefix|N>|clear confirm]",
-    },
-    dashboard: {
-      description: "launch the embedded web dashboard (127.0.0.1, token-gated)",
-      argsHint: "[stop]",
     },
     update: { description: "show current vs latest version + the shell command to upgrade" },
     stats: {
@@ -636,7 +623,6 @@ export const EN: TranslationSchema = {
     autoApprovingRest: "▸ auto-approving remaining edits for this turn",
     flippedAutoSession: "▸ flipped to AUTO mode for the rest of the session (persisted)",
     flippedAutoWalk: "▸ flipped to AUTO mode — future edits will apply immediately. Walk exited.",
-    dashboardStopped: "▸ dashboard stopped.",
     notedMemory: "▸ noted ({scope}) — {verb} {path}",
     notedScopeProject: "project",
     notedScopeGlobal: "global",
@@ -1186,22 +1172,6 @@ export const EN: TranslationSchema = {
       subcommands:
         "Subcommands: /permissions add <prefix> · /permissions remove <prefix-or-N> · /permissions clear confirm",
     },
-    dashboard: {
-      notAvailable:
-        "/dashboard is not available in this context (no startDashboard callback wired).",
-      stopNoCallback: "/dashboard stop: no stop callback wired.",
-      notRunning: "▸ dashboard is not running.",
-      stopping: "▸ dashboard stopping…",
-      alreadyRunning: "▸ dashboard is already running:",
-      alreadyRunningHint: "Open it in any browser. Type `/dashboard stop` to tear it down.",
-      ready: "▸ dashboard ready:",
-      readyHint: "127.0.0.1 only · token-gated. Type `/dashboard stop` to shut down.",
-      failed: "▸ dashboard failed to start: {reason}",
-      starting: "▸ starting dashboard server…",
-      copied: "▸ dashboard URL copied to clipboard: {url}",
-      tokenResetting: "▸ rotating dashboard token — restarting server…",
-      tokenReset: "▸ dashboard token rotated. New URL:",
-    },
     observability: {
       contextInfo: "context: ~{total} of {max} ({pct}%) · system {sys} · tools {tools} · log {log}",
       compactStarting: "▸ folding older turns into a summary…",
@@ -1246,7 +1216,6 @@ export const EN: TranslationSchema = {
       statusModeAuto:
         "  mode    AUTO — edits apply immediately (u to undo within 5s · Shift+Tab to flip)",
       statusModeReview: "  mode    review — edits queue for /apply or y  (Shift+Tab to flip)",
-      statusDash: "  dash    {url} (open in browser · /dashboard stop)",
     },
     plans: {
       noSession:
@@ -1695,7 +1664,6 @@ export const EN: TranslationSchema = {
   welcomeBanner: {
     workspace: "\u25b8 workspace",
     relaunchHint: "  (relaunch with --dir <path> to switch)",
-    dashboard: "\u25b8 web",
   },
   ctxBreakdown: {
     title: "\u25a3 context",

@@ -70,15 +70,6 @@ export const zhCN: TranslationSchema = {
     undoHint: "在 5 秒内按 u 撤消",
     applied: "已应用",
     rejected: "已拒绝",
-    noDashboard: "禁止自动启动嵌入式 Web 仪表板。",
-    openDashboardHint:
-      "服务就绪后立即在默认浏览器中打开仪表板地址。设置了 --no-dashboard 时不生效。",
-    dashboardPortHint:
-      "将仪表板绑定到固定端口 (1–65535)。重启后保持稳定 — SSH 隧道访问必需。默认为临时端口。",
-    dashboardPortInvalid:
-      "▲ 忽略 --dashboard-port={value} (必须为 1–65535 之间的整数) — 回退到临时端口",
-    dashboardAutoStartFailed:
-      "▲ 仪表板自动启动失败 ({reason}) — 尝试 /dashboard，或传递 --no-dashboard 以静默",
     systemAppendHint: "追加指令到代码系统提示词。不替换默认提示词 — 在其后添加。",
     systemAppendFileHint:
       "追加文件内容到代码系统提示词。不替换默认提示词。UTF-8，相对于 cwd 或绝对路径。",
@@ -309,10 +300,6 @@ export const zhCN: TranslationSchema = {
     permissions: {
       description: "显示 / 编辑 shell 允许列表（内置只读 · 项目级：~/.reasonix/config.json）",
       argsHint: "[list|add <prefix>|remove <prefix|N>|clear confirm]",
-    },
-    dashboard: {
-      description: "启动嵌入式 Web 仪表板（127.0.0.1，token 保护）",
-      argsHint: "[stop]",
     },
     update: { description: "显示当前版本与最新版本及升级命令" },
     stats: {
@@ -613,7 +600,6 @@ export const zhCN: TranslationSchema = {
     autoApprovingRest: "▸ 本轮剩余编辑自动批准",
     flippedAutoSession: "▸ 已切换到 AUTO 模式（本会话剩余生效，已持久化）",
     flippedAutoWalk: "▸ 已切换到 AUTO 模式 — 后续编辑立即应用。浏览模式退出。",
-    dashboardStopped: "▸ 仪表板已停止。",
     notedMemory: "▸ 已记录（{scope}）— {verb} {path}",
     notedScopeProject: "项目",
     notedScopeGlobal: "全局",
@@ -1116,21 +1102,6 @@ export const zhCN: TranslationSchema = {
       subcommands:
         "子命令：/permissions add <prefix> · /permissions remove <prefix-or-N> · /permissions clear confirm",
     },
-    dashboard: {
-      notAvailable: "/dashboard 在此上下文中不可用（无 startDashboard 回调）。",
-      stopNoCallback: "/dashboard stop：无停止回调。",
-      notRunning: "▸ 仪表板未运行。",
-      stopping: "▸ 仪表板正在停止…",
-      alreadyRunning: "▸ 仪表板已在运行：",
-      alreadyRunningHint: "在任何浏览器中打开它。输入 `/dashboard stop` 关闭。",
-      ready: "▸ 仪表板就绪：",
-      readyHint: "仅 127.0.0.1 · token 保护。输入 `/dashboard stop` 关闭。",
-      failed: "▸ 仪表板启动失败：{reason}",
-      starting: "▸ 正在启动仪表板服务器…",
-      copied: "▸ 仪表板 URL 已复制到剪贴板：{url}",
-      tokenResetting: "▸ 正在轮换仪表板 token 并重启服务…",
-      tokenReset: "▸ 仪表板 token 已轮换。新 URL：",
-    },
     observability: {
       contextInfo: "上下文：~{total} / {max}（{pct}%）· 系统 {sys} · 工具 {tools} · 日志 {log}",
       compactStarting: "▸ 正在折叠旧轮次为摘要…",
@@ -1171,7 +1142,6 @@ export const zhCN: TranslationSchema = {
         "  模式    YOLO — 编辑 + shell 自动运行，无提示（/undo 仍可回滚 · Shift+Tab 切换）",
       statusModeAuto: "  模式    AUTO — 编辑立即应用（5 秒内按 u 撤消 · Shift+Tab 切换）",
       statusModeReview: "  模式    review — 编辑排队等待 /apply 或 y（Shift+Tab 切换）",
-      statusDash: "  仪表板  {url}（在浏览器中打开 · /dashboard stop）",
     },
     plans: {
       noSession: "未附加会话 — `/plans` 是按会话的。在项目中运行 `reasonix code` 以获取会话。",
@@ -1599,7 +1569,6 @@ export const zhCN: TranslationSchema = {
   welcomeBanner: {
     workspace: "▸ 工作区",
     relaunchHint: "（重启时用 --dir <path> 切换）",
-    dashboard: "▸ 网页",
   },
   ctxBreakdown: {
     title: "▣ 上下文",

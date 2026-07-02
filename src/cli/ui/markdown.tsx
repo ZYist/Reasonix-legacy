@@ -1,4 +1,4 @@
-/** Markdown → Ink. Parsing via marked; visual mapping mirrors dashboard/app.css `.md` rules. Code blocks pass through cli-highlight for ANSI syntax coloring. */
+/** Markdown → Ink. Parsing via marked; visual mapping for terminal rendering. Code blocks pass through cli-highlight for ANSI syntax coloring. */
 
 import { highlight, supportsLanguage } from "cli-highlight";
 import { Box, type Color, Link, Text, useStdout } from "ink";

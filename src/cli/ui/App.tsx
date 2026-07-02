@@ -232,7 +232,7 @@ export interface AppProps {
    */
   mcpServers?: McpServerSummary[];
   /**
-   * Hot-reload runtime owned by chatCommand. Lets slash + dashboard
+   * Hot-reload runtime owned by chatCommand. Lets slash commands
    * trigger an add/remove round-trip after the user installs from the
    * marketplace, without restarting the process.
    */
