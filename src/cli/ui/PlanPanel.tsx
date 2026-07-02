@@ -16,6 +16,7 @@
  */
 
 import { Box, type Color, Text } from "ink";
+// biome-ignore lint/style/useImportType: tsconfig jsx=react needs React in value scope for JSX compilation
 import React, { useMemo, useState } from "react";
 import { t } from "../../i18n/index.js";
 import type { PlanStep, StepCompletion } from "../../tools/plan.js";

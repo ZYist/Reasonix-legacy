@@ -11,14 +11,7 @@ import "./heap-limit-launch.js";
 import "./strip-bel.js";
 
 import { Command } from "commander";
-import {
-  ensureDashboardToken,
-  isReasoningEffort,
-  loadDashboardEnabled,
-  loadProxyConfig,
-  readConfig,
-  saveReasoningEffort,
-} from "../config.js";
+import { isReasoningEffort, loadProxyConfig, readConfig, saveReasoningEffort } from "../config.js";
 import { t } from "../i18n/index.js";
 import { VERSION } from "../index.js";
 import { listSessions } from "../memory/session.js";
@@ -98,62 +91,6 @@ function parseBudgetFlag(raw: number | undefined): number | undefined {
   return raw;
 }
 
-/** Lenient port parser — bad value warns + falls back to ephemeral, same shape as parseBudgetFlag. */
-function parseDashboardPortFlag(raw: string | undefined): number | undefined {
-  if (raw === undefined) return undefined;
-  const n = Number.parseInt(raw, 10);
-  if (!Number.isInteger(n) || n < 1 || n > 65535) {
-    process.stderr.write(`${t("ui.dashboardPortInvalid", { value: raw })}\n`);
-    return undefined;
-  }
-  return n;
-}
-
-function resolveDashboardPort(
-  flagValue: number | undefined,
-  noConfig: boolean,
-): number | undefined {
-  if (flagValue !== undefined) return flagValue;
-  if (noConfig) return undefined;
-  const fromCfg = readConfig().dashboard?.port;
-  return typeof fromCfg === "number" &&
-    Number.isInteger(fromCfg) &&
-    fromCfg >= 1 &&
-    fromCfg <= 65535
-    ? fromCfg
-    : undefined;
-}
-
-/** Resolution order: flag → REASONIX_DASHBOARD_HOST env → config.dashboard.host → undefined (server defaults to 127.0.0.1). */
-function resolveDashboardHost(
-  flagValue: string | undefined,
-  noConfig: boolean,
-): string | undefined {
-  const fromFlag = flagValue?.trim();
-  if (fromFlag) return fromFlag;
-  const fromEnv = process.env.REASONIX_DASHBOARD_HOST?.trim();
-  if (fromEnv) return fromEnv;
-  if (noConfig) return undefined;
-  const fromCfg = readConfig().dashboard?.host;
-  return typeof fromCfg === "string" && fromCfg.trim() ? fromCfg.trim() : undefined;
-}
-
-/** Resolution order: REASONIX_DASHBOARD_TOKEN env → config.dashboard.token (minted + persisted on first call so the URL survives CLI restarts). Min 16 chars; shorter env overrides are dropped with a warning. */
-function resolveDashboardToken(noConfig: boolean): string | undefined {
-  const fromEnv = process.env.REASONIX_DASHBOARD_TOKEN?.trim();
-  if (fromEnv) {
-    if (fromEnv.length < 16) {
-      process.stderr.write(
-        `▲ ignoring dashboard token (${fromEnv.length} chars; min 16) — using ephemeral per-boot token instead\n`,
-      );
-      return undefined;
-    }
-    return fromEnv;
-  }
-  if (noConfig) return undefined;
-  return ensureDashboardToken();
-}
-
 const program = new Command();
 program
   .name("reasonix")
@@ -202,13 +139,6 @@ program
   .option("-n, --new", t("ui.newHint"))
   .option("--transcript <path>", t("ui.transcriptHint"))
   .option("--budget <usd>", t("ui.budgetHint"), (v) => Number.parseFloat(v))
-  .option("--no-dashboard", t("ui.noDashboard"))
-  .option("--open-dashboard", t("ui.openDashboardHint"))
-  .option("--dashboard-port <port>", t("ui.dashboardPortHint"))
-  .option(
-    "--dashboard-host <host>",
-    "bind address for the dashboard (default 127.0.0.1; use 0.0.0.0 for LAN access — the URL token is then the only auth)",
-  )
   .option("--system-append <prompt>", t("ui.systemAppendHint"))
   .option("--system-append-file <path>", t("ui.systemAppendFileHint"))
   .option(
@@ -227,8 +157,7 @@ program
           "Full remote execution is not yet implemented.\n" +
           "\n" +
           "Short-term recommendation:\n" +
-          "  Run Reasonix directly on the remote host, then use SSH tunnel for the dashboard:\n" +
-          "  $ ssh -L 8420:127.0.0.1:8420 user@host\n" +
+          "  Run Reasonix directly on the remote host:\n" +
           "  $ reasonix code\n",
       );
       process.exit(1);
@@ -262,11 +191,6 @@ program
         forceResume: !!opts.resume,
         forceNew: !!opts.new,
         budgetUsd: parseBudgetFlag(opts.budget),
-        noDashboard: opts.dashboard === false || !loadDashboardEnabled(false),
-        openDashboard: opts.openDashboard === true,
-        dashboardPort: resolveDashboardPort(parseDashboardPortFlag(opts.dashboardPort), false),
-        dashboardHost: resolveDashboardHost(opts.dashboardHost, false),
-        dashboardToken: resolveDashboardToken(false),
         noMouse: opts.mouse === false,
         systemAppend: opts.systemAppend,
         systemAppendFile: opts.systemAppendFile,
@@ -299,13 +223,6 @@ program
   )
   .option("--mcp-prefix <str>", t("ui.mcpPrefixHint"))
   .option("--no-config", t("ui.noConfigHint"))
-  .option("--no-dashboard", t("ui.noDashboard"))
-  .option("--open-dashboard", t("ui.openDashboardHint"))
-  .option("--dashboard-port <port>", t("ui.dashboardPortHint"))
-  .option(
-    "--dashboard-host <host>",
-    "bind address for the dashboard (default 127.0.0.1; use 0.0.0.0 for LAN access — the URL token is then the only auth)",
-  )
   .option(
     "--profile [path]",
     "record a V8 CPU profile; saved on exit. Send the .cpuprofile back if you're reporting a perf bug.",
@@ -349,14 +266,6 @@ program
         mcpPrefix: opts.mcpPrefix,
         forceResume: continueOpts.forceResume,
         forceNew: !!opts.new || !!defaults.forceNew,
-        noDashboard: opts.dashboard === false || !loadDashboardEnabled(opts.config === false),
-        openDashboard: opts.openDashboard === true,
-        dashboardPort: resolveDashboardPort(
-          parseDashboardPortFlag(opts.dashboardPort),
-          opts.config === false,
-        ),
-        dashboardHost: resolveDashboardHost(opts.dashboardHost, opts.config === false),
-        dashboardToken: resolveDashboardToken(opts.config === false),
         noMouse: opts.mouse === false,
       });
     } finally {

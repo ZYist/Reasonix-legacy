@@ -13,7 +13,6 @@ import {
   specStringFor,
 } from "../../mcp/registry-fetch.js";
 import type { RegistryEntry } from "../../mcp/registry-types.js";
-import { type PickerBroadcastPorts, usePickerBroadcast } from "./dashboard/use-picker-broadcast.js";
 import { useKeystroke } from "./keystroke-context.js";
 import { COLOR } from "./theme.js";
 import { FG } from "./theme/tokens.js";
@@ -30,7 +29,6 @@ export interface McpMarketplaceProps {
     removed: string[];
     failed: Array<{ spec: string; reason: string }>;
   }>;
-  pickerPorts?: PickerBroadcastPorts;
 }
 
 interface State {
@@ -41,39 +39,6 @@ interface State {
   status: string;
   /** specs currently in config.mcp[] — refreshed after install/uninstall. */
   installedSpecs: string[];
-}
-
-export function buildMarketplacePickerSnapshot(args: {
-  filtered: RegistryEntry[];
-  installedSpecs: string[];
-  query: string;
-  status: string;
-  hasMore: boolean;
-}) {
-  return {
-    pickerKind: "mcp-marketplace" as const,
-    title: `${t("mcpMarketplace.title")} \u00b7 ${args.status}`,
-    query: args.query,
-    items: args.filtered.map((e) => {
-      const installedSpec = isInstalled(args.installedSpecs, e);
-      return {
-        id: e.name,
-        title: e.title || e.name,
-        subtitle: e.description?.slice(0, 200) ?? undefined,
-        badge: installedSpec
-          ? "installed"
-          : e.source === "official"
-            ? "official"
-            : e.source === "smithery"
-              ? "smithery"
-              : "local",
-        meta: e.popularity !== undefined ? `\u2605 ${e.popularity.toLocaleString()}` : undefined,
-      };
-    }),
-    actions: ["install", "uninstall", "refine", "load-more", "cancel"] as const,
-    hasMore: args.hasMore,
-    hint: t("mcpMarketplace.footerHint"),
-  };
 }
 
 function rankAndFilter(entries: RegistryEntry[], query: string): RegistryEntry[] {
@@ -107,7 +72,7 @@ function isInstalled(installedSpecs: string[], entry: RegistryEntry): string | n
   }
 }
 
-export function McpMarketplace({ onClose, postInfo, reloadMcp, pickerPorts }: McpMarketplaceProps) {
+export function McpMarketplace({ onClose, postInfo, reloadMcp }: McpMarketplaceProps) {
   const [state, setState] = useState<State>({
     handle: null,
     loading: true,
@@ -265,59 +230,6 @@ export function McpMarketplace({ onClose, postInfo, reloadMcp, pickerPorts }: Mc
       else await doInstall(entry);
     },
     [state.installedSpecs, doInstall, doUninstall],
-  );
-
-  const pickerSnapshot = useMemo(
-    () =>
-      buildMarketplacePickerSnapshot({
-        filtered,
-        installedSpecs: state.installedSpecs,
-        query: state.query,
-        status: state.status,
-        hasMore: state.handle?.cache.pagination.nextCursor != null,
-      }),
-    [filtered, state.installedSpecs, state.handle, state.query, state.status],
-  );
-
-  usePickerBroadcast(
-    !!pickerPorts,
-    { ...pickerSnapshot, actions: [...pickerSnapshot.actions] },
-    (res) => {
-      if (res.action === "cancel") return onClose();
-      if (res.action === "refine") {
-        setState((s) => ({ ...s, query: res.query, selected: 0 }));
-        return;
-      }
-      if (res.action === "load-more") {
-        void fetchMore();
-        return;
-      }
-      if (res.action === "install") {
-        const entry = state.handle?.cache.entries.find((e) => e.name === res.id);
-        if (!entry) return;
-        if (isInstalled(state.installedSpecs, entry)) {
-          setState((s) => ({ ...s, status: `already installed: ${entry.name}` }));
-          return;
-        }
-        void doInstall(entry);
-        return;
-      }
-      if (res.action === "uninstall") {
-        const entry = state.handle?.cache.entries.find((e) => e.name === res.id);
-        if (!entry) return;
-        const installed = isInstalled(state.installedSpecs, entry);
-        if (!installed) {
-          setState((s) => ({ ...s, status: `not installed: ${entry.name}` }));
-          return;
-        }
-        void doUninstall(entry, installed);
-      }
-    },
-    pickerPorts ?? {
-      broadcast: () => undefined,
-      resolverRef: { current: null },
-      snapshotRef: { current: null },
-    },
   );
 
   useKeystroke((ev) => {

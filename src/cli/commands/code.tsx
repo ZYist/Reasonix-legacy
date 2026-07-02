@@ -37,16 +37,6 @@ export interface CodeOptions {
    * via `/budget <usd>` slash command.
    */
   budgetUsd?: number;
-  /** Suppress the auto-launched embedded web dashboard. */
-  noDashboard?: boolean;
-  /** When true and the dashboard is enabled, open its URL in the system default browser as soon as the server is ready. */
-  openDashboard?: boolean;
-  /** Pin the dashboard to a fixed port. `undefined` keeps ephemeral assignment. */
-  dashboardPort?: number;
-  /** Dashboard bind address (#968). `undefined` keeps the default 127.0.0.1. */
-  dashboardHost?: string;
-  /** Stable dashboard URL token (#968). `undefined` mints a fresh per-boot token. */
-  dashboardToken?: string;
   /** Inline string appended to the code system prompt after the generated base prompt. */
   systemAppend?: string;
   /** Path to a UTF-8 text file whose contents are appended to the code system prompt. */
@@ -165,11 +155,6 @@ export async function codeCommand(opts: CodeOptions = {}): Promise<void> {
     mcp: normalizeMcpConfig(readConfig()).map(specToRaw),
     forceResume: opts.forceResume,
     forceNew: opts.forceNew,
-    noDashboard: opts.noDashboard,
-    openDashboard: opts.openDashboard,
-    dashboardPort: opts.dashboardPort,
-    dashboardHost: opts.dashboardHost,
-    dashboardToken: opts.dashboardToken,
     noMouse: opts.noMouse,
   });
 }

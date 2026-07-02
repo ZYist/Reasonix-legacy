@@ -97,20 +97,6 @@ export interface ChatOptions {
   forceResume?: boolean;
   /** Skip the session picker — assume "New" (wipe the session file and start fresh). */
   forceNew?: boolean;
-  /**
-   * When true, suppress auto-launch of the embedded web dashboard.
-   * Default behavior (false/undefined) is to boot it on mount so the
-   * URL is visible in the status bar.
-   */
-  noDashboard?: boolean;
-  /** When true and the dashboard is enabled, open its URL in the system default browser as soon as the server is ready. */
-  openDashboard?: boolean;
-  /** Pin the dashboard to a fixed port. `undefined` keeps ephemeral assignment. */
-  dashboardPort?: number;
-  /** Dashboard bind address (#968). `undefined` keeps the default 127.0.0.1. */
-  dashboardHost?: string;
-  /** Stable dashboard URL token (#968). `undefined` mints a fresh per-boot token. */
-  dashboardToken?: string;
   /** Disable SGR mouse tracking so the terminal keeps native selection and right-click behavior. */
   noMouse?: boolean;
 }
@@ -124,7 +110,7 @@ interface RootProps extends ChatOptions {
   progressSink: { current: ((info: ProgressInfo) => void) | null };
   /** Show the SessionPicker (full list) when no --session was specified and saved sessions exist. */
   showPicker: boolean;
-  /** Hot-reload runtime — passed through to App so /mcp browse + dashboard can bridge after install. */
+  /** Hot-reload runtime — passed through to App so /mcp browse can bridge after install. */
   mcpRuntime: McpRuntime;
   /** One-time startup info rows shown after App mounts. */
   startupInfoHints: string[];
@@ -248,11 +234,6 @@ function Root({
         progressSink={progressSink}
         startupInfoHints={startupInfoHints}
         codeMode={codeMode}
-        noDashboard={appProps.noDashboard}
-        openDashboard={appProps.openDashboard}
-        dashboardPort={appProps.dashboardPort}
-        dashboardHost={appProps.dashboardHost}
-        dashboardToken={appProps.dashboardToken}
         qqChannel={appProps.qqChannel}
         telegramChannel={appProps.telegramChannel}
         weixinChannel={appProps.weixinChannel}

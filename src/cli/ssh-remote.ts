@@ -95,7 +95,7 @@ export function generateSshDryRunReport(uri: SshUri, ssh: SshProbe | null): stri
   );
 
   const remote = `${sq(uri.user)}@${sq(uri.host)}`;
-  const cdCmd = `cd ${sq(uri.path)} && reasonix code --no-dashboard`;
+  const cdCmd = `cd ${sq(uri.path)} && reasonix code`;
 
   if (ssh) {
     sections.push(
@@ -110,10 +110,6 @@ export function generateSshDryRunReport(uri: SshUri, ssh: SshProbe | null): stri
       "",
       "4. launch Reasonix in the target workspace on the remote host",
       `   $ ssh -p ${uri.port} ${remote} -- '${cdCmd}'`,
-      "",
-      "5. (local) open an SSH tunnel to the remote dashboard",
-      `   $ ssh -N -L 8420:127.0.0.1:8420 -p ${uri.port} ${remote}`,
-      "   Then open http://127.0.0.1:8420 in your local browser.",
       "",
     );
   } else {
@@ -140,9 +136,6 @@ export function generateSshDryRunReport(uri: SshUri, ssh: SshProbe | null): stri
     "",
     "Until native remote execution lands, the simplest working setup is:",
     "  1. Run Reasonix directly on the remote host (`ssh user@host`, then `reasonix code`).",
-    "  2. Forward the dashboard port to your local machine:",
-    `     $ ssh -N -L 8420:127.0.0.1:8420 -p ${uri.port} ${remote}`,
-    "  3. Open http://127.0.0.1:8420 locally. The dashboard token gates access.",
     "",
     "--- RFC scope ---",
     "",

@@ -116,8 +116,6 @@ const status: SlashHandler = (_args, loop, ctx) => {
         : ctx.editMode === "review"
           ? t("handlers.observability.statusModeReview")
           : "";
-  const dashUrl = ctx.getDashboardUrl?.();
-  const dashLine = dashUrl ? t("handlers.observability.statusDash", { url: dashUrl }) : "";
   const workspaceLine = ctx.codeRoot
     ? t("handlers.observability.statusWorkspace", { path: ctx.codeRoot })
     : "";
@@ -140,7 +138,6 @@ const status: SlashHandler = (_args, loop, ctx) => {
   if (planLine) lines.push(planLine);
   if (lifecycleLine) lines.push(lifecycleLine);
   if (modeLine) lines.push(modeLine);
-  if (dashLine) lines.push(dashLine);
   return { info: lines.join("\n") };
 };
 

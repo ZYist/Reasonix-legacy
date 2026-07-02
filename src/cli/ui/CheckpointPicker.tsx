@@ -1,10 +1,9 @@
 import { Box, Text, useStdout } from "ink";
 // biome-ignore lint/style/useImportType: tsconfig jsx=react needs React in value scope for JSX compilation
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import type { CheckpointMeta } from "../../code/checkpoints.js";
 import { fmtAgo } from "../../code/checkpoints.js";
 import { t } from "../../i18n/index.js";
-import { type PickerBroadcastPorts, usePickerBroadcast } from "./dashboard/use-picker-broadcast.js";
 import { useKeystroke } from "./keystroke-context.js";
 import { FG, TONE } from "./theme/tokens.js";
 
@@ -17,7 +16,6 @@ export interface CheckpointPickerProps {
   checkpoints: ReadonlyArray<CheckpointMeta>;
   workspace: string;
   onChoose: (outcome: CheckpointPickerOutcome) => void;
-  pickerPorts?: PickerBroadcastPorts;
 }
 
 const PAGE_MARGIN = 6;
@@ -26,51 +24,11 @@ export function CheckpointPicker({
   checkpoints,
   workspace,
   onChoose,
-  pickerPorts,
 }: CheckpointPickerProps): React.ReactElement {
   const [focus, setFocus] = useState(0);
   const { stdout } = useStdout();
   const rows = stdout?.rows ?? 40;
   const visibleCount = Math.max(3, rows - PAGE_MARGIN);
-
-  const snapshot = useMemo(
-    () => ({
-      pickerKind: "checkpoints",
-      title: t("checkpointPicker.title", { workspace }),
-      items: checkpoints.map((c) => {
-        const sizeKb = (c.bytes / 1024).toFixed(1);
-        const tag = c.source === "manual" ? "" : ` (${c.source})`;
-        return {
-          id: c.id,
-          title: `${c.name}${tag}`,
-          subtitle: `${c.fileCount} file${c.fileCount === 1 ? "" : "s"} · ${sizeKb} KB`,
-          badge: c.id.slice(0, 7),
-          meta: fmtAgo(c.createdAt),
-        };
-      }),
-      actions: ["pick", "delete", "cancel"] as const,
-      hint: t("checkpointPicker.footer"),
-    }),
-    [checkpoints, workspace],
-  );
-
-  usePickerBroadcast(
-    !!pickerPorts,
-    {
-      ...snapshot,
-      actions: [...snapshot.actions],
-    },
-    (res) => {
-      if (res.action === "pick") return onChoose({ kind: "restore", id: res.id });
-      if (res.action === "delete") return onChoose({ kind: "delete", id: res.id });
-      if (res.action === "cancel") return onChoose({ kind: "quit" });
-    },
-    pickerPorts ?? {
-      broadcast: () => undefined,
-      resolverRef: { current: null },
-      snapshotRef: { current: null },
-    },
-  );
 
   useKeystroke((ev) => {
     if (ev.escape) return onChoose({ kind: "quit" });

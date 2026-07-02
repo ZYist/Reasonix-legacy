@@ -14,7 +14,6 @@ import {
 import { savePendingEdits } from "../../../code/pending-edits.js";
 import type { EditMode } from "../../../config.js";
 import type { LoopEvent } from "../../../loop.js";
-import type { DashboardEvent } from "../../../server/context.js";
 import type { SessionSummary } from "../../../telemetry/stats.js";
 import { appendUsage } from "../../../telemetry/usage.js";
 import { formatEditResults, formatPendingPreview } from "../edit-history.js";
@@ -33,7 +32,6 @@ export interface AssistantFinalContext {
   assistantId: string;
   setSummary: Dispatch<SetStateAction<SessionSummary>>;
   log: Scrollback;
-  broadcastDashboardEvent: (ev: DashboardEvent) => void;
   getSessionSummary: () => SessionSummary;
   session: string | null;
   assistantIterCounter: MutableRefObject<number>;
@@ -57,26 +55,7 @@ export function handleAssistantFinal(ev: LoopEvent, ctx: AssistantFinalContext):
   ctx.flush();
   ctx.translator.reasoningDone(ctx.streamRef.reasoning);
   ctx.translator.streamingDone();
-  // 广播 assistant_final 事件，包含 usage 信息
-  const finalEvent: import("../../../server/context.js").DashboardEvent = {
-    kind: "assistant_final",
-    id: ctx.assistantId,
-    text: ev.content || ctx.streamRef.text,
-    reasoning: ctx.streamRef.reasoning || undefined,
-  };
-  // 如果有 usage 信息，添加到事件中
-  if (ev.stats?.usage) {
-    finalEvent.usage = {
-      prompt_tokens: ev.stats.usage.promptTokens,
-      completion_tokens: ev.stats.usage.completionTokens,
-      total_tokens: ev.stats.usage.totalTokens,
-      prompt_cache_hit_tokens: ev.stats.usage.promptCacheHitTokens,
-      prompt_cache_miss_tokens: ev.stats.usage.promptCacheMissTokens,
-    };
-    finalEvent.costUsd = ev.stats.cost;
-  }
-  ctx.broadcastDashboardEvent(finalEvent);
-  // Keep the live stats panel current with per-iter usage. Without this,
+  // Keep the live status summary current with per-iter usage. Without this,
   // cost/ctx/cache/hit stay at the prior turn's numbers until the whole
   // step resolves — confusing in multi-iter tool-call chains.
   ctx.setSummary(ctx.getSessionSummary());

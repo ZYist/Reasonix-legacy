@@ -3,7 +3,6 @@ import { Box, Text, useStdout } from "ink";
 import React, { useEffect, useMemo, useState } from "react";
 import { t } from "../../i18n/index.js";
 import type { SessionInfo } from "../../memory/session.js";
-import { type PickerBroadcastPorts, usePickerBroadcast } from "./dashboard/use-picker-broadcast.js";
 import { useKeystroke } from "./keystroke-context.js";
 import { FG, TONE, formatCost } from "./theme/tokens.js";
 
@@ -20,8 +19,6 @@ export interface SessionPickerProps {
   onChoose: (outcome: SessionPickerOutcome) => void;
   /** Live wallet currency from App.tsx; falls back to each session's stored `meta.balanceCurrency` per row. */
   walletCurrency?: string;
-  /** When provided, broadcasts to the web dashboard so it can resolve via `/api/modal/resolve`. */
-  pickerPorts?: PickerBroadcastPorts;
   onFocusChange?: (focus: number) => void;
 }
 
@@ -32,7 +29,6 @@ export function SessionPicker({
   workspace,
   onChoose,
   walletCurrency,
-  pickerPorts,
   onFocusChange,
 }: SessionPickerProps): React.ReactElement {
   const [focus, setFocus] = useState(0);
@@ -62,57 +58,6 @@ export function SessionPicker({
   const { stdout } = useStdout();
   const rows = stdout?.rows ?? 40;
   const visibleCount = Math.max(3, rows - PAGE_MARGIN);
-
-  const snapshot = useMemo(
-    () => ({
-      pickerKind: "sessions",
-      title: t("sessionPicker.title", { workspace }),
-      items: sessions.map((s) => {
-        const branch = s.meta.branch ?? "main";
-        const count = s.messageCount;
-        const summary =
-          s.meta.summary ??
-          t(count === 1 ? "sessionPicker.messages" : "sessionPicker.messagesPlural", { count });
-        const turns = s.meta.turnCount ?? Math.ceil(s.messageCount / 2);
-        const currency = walletCurrency ?? s.meta.balanceCurrency;
-        const costLabel =
-          s.meta.totalCostUsd !== undefined ? formatCost(s.meta.totalCostUsd, currency, 2) : "";
-        return {
-          id: s.name,
-          title: s.name,
-          subtitle: summary,
-          badge: branch,
-          meta: costLabel
-            ? `${t("sessionPicker.turns", { count: turns })} · ${costLabel}`
-            : t("sessionPicker.turns", { count: turns }),
-        };
-      }),
-      actions: ["pick", "delete", "rename", "new", "cancel"] as const,
-      hint: t("sessionPicker.pickerHint"),
-    }),
-    [sessions, workspace, walletCurrency],
-  );
-
-  usePickerBroadcast(
-    !!pickerPorts,
-    {
-      ...snapshot,
-      actions: [...snapshot.actions],
-    },
-    (res) => {
-      if (res.action === "pick") return onChoose({ kind: "open", name: res.id });
-      if (res.action === "delete") return onChoose({ kind: "delete", name: res.id });
-      if (res.action === "rename")
-        return onChoose({ kind: "rename", name: res.id, newName: res.text });
-      if (res.action === "new") return onChoose({ kind: "new" });
-      if (res.action === "cancel") return onChoose({ kind: "quit" });
-    },
-    pickerPorts ?? {
-      broadcast: () => undefined,
-      resolverRef: { current: null },
-      snapshotRef: { current: null },
-    },
-  );
 
   useKeystroke((ev) => {
     if (ev.paste) {

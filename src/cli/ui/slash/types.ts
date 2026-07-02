@@ -145,11 +145,6 @@ export interface SlashContext {
     nextFireMs: number;
   } | null;
   startWalkthrough?: () => string;
-  startDashboard?: () => Promise<string>;
-  /** Tear the dashboard server down. Mirrors stopLoop's shape; no-op when not running. */
-  stopDashboard?: () => Promise<void>;
-  /** Snapshot the dashboard's URL when running, null otherwise. */
-  getDashboardUrl?: () => string | null;
   qq?: {
     connect: (args: readonly string[]) => Promise<string>;
     disconnect: () => Promise<string>;

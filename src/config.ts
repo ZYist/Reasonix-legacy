@@ -174,7 +174,7 @@ export interface ReasonixConfig {
   apiKey?: string;
   baseUrl?: string;
   lang?: LanguageCode;
-  /** Persisted DeepSeek model id — `/model <id>` and the dashboard model picker write through this. */
+  /** Persisted DeepSeek model id — `/model <id>` and the model selection command write through this. */
   model?: string;
   editMode?: EditMode;
   editModeHintShown?: boolean;
@@ -246,16 +246,6 @@ export interface ReasonixConfig {
   historyScrollMode?: HistoryScrollMode;
   /** Diff display mode for edit_file / write_file / multi_edit results in CLI. */
   diffDisplay?: DiffDisplay;
-  dashboard?: {
-    /** Whether the embedded dashboard auto-starts on launch. Default true. Set false to disable without passing --no-dashboard each time. */
-    enabled?: boolean;
-    /** Pin the embedded dashboard to a fixed port — required for stable SSH tunnels. 0/absent → ephemeral. */
-    port?: number;
-    /** Bind address (#968). Defaults to 127.0.0.1 (loopback only). Set to 0.0.0.0 / :: / a LAN IP to expose to other devices; the URL token is then the only auth, so keep it secret. */
-    host?: string;
-    /** Stable URL token (#968). If unset, a fresh token is minted each boot. Min 16 chars enforced at load time. */
-    token?: string;
-  };
   /** Thread-area visibility toggles. */
   thread?: {
     /** When false, suppresses the quiet inline dividers for fold / abort / rate-limit
@@ -547,45 +537,6 @@ export function readConfig(path: string = defaultConfigPath()): ReasonixConfig {
     }
   }
   return {};
-}
-
-/** Whether the dashboard auto-starts. Default true; only false when explicitly set in config. */
-export function loadDashboardEnabled(
-  noConfig = false,
-  path: string = defaultConfigPath(),
-): boolean {
-  if (noConfig) return true;
-  const v = readConfig(path).dashboard?.enabled;
-  return v !== false;
-}
-
-/** Get-or-mint a 32-byte hex dashboard token, persisting on first call so subsequent CLI boots reuse it (URLs survive restarts). Returns the existing token if it's already ≥16 chars. */
-export function ensureDashboardToken(path: string = defaultConfigPath()): string {
-  const cfg = readConfig(path);
-  const existing = cfg.dashboard?.token?.trim();
-  if (existing && existing.length >= 16) return existing;
-  const minted = randomBytes(32).toString("hex");
-  const next: ReasonixConfig = { ...cfg, dashboard: { ...cfg.dashboard, token: minted } };
-  writeConfig(next, path);
-  return minted;
-}
-
-/** Persist the actual port the server bound to so the next boot reuses it (and falls back to ephemeral if it's taken). */
-export function saveDashboardPort(port: number, path: string = defaultConfigPath()): void {
-  if (!Number.isInteger(port) || port < 1 || port > 65535) return;
-  const cfg = readConfig(path);
-  if (cfg.dashboard?.port === port) return;
-  const next: ReasonixConfig = { ...cfg, dashboard: { ...cfg.dashboard, port } };
-  writeConfig(next, path);
-}
-
-/** Wipe the persisted dashboard token — next boot mints a fresh one. Used by `/dashboard reset-token`. */
-export function clearDashboardToken(path: string = defaultConfigPath()): void {
-  const cfg = readConfig(path);
-  if (!cfg.dashboard?.token) return;
-  const { token: _drop, ...rest } = cfg.dashboard;
-  const next: ReasonixConfig = { ...cfg, dashboard: rest };
-  writeConfig(next, path);
 }
 
 export function writeConfig(cfg: ReasonixConfig, path: string = defaultConfigPath()): void {
