@@ -3,6 +3,26 @@
 All notable changes to Reasonix. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.55.0] — 2026-07-02
+
+**First release of the `reasonix-legacy` community fork** — continuing the
+TypeScript line after upstream moved to the Go rewrite (`main-v2`).
+Forked from `esengine/DeepSeek-Reasonix` at the `v1` branch (upstream
+`0.54.2` plus maintenance commits).
+
+Changes since upstream `0.54.2` (the last upstream npm release on this line):
+
+- **feat(cache):** Cache Efficiency Guardrails and Diagnostics (#2314)
+- **fix(cli):** don't crash session hydration on a tool call missing its
+  function
+- **chore(cache):** localize `/status` cache-detail line and make tool sort
+  locale-independent (#2320)
+- **docs(v1):** mark the TypeScript line as legacy, point to the Go rewrite
+
+Package renamed to `reasonix-legacy` (the `reasonix` npm name is reserved by
+the upstream Go project). The `reasonix` / `dsnix` CLI command names are
+unchanged.
+
 ## [0.52.0] — 2026-05-26
 
 **Ink renderer in-tree as `@esengine/ink`.** The vendored Ink fork now

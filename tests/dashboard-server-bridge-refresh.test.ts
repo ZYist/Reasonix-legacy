@@ -34,7 +34,7 @@ async function loadBridge(options?: {
   let overview = options?.overview ?? {
     cwd: "E:/proj",
     model: "deepseek-v4-pro",
-    version: "0.52.0",
+    version: "0.55.0",
     stats: {
       totalCostUsd: 0.123456,
       cacheHitRatio: 0.75,
@@ -172,7 +172,7 @@ describe("dashboard server bridge refresh", () => {
     setOverview({
       cwd: "E:/proj",
       model: "deepseek-v4-pro",
-      version: "0.52.0",
+      version: "0.55.0",
       stats: {
         totalCostUsd: 0.2,
         cacheHitTokens: 1600,

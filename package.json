@@ -1,6 +1,6 @@
 {
-  "name": "reasonix",
-  "version": "0.52.0",
+  "name": "reasonix-legacy",
+  "version": "0.55.0",
   "description": "DeepSeek-native coding agent: cache-first loop, flash-first cost control, tool-call repair.",
   "type": "module",
   "bin": {
@@ -70,12 +70,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/esengine/DeepSeek-Reasonix.git"
+    "url": "git+https://github.com/ZYist/Reasonix-legacy.git"
   },
   "bugs": {
-    "url": "https://github.com/esengine/DeepSeek-Reasonix/issues"
+    "url": "https://github.com/ZYist/Reasonix-legacy/issues"
   },
-  "homepage": "https://github.com/esengine/DeepSeek-Reasonix#readme",
+  "homepage": "https://github.com/ZYist/Reasonix-legacy#readme",
   "engines": {
     "node": ">=22"
   },
