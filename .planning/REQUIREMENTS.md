@@ -37,13 +37,24 @@
 
 ## Traceability
 
-由 roadmapper 在创建 ROADMAP.md 时填充——每个 v1 requirement 映射到恰好一个 phase。
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| PANEL-01 | Phase 1 | Pending |
+| PANEL-03 | Phase 1 | Pending |
+| BOT-01 | Phase 2 | Pending |
+| BOT-02 | Phase 2 | Pending |
+| BOT-03 | Phase 2 | Pending |
+| PANEL-02 | Phase 3 | Pending |
+| PANEL-04 | Phase 4 | Pending |
+| SAFE-01 | Phase 4 | Pending |
+| SAFE-02 | Phase 4 | Pending |
+| SAFE-03 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 10 total
-- Mapped to phases: 0(待 roadmap)
-- Unmapped: 10 ⚠️(roadmap 创建后归零)
+- Mapped to phases: 10 ✓
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-07-02*
-*Last updated: 2026-07-02 after initial definition*
+*Last updated: 2026-07-02 — traceability populated by roadmapper (M1: 精简为纯 CLI)*
