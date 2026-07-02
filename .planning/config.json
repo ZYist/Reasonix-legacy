@@ -1,7 +1,7 @@
 {
-  "model_profile": "adaptive",
+  "model_profile": "inherit",
   "commit_docs": true,
-  "parallelization": true,
+  "parallelization": false,
   "search_gitignored": false,
   "brave_search": false,
   "firecrawl": false,
@@ -18,10 +18,10 @@
     "quick_branch_template": null
   },
   "workflow": {
-    "research": true,
+    "research": false,
     "plan_check": true,
     "verifier": true,
-    "nyquist_validation": true,
+    "nyquist_validation": false,
     "auto_advance": false,
     "node_repair": true,
     "node_repair_budget": 2,
@@ -63,7 +63,7 @@
     "source_grounding": true,
     "source_grounding_authority": "grep"
   },
-  "mode": "yolo",
+  "mode": "interactive",
   "granularity": "coarse",
   "intel": {
     "enabled": true
