@@ -33,12 +33,16 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. `reasonix chat` TUI 能正常发起并完成一轮对话(发消息 → 收模型回复 → 执行一次工具),无面板相关报错
   4. typecheck 与 build 通过(剥离 Web 面板后 CLI 可独立构建)
 
-**Plans**: 2 plans
+**Plans**: 1/2 plans executed
 
 Plans:
+
+- [x] 01-01-PLAN.md
+- [ ] 01-02-PLAN.md
+
 **Wave 1**
 
-- [ ] 01-01: 移除 `dashboard/` + `src/server/` 目录,清理 `src/` 对 server 的全部引用(import type 与动态 import)
+- [x] 01-01: 移除 `dashboard/` + `src/server/` 目录,清理 `src/` 对 server 的全部引用(import type 与动态 import)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -113,7 +117,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Web Panel Removal | 0/2 | Not started | - |
+| 1. Web Panel Removal | 1/2 | In Progress|  |
 | 2. Bot Decoupling to Standalone CLI | 0/3 | Not started | - |
 | 3. Desktop GUI Removal | 0/1 | Not started | - |
 | 4. Build Chain Cleanup & Full Regression | 0/2 | Not started | - |
