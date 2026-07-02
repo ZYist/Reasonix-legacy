@@ -46,7 +46,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01-02: 清理 CLI 内部面板适配代码(App.tsx dashboard 钩子 / loop-to-dashboard / /dashboard slash / cards-to-messages / picker-broadcast),验证 typecheck + build + TUI 对话
+- [~] 01-02: 清理 i18n 面板死串 + 运行时 TUI 冒烟 — **Task 1 完成**(panel i18n 死串移除,types.ts+5 locale 同步,收敛 116→24,commit cff185e7,typecheck/build/lint 绿);**Task 2 待人确认**(运行时 TUI 一轮对话冒烟,blocking checkpoint:human-verify)
 
 **UI hint**: yes
 

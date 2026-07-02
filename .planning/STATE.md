@@ -5,10 +5,10 @@ milestone_name: milestone
 current_phase: 01
 current_phase_name: Web Panel Removal
 status: executing
-stopped_at: 01-01 complete (3/3 tasks, build green); next 01-02 (i18n dead strings + runtime smoke)
-last_updated: "2026-07-02T15:10:43Z"
+stopped_at: 01-02 Task 1 complete (i18n dead strings removed, commit cff185e7); Task 2 (runtime TUI smoke) awaiting human verify — blocking checkpoint
+last_updated: "2026-07-02T15:35:45Z"
 last_activity: 2026-07-02
-last_activity_desc: Completed 01-01 — Web Panel surface removed, CLI builds independently
+last_activity_desc: 01-02 Task 1 done — panel i18n dead strings cleared; Task 2 TUI smoke pending human
 progress:
   total_phases: 4
   completed_phases: 0
@@ -29,9 +29,9 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 ## Current Position
 
 Phase: 01 (Web Panel Removal) — EXECUTING
-Plans: 2 planned (1 executed) in current phase — 01-01 done (wave 1), 01-02 next (wave 2)
-Status: Executing Phase 01 — 01-01 complete
-Last activity: 2026-07-02 — Completed 01-01 (Web Panel surface removed)
+Plans: 2 planned (1 complete, 1 in-progress) in current phase — 01-01 done (wave 1), 01-02 Task 1 done / Task 2 awaiting human verify (wave 2)
+Status: Executing Phase 01 — 01-02 at blocking checkpoint (runtime TUI smoke)
+Last activity: 2026-07-02 — 01-02 Task 1 complete (panel i18n dead strings removed)
 
 Progress: [█████░░░░░] 50%
 
@@ -72,6 +72,8 @@ Recent decisions affecting current work:
 - 01-01: 保留 dist/cli ESM marker(拆为 write-cli-package-marker.mjs)避免静默回归
 - 01-01: i18n 面板死串(93 条)+ 叙事注释交由 01-02 清理,本计划只切除代码耦合
 - 01-01: 删除 12 个面板专属测试(仅覆盖已删 server/bridge 表面,无核心逻辑存活)
+- 01-02 Task 1: 移除面板 i18n 死串(types.ts 契约 + 5 locale 同步,handlers/slash 索引签名段一并清理),收敛基线 116→24;顺手清理 plan-store.ts 事故叙事与 App.tsx 过期面板引用注释
+- 01-02 Task 1: 剩余 24 处 "dashboard" 字面量为合法 stats CLI 功能命名(reasonix stats 的 dashboard()/renderDashboard)与带 issue 锚点的隐藏约束注释,作为 Phase 4 drift 基线保留
 
 ### Pending Todos
 
@@ -87,12 +89,12 @@ None yet.
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| i18n | 93 条面板死串(/dashboard、--no-dashboard、dashboardPortInvalid、dashboardAutoStartFailed 等) | 交由 01-02 清理 | 01-01 |
-| 叙事注释 | 23 处 src/ 内描述性 "dashboard" 注释(非耦合代码) | 交由 01-02 清理 | 01-01 |
-| 运行时冒烟 | TUI 一轮对话冒烟(需交互式 TTY + DeepSeek key) | 交由 01-02 完成 | 01-01 |
+| i18n | 93 条面板死串(/dashboard、--no-dashboard、dashboardPortInvalid、dashboardAutoStartFailed 等) | 已清理(01-02 Task 1, commit cff185e7) | 01-01 |
+| 叙事注释 | 23 处 src/ 内描述性 "dashboard" 注释(非耦合代码) | 事故叙事已清理(plan-store.ts/App.tsx);合法 stats 命名 + 隐藏约束注释作基线保留(01-02 Task 1) | 01-01 |
+| 运行时冒烟 | TUI 一轮对话冒烟(需交互式 TTY + DeepSeek key) | 待人确认(01-02 Task 2 checkpoint) | 01-01 |
 
 ## Session Continuity
 
 Last session: 2026-07-02
-Stopped at: 01-01 complete (3/3 tasks; typecheck/build/lint green; dashboard/ + src/server/ removed)
-Resume file: .planning/phases/01-web-panel-removal/01-02-PLAN.md
+Stopped at: 01-02 Task 1 complete (panel i18n dead strings removed, commit cff185e7, typecheck/build/lint green); Task 2 blocking checkpoint — runtime TUI smoke awaiting human verify (interactive TTY + DeepSeek key)
+Resume file: .planning/phases/01-web-panel-removal/01-02-PLAN.md (Task 2: checkpoint:human-verify)
