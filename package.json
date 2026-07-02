@@ -19,9 +19,6 @@
   "files": [
     "dist",
     "data/deepseek-tokenizer.json.gz",
-    "dashboard/index.html",
-    "dashboard/app.css",
-    "dashboard/dist",
     "patches",
     "scripts/postinstall.mjs",
     "README.md",
@@ -32,8 +29,7 @@
   ],
   "scripts": {
     "postinstall": "node scripts/postinstall.mjs",
-    "build:dashboard": "npm --prefix dashboard run build",
-    "build": "npm run build:dashboard && tsup && node scripts/copy-dashboard-vendor-css.mjs && node scripts/copy-tree-sitter-grammars.mjs",
+    "build": "tsup && node scripts/write-cli-package-marker.mjs && node scripts/copy-tree-sitter-grammars.mjs",
     "dev": "tsx src/cli/index.ts",
     "chat": "tsx src/cli/index.ts chat",
     "test": "vitest run",
@@ -43,7 +39,7 @@
     "lint": "biome check src tests",
     "lint:fix": "biome check --write src tests",
     "format": "biome format --write src tests",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p dashboard",
+    "typecheck": "tsc --noEmit",
     "verify": "npm run build && npm run lint && npm run typecheck && npm run test --silent",
     "prepare": "simple-git-hooks || true",
     "prepublishOnly": "npm run lint && npm run typecheck && npm run build && npm run test",
