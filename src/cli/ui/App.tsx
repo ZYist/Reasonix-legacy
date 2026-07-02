@@ -77,16 +77,6 @@ import {
 } from "../../memory/session.js";
 import type { QQChannel } from "../../qq/channel.js";
 import { useQQChannel } from "../../qq/use-qq-channel.js";
-import type {
-  ActiveModal,
-  ChoiceResolution,
-  DashboardContext,
-  DashboardEvent,
-  DashboardMessage,
-  PickerResolution,
-  SubmitResult,
-} from "../../server/context.js";
-import type { DashboardServerHandle } from "../../server/index.js";
 import {
   generateSessionTitle,
   makeSessionNameFromTitle,
@@ -139,8 +129,6 @@ import { type ThemeChoice, ThemePicker } from "./ThemePicker.js";
 import { WelcomeBanner } from "./WelcomeBanner.js";
 import { WorkspacePicker } from "./WorkspacePicker.js";
 import { detectBangCommand, formatBangUserMessage } from "./bang.js";
-import type { PickerSnapshot, ViewerSnapshot } from "./dashboard/use-picker-broadcast.js";
-import { useViewerBroadcast } from "./dashboard/use-picker-broadcast.js";
 import { formatEditResults, formatPendingPreview } from "./edit-history.js";
 import {
   buildEditToolBlocksForReview,
@@ -148,7 +136,6 @@ import {
   isReviewGatedEditTool,
   shouldApplyEditToolImmediately,
 } from "./edit-tool-gate.js";
-import { loopEventToDashboard } from "./effects/loop-to-dashboard.js";
 import { effortChoicesForBaseUrl } from "./effort-choices.js";
 import { appendGlobalMemory, appendProjectMemory, detectHashMemory } from "./hash-memory.js";
 import { type ResolvedHistoryScrollMode, resolveHistoryScrollMode } from "./history-scroll-mode.js";
@@ -188,7 +175,6 @@ import { handleMcpBrowseSlash } from "./mcp-browse.js";
 import { formatMcpLifecycleEvent } from "./mcp-lifecycle.js";
 import { replaceMcpServerSummary } from "./mcp-server-list.js";
 import { formatMcpSlowToast } from "./mcp-toast.js";
-import { openUrl } from "./open-url.js";
 import { formatLongPaste } from "./paste-collapse.js";
 import { extractOpenQuestionsSection } from "./plan-open-questions.js";
 import {
@@ -199,7 +185,6 @@ import {
   suggestSlashCommands,
 } from "./slash.js";
 import { TurnTranslator } from "./state/TurnTranslator.js";
-import { cardsToDashboardMessages } from "./state/cards-to-messages.js";
 import { ChatScrollProvider, useChatScrollActions } from "./state/chat-scroll-provider.js";
 import { hydrateCardsFromMessages } from "./state/hydrate.js";
 import { InflightProvider } from "./state/inflight-context.js";
@@ -290,23 +275,6 @@ export interface AppProps {
     /** Notify the launcher/root wrapper that the workspace root changed so session switches remount into the new root. */
     onRootChange?: (newRoot: string) => void;
   };
-  /**
-   * When `true`, suppress the auto-launch of the embedded web dashboard
-   * server on TUI mount. Default behavior is to boot the dashboard so
-   * the URL shows in the status bar (clickable in OSC-8-aware
-   * terminals) —most users had no idea `/dashboard` even existed.
-   * `--no-dashboard` is the CLI flag that flips this on for CI / users
-   * who don't want a localhost listener.
-   */
-  noDashboard?: boolean;
-  /** When true and the dashboard is enabled, open its URL in the system default browser as soon as the auto-start finishes. */
-  openDashboard?: boolean;
-  /** Pin the dashboard to a fixed port. `undefined` keeps ephemeral assignment. */
-  dashboardPort?: number;
-  /** Dashboard bind address (#968). `undefined` keeps the default 127.0.0.1. */
-  dashboardHost?: string;
-  /** Stable dashboard URL token (#968). `undefined` mints a fresh per-boot token. */
-  dashboardToken?: string;
   /** Mid-chat session swap — Root remounts App with the new session via key. */
   onSwitchSession?: (name: string | undefined) => void;
   /** One-time startup info rows injected by chatCommand. */
@@ -326,24 +294,6 @@ export interface AppProps {
   /** Resolved chat-history scroll mode, computed by the launcher from config/env. */
   historyScrollMode?: ResolvedHistoryScrollMode;
 }
-
-// Module-level so the embedded dashboard server survives App remounts (chat.tsx
-// uses `<App key={activeSession}>`, so every session swap unmounts the whole
-// tree). Without this, the cleanup useEffect closed the server and the new App
-// mount raced its `listen()` against the OS still releasing the port — Windows
-// in particular held the port long enough for the rebind to fall back to a fresh
-// ephemeral one, so the dashboard URL changed every time the user clicked a
-// session in the sidebar. Now we keep the same handle and just hand it the new
-// loop/refs via `updateContext()`.
-let persistentDashboardHandle: DashboardServerHandle | null = null;
-
-// SSE subscribers must outlive App remounts for the same reason as
-// persistentDashboardHandle: the browser's `/api/events` connection
-// registers once on connect, and `broadcastDashboardEvent` reads this
-// Set every time the loop fires. If the Set is per-App, the new App's
-// broadcast finds an empty Set after a session-swap and the web silently
-// stops receiving turns.
-const persistentEventSubscribers = new Set<(ev: DashboardEvent) => void>();
 
 /**
  * Single-line status pill rendered below the modeline whenever a /loop
@@ -463,11 +413,6 @@ function AppInner({
   mcpRuntime,
   progressSink,
   codeMode,
-  noDashboard,
-  openDashboard,
-  dashboardPort,
-  dashboardHost,
-  dashboardToken,
   onSwitchSession,
   startupInfoHints,
   qqChannel,
@@ -636,12 +581,6 @@ function AppInner({
     });
   }
   const lifecyclePlanSuggestionSessionRef = useRef<string | null | undefined>(undefined);
-  // Refs that mirror state for stable read-callbacks handed to the
-  // embedded dashboard server. The server's `getXxx()` closures are
-  // captured once at startDashboard time; without ref-mirrors the
-  // returned values would freeze at boot. Same pattern as editModeRef.
-  const planModeRef = useRef<boolean>(false);
-  const latestVersionRef = useRef<string | null>(null);
   // Current per-edit confirmation prompt (review mode, tool-call path).
   // Non-null —EditConfirm modal renders, interceptor is suspended on
   // `editReviewResolveRef.current`, other live rows hide. User picks a
@@ -866,37 +805,6 @@ function AppInner({
   const handleSubmitRef = useRef<((raw: string) => Promise<void>) | null>(null);
   const busyRef = useRef<boolean>(false);
   const submittingRef = useRef<boolean>(false);
-  // Embedded dashboard server handle. Set when /dashboard boots; null
-  // otherwise. Mutations to this ref happen inside the start/stop
-  // callbacks; the slash handler uses getDashboardUrl() to surface
-  // the current state without triggering re-renders on every poll.
-  const dashboardRef = useRef<DashboardServerHandle | null>(null);
-  // De-dupe concurrent startDashboard() invocations. Without this, when
-  // the auto-start useEffect re-fires (because `startDashboard`'s
-  // useCallback deps change mid-mount) the early `if (dashboardRef.current)
-  // return` check sees null because the first call hasn't returned from
-  // its `await startDashboardServer()` yet —so we'd start two listeners
-  // on two ports, leak the first handle, and make the chrome pill flicker
-  // between two URLs. Hold the in-flight Promise here and reuse it.
-  const dashboardStartingRef = useRef<Promise<string> | null>(null);
-  // SSE subscribers attached by /api/events. App.tsx fans out one
-  // DashboardEvent per loop event so the web Chat tab updates in
-  // sync with the TUI. The Set is keyed by the subscriber function
-  // itself; subscribeEvents returns an unsubscribe closure.
-  //
-  // Aliases the module-level Set so subscriptions registered by an
-  // earlier App instance survive a session-swap remount. Without this,
-  // the browser's SSE connection stayed wired to the dead App's Set
-  // while the new App broadcast into a fresh empty one — every assistant
-  // turn after a switch silently dropped on the floor.
-  const eventSubscribersRef = useRef(persistentEventSubscribers);
-  /** Only one picker mounts at a time; snapshot feeds `getActiveModal` for late SSE clients. */
-  const activePickerResolverRef = useRef<((res: PickerResolution) => void) | null>(null);
-  const activePickerSnapshotRef = useRef<PickerSnapshot | null>(null);
-  /** Active read-only viewer (e.g. /replay plan archive). Same late-SSE concern, simpler resolver (close only). */
-  const activeViewerResolverRef = useRef<(() => void) | null>(null);
-  const activeViewerSnapshotRef = useRef<ViewerSnapshot | null>(null);
-  const [pendingReplayViewer, setPendingReplayViewer] = useState<ViewerSnapshot | null>(null);
   // Structured steps captured from the most recent `submit_plan` call.
   // Populated only when the model supplied `steps`; used by the
   // `mark_step_complete` handler to look up the step title and compute
@@ -1295,27 +1203,7 @@ function AppInner({
   const { balance, models, latestVersion, refreshBalance, refreshModels, refreshLatestVersion } =
     useSessionInfo(loop);
 
-  // Keep the dashboard-server ref-mirrors in sync with their state.
-  // These four are the load-bearing live reads for the attached
-  // dashboard's read APIs; without these mirrors the captured
-  // closures inside startDashboardServer freeze at boot time.
   useEffect(() => {
-    planModeRef.current = planMode;
-  }, [planMode]);
-
-  useEffect(() => {
-    latestVersionRef.current = latestVersion ?? null;
-  }, [latestVersion]);
-  // Ref-mirror so getStats() (frozen at startDashboard time) sees fresh
-  // balance. useSessionInfo refreshes balance every few minutes; we
-  // forward to the dashboard without re-minting startDashboard.
-  const balanceRef = useRef<typeof balance>(null);
-  const modelsRef = useRef<string[] | null>(null);
-  useEffect(() => {
-    modelsRef.current = models;
-  }, [models]);
-  useEffect(() => {
-    balanceRef.current = balance;
     walletCurrencyRef.current = balance?.currency;
     if (balance) {
       agentStore.dispatch({
@@ -1324,183 +1212,6 @@ function AppInner({
       });
     }
   }, [balance, agentStore]);
-
-  // Fan out a DashboardEvent to every web subscriber. No-op when
-  // nothing is connected, so the cost of the bridge in the common
-  // (no dashboard open) case is one Set.size lookup per event.
-  const broadcastDashboardEvent = useCallback((ev: DashboardEvent) => {
-    const subs = eventSubscribersRef.current;
-    if (subs.size === 0) return;
-    for (const h of subs) {
-      try {
-        h(ev);
-      } catch {
-        /* one bad subscriber must not stop the others */
-      }
-    }
-  }, []);
-  const pickerPorts = useMemo(
-    () => ({
-      broadcast: broadcastDashboardEvent,
-      resolverRef: activePickerResolverRef,
-      snapshotRef: activePickerSnapshotRef,
-    }),
-    [broadcastDashboardEvent],
-  );
-  const viewerPorts = useMemo(
-    () => ({
-      broadcast: broadcastDashboardEvent,
-      resolverRef: activeViewerResolverRef,
-      snapshotRef: activeViewerSnapshotRef,
-    }),
-    [broadcastDashboardEvent],
-  );
-  useViewerBroadcast(
-    !!pendingReplayViewer,
-    pendingReplayViewer ?? { viewerKind: "replay-plan", title: "" },
-    () => setPendingReplayViewer(null),
-    viewerPorts,
-  );
-
-  // Broadcast busy-state changes so the web Chat tab can disable its
-  // submit button while a turn is in flight. Mirrors what the TUI's
-  // `busy` flag already drives for PromptInput.
-  useEffect(() => {
-    broadcastDashboardEvent({ kind: "busy-change", busy });
-  }, [busy, broadcastDashboardEvent]);
-
-  // ---------- Modal mirroring (web parity for ShellConfirm / ChoiceConfirm /
-  // PlanConfirm / EditConfirm) ----------
-  //
-  // Each pending* state is the source of truth on the TUI side. These
-  // effects fan it out to web subscribers as `modal-up` events; the
-  // useEffect cleanup fires `modal-down` when the modal closes (the
-  // user picked from EITHER surface —once a pending state goes null
-  // the cleanup runs and both clients see it disappear).
-  //
-  // The shell + choice + plan paths are straightforward state.
-  // edit-review is different —its source of truth is `editReviewResolveRef`
-  // (a promise the dispatch interceptor is awaiting), wired via a
-  // separate `pendingEditReview` state that we already broadcast here.
-
-  useEffect(() => {
-    if (!pendingShell) return;
-    const modal: ActiveModal = {
-      kind: "shell",
-      command: pendingShell.command,
-      allowPrefix: derivePrefix(pendingShell.command),
-      shellKind: pendingShell.kind,
-    };
-    broadcastDashboardEvent({ kind: "modal-up", modal });
-    return () => {
-      broadcastDashboardEvent({ kind: "modal-down", modalKind: "shell" });
-    };
-  }, [pendingShell, broadcastDashboardEvent]);
-
-  useEffect(() => {
-    if (!pendingPath) return;
-    const modal: ActiveModal = {
-      kind: "path",
-      path: pendingPath.path,
-      intent: pendingPath.intent,
-      toolName: pendingPath.toolName,
-      sandboxRoot: pendingPath.sandboxRoot,
-      allowPrefix: pendingPath.allowPrefix,
-    };
-    broadcastDashboardEvent({ kind: "modal-up", modal });
-    return () => {
-      broadcastDashboardEvent({ kind: "modal-down", modalKind: "path" });
-    };
-  }, [pendingPath, broadcastDashboardEvent]);
-
-  useEffect(() => {
-    if (!pendingChoice) return;
-    const modal: ActiveModal = {
-      kind: "choice",
-      question: pendingChoice.question,
-      options: pendingChoice.options,
-      allowCustom: pendingChoice.allowCustom,
-    };
-    broadcastDashboardEvent({ kind: "modal-up", modal });
-    return () => {
-      broadcastDashboardEvent({ kind: "modal-down", modalKind: "choice" });
-    };
-  }, [pendingChoice, broadcastDashboardEvent]);
-
-  useEffect(() => {
-    if (!pendingPlan) return;
-    broadcastDashboardEvent({
-      kind: "modal-up",
-      modal: { kind: "plan", body: pendingPlan },
-    });
-    return () => {
-      broadcastDashboardEvent({ kind: "modal-down", modalKind: "plan" });
-    };
-  }, [pendingPlan, broadcastDashboardEvent]);
-
-  useEffect(() => {
-    if (!pendingEditReview) return;
-    // Trim the preview —older clients only render this string; newer
-    // clients use `search`/`replace` directly to render a side-by-side
-    // diff with syntax highlighting (full content, no line cap).
-    const previewLines = (pendingEditReview.search || pendingEditReview.replace || "")
-      .split("\n")
-      .slice(0, 12);
-    const preview = previewLines.join("\n");
-    broadcastDashboardEvent({
-      kind: "modal-up",
-      modal: {
-        kind: "edit-review",
-        path: pendingEditReview.path,
-        search: pendingEditReview.search ?? "",
-        replace: pendingEditReview.replace ?? "",
-        preview,
-        total: pendingEdits.current.length,
-        remaining: pendingEdits.current.length,
-      },
-    });
-    return () => {
-      broadcastDashboardEvent({ kind: "modal-down", modalKind: "edit-review" });
-    };
-  }, [pendingEditReview, broadcastDashboardEvent, pendingEdits]);
-
-  useEffect(() => {
-    if (!pendingRevision) return;
-    broadcastDashboardEvent({
-      kind: "modal-up",
-      modal: {
-        kind: "revision",
-        reason: pendingRevision.reason,
-        remainingSteps: pendingRevision.remainingSteps.map((s) => ({
-          id: s.id,
-          title: s.title,
-          action: s.action,
-          ...(s.risk ? { risk: s.risk } : {}),
-        })),
-        ...(pendingRevision.summary ? { summary: pendingRevision.summary } : {}),
-      },
-    });
-    return () => {
-      broadcastDashboardEvent({ kind: "modal-down", modalKind: "revision" });
-    };
-  }, [pendingRevision, broadcastDashboardEvent]);
-
-  useEffect(() => {
-    if (!pendingCheckpoint) return;
-    broadcastDashboardEvent({
-      kind: "modal-up",
-      modal: {
-        kind: "checkpoint",
-        stepId: pendingCheckpoint.stepId,
-        ...(pendingCheckpoint.title ? { title: pendingCheckpoint.title } : {}),
-        completed: pendingCheckpoint.completed,
-        total: pendingCheckpoint.total,
-      },
-    });
-    return () => {
-      broadcastDashboardEvent({ kind: "modal-down", modalKind: "checkpoint" });
-    };
-  }, [pendingCheckpoint, broadcastDashboardEvent]);
 
   // `max` is a DeepSeek-only reasoning extension — drop it from /effort
   // suggestions + picker when the active endpoint is third-party (#1794).
@@ -1543,8 +1254,6 @@ function AppInner({
     setSessionsPickerList(listSessionsForWorkspace(currentRootDir));
     setWorkspacePickerList(listKnownWorkspaces(currentRootDir));
   }, [currentRootDir]);
-
-  const [dashboardUrl, setDashboardUrlState] = useState<string | null>(null);
 
   // Ctrl+P / Ctrl+N from PromptInput route here. When any input-prefix
   // picker is open (slash / @ / slash-arg), the keys navigate that picker
@@ -2217,411 +1926,6 @@ function AppInner({
     return `walking ${pendingEdits.current.length} edit block(s) - y apply - n reject - a apply rest - A flip to AUTO - Esc cancels (keeps remaining queued).`;
   }, [codeMode, pendingEdits]);
 
-  // Embedded dashboard server lifecycle. Boot is async (server has to
-  // bind a port + read static assets); the slash handler kicks this
-  // off and reads the URL out of `dashboardRef` once the promise
-  // resolves. Tear-down is also async but cheap —close drains
-  // in-flight requests within a 1s grace window.
-  const startDashboard = useCallback(async (): Promise<string> => {
-    if (dashboardRef.current) return dashboardRef.current.url;
-    if (dashboardStartingRef.current) return dashboardStartingRef.current;
-    const buildCtx = (): DashboardContext => {
-      const ctx: DashboardContext = {
-        mode: "attached",
-        configPath: defaultConfigPath(),
-        usageLogPath: defaultUsageLogPath(),
-        loop,
-        tools,
-        getMcpServers: () => liveMcpServersRef.current,
-        getMcpFailures: () => mcpRuntime?.failures() ?? [],
-        getCurrentCwd: () => (codeMode ? currentRootDirRef.current : undefined),
-        getEditMode: () => (codeMode ? editModeRef.current : undefined),
-        getPlanMode: () => planModeRef.current,
-        getPendingEditCount: () => pendingEdits.current.length,
-        getLatestVersion: () => latestVersionRef.current,
-        getSessionName: () => session ?? null,
-        setEditMode: (m: EditMode) => {
-          setEditModeLive(m);
-          return m;
-        },
-        setPlanMode: (on: boolean, source?: PlanModeToggleSource) => {
-          if (codeMode) togglePlanMode(on, source);
-        },
-        applyEffortLive: (effort) => {
-          loop.configure({ reasoningEffort: effort });
-          agentStore.dispatch({ type: "session.effort.change", reasoningEffort: effort });
-        },
-        applyModelLive: (model) => {
-          loop.configure({ model });
-          agentStore.dispatch({ type: "session.model.change", model });
-        },
-        getModels: () => modelsRef.current,
-        setBudgetUsdLive: (usd) => {
-          loop.setBudget(usd);
-        },
-        getLoopRunStatus: () => getLoopStatus(),
-        startAutoLoop: (intervalMs, prompt) => startLoop(intervalMs, prompt),
-        stopAutoLoop: () => stopLoop(),
-        // ---------- Chat bridge ----------
-        getMessages: (): DashboardMessage[] =>
-          cardsToDashboardMessages(agentStore.getState().cards),
-        subscribeEvents: (handler) => {
-          eventSubscribersRef.current.add(handler);
-          return () => {
-            eventSubscribersRef.current.delete(handler);
-          };
-        },
-        submitPrompt: (text: string): SubmitResult => {
-          if (busyRef.current) {
-            if (isBusyPromptCommand(text)) {
-              return {
-                accepted: false,
-                reason: "commands are disabled while steering a busy turn",
-              };
-            }
-            // Steer into current turn instead of rejecting
-            loop.steer(text);
-            return { accepted: true, reason: "steered" };
-          }
-          const fn = handleSubmitRef.current;
-          if (!fn) return { accepted: false, reason: "TUI not ready" };
-          // Fire-and-forget —handleSubmit drives the loop event stream
-          // which the web sees via SSE. We don't await it here because
-          // a turn can take minutes; the HTTP request would time out.
-          fn(text).catch(() => undefined);
-          return { accepted: true };
-        },
-        abortTurn: () => {
-          if (submittingRef.current) loop.abort();
-        },
-        isBusy: () => busyRef.current,
-        getStats: () => {
-          // Pull from the loop's live aggregator (same source the TUI's
-          // StatsPanel reads). `balance` comes from useSessionInfo via a
-          // ref-mirror so this callback stays cheap.
-          const s = loop.stats.summary();
-          const ctxCap = resolveContextTokens(loop.model);
-          return {
-            turns: s.turns,
-            totalCostUsd: s.totalCostUsd,
-            lastTurnCostUsd: s.lastTurnCostUsd,
-            totalInputCostUsd: s.totalInputCostUsd,
-            totalOutputCostUsd: s.totalOutputCostUsd,
-            cacheHitRatio: s.cacheHitRatio,
-            cacheHitTokens: loop.stats.cumulativeCacheHitTokens,
-            cacheMissTokens: loop.stats.cumulativeCacheMissTokens,
-            totalCompletionTokens: loop.stats.cumulativeCompletionTokens,
-            lastPromptTokens: s.lastPromptTokens,
-            contextCapTokens: ctxCap,
-            // useSessionInfo's Balance is a flat { currency, total }; the
-            // dashboard wire shape is the richer DeepSeek BalanceInfo
-            // array (granted / topped_up split). Convert as a single-
-            // entry array so the SPA always reads `balance[0]` shape.
-            balance: balanceRef.current
-              ? [
-                  {
-                    currency: balanceRef.current.currency,
-                    total_balance: String(balanceRef.current.total),
-                  },
-                ]
-              : null,
-          };
-        },
-        // ---------- Modal mirroring ----------
-        getActiveModal: (): ActiveModal | null => {
-          // Probe the live state via refs in priority order —only one
-          // modal can be up at a time per App invariant.
-          const ps = pendingShell;
-          if (ps) {
-            return {
-              kind: "shell",
-              command: ps.command,
-              allowPrefix: derivePrefix(ps.command),
-              shellKind: ps.kind,
-            };
-          }
-          const pp = pendingPath;
-          if (pp) {
-            return {
-              kind: "path",
-              path: pp.path,
-              intent: pp.intent,
-              toolName: pp.toolName,
-              sandboxRoot: pp.sandboxRoot,
-              allowPrefix: pp.allowPrefix,
-            };
-          }
-          const pc = pendingChoice;
-          if (pc) {
-            return {
-              kind: "choice",
-              question: pc.question,
-              options: pc.options,
-              allowCustom: pc.allowCustom,
-            };
-          }
-          if (pendingPlanRef.current) {
-            return { kind: "plan", body: pendingPlanRef.current };
-          }
-          const er = pendingEditReview;
-          if (er) {
-            return {
-              kind: "edit-review",
-              path: er.path,
-              search: er.search ?? "",
-              replace: er.replace ?? "",
-              preview: (er.search || er.replace || "").split("\n").slice(0, 12).join("\n"),
-              total: pendingEdits.current.length,
-              remaining: pendingEdits.current.length,
-            };
-          }
-          if (pendingRevision) {
-            return {
-              kind: "revision",
-              reason: pendingRevision.reason,
-              remainingSteps: pendingRevision.remainingSteps.map((s) => ({
-                id: s.id,
-                title: s.title,
-                action: s.action,
-                ...(s.risk ? { risk: s.risk } : {}),
-              })),
-              ...(pendingRevision.summary ? { summary: pendingRevision.summary } : {}),
-            };
-          }
-          if (pendingCheckpoint) {
-            return {
-              kind: "checkpoint",
-              stepId: pendingCheckpoint.stepId,
-              ...(pendingCheckpoint.title ? { title: pendingCheckpoint.title } : {}),
-              completed: pendingCheckpoint.completed,
-              total: pendingCheckpoint.total,
-            };
-          }
-          const picker = activePickerSnapshotRef.current;
-          if (picker) {
-            return { kind: "picker", ...picker };
-          }
-          const viewer = activeViewerSnapshotRef.current;
-          if (viewer) {
-            return { kind: "viewer", ...viewer };
-          }
-          return null;
-        },
-        resolveShellConfirm: (choice) => {
-          const fn = handleShellConfirmRef.current;
-          if (fn) Promise.resolve(fn(choice)).catch(() => undefined);
-        },
-        resolvePathConfirm: (choice) => {
-          const fn = handlePathConfirmRef.current;
-          if (fn) Promise.resolve(fn(choice)).catch(() => undefined);
-        },
-        resolveChoiceConfirm: (choice: ChoiceResolution) => {
-          const fn = handleChoiceConfirmRef.current;
-          if (fn) fn(choice).catch(() => undefined);
-        },
-        resolvePlanConfirm: (choice: "approve" | "refine" | "cancel", text?: string) => {
-          if (choice === "cancel") {
-            handlePlanConfirmRef.current("cancel").catch(() => undefined);
-            return;
-          }
-          const plan = pendingPlanRef.current ?? "";
-          // Bypass the picker —input two-step on web. The override
-          // form of handleStagedInputSubmit takes the plan + mode
-          // directly; behaviour matches the TUI's "user typed feedback +
-          // pressed Enter" path.
-          handleStagedInputSubmitRef
-            .current(text ?? "", { plan, mode: choice })
-            .catch(() => undefined);
-        },
-        resolveEditReview: (choice: "apply" | "reject" | "apply-rest-of-turn" | "flip-to-auto") => {
-          const resolve = editReviewResolveRef.current;
-          if (resolve) {
-            editReviewResolveRef.current = null;
-            setPendingEditReview(null);
-            resolve({ choice, denyContext: undefined });
-          }
-        },
-        resolveCheckpointConfirm: (choice: "continue" | "revise" | "stop", text?: string) => {
-          // Web's "revise" path sends feedback in one shot; we hand the
-          // current pending checkpoint to the submit handler directly,
-          // skipping the TUI's staged-input two-step. continue/stop fall
-          // through to the regular picker handler.
-          if (choice === "revise" && typeof text === "string") {
-            const snap = pendingCheckpoint;
-            setPendingCheckpoint(null);
-            if (!snap) return;
-            Promise.resolve(handleCheckpointReviseSubmitRef.current(text, snap)).catch(
-              () => undefined,
-            );
-            return;
-          }
-          Promise.resolve(handleCheckpointConfirmRef.current(choice)).catch(() => undefined);
-        },
-        resolveReviseConfirm: (choice: "accept" | "reject") => {
-          Promise.resolve(handleReviseConfirmRef.current(choice)).catch(() => undefined);
-        },
-        resolvePicker: (resolution: PickerResolution) => {
-          const fn = activePickerResolverRef.current;
-          if (fn) Promise.resolve(fn(resolution)).catch(() => undefined);
-        },
-        resolveViewer: () => {
-          const fn = activeViewerResolverRef.current;
-          if (fn) Promise.resolve(fn()).catch(() => undefined);
-        },
-        // ---------- v0.14 mutation surface ----------
-        reloadHooks: () => reloadHooks(codeMode ? currentRootDirRef.current : undefined),
-        addToolToPrefix: (spec: import("../../types.js").ToolSpec) => loop.prefix.addTool(spec),
-        reloadMcp: mcpRuntime
-          ? async () => {
-              const r = await mcpRuntime.reloadFromConfig(loop);
-              setLiveMcpServers(r.summaries);
-              return r.summaries.length;
-            }
-          : undefined,
-        switchSession: onSwitchSession
-          ? (name: string | undefined) => {
-              onSwitchSession(name);
-              return { ok: true as const };
-            }
-          : undefined,
-      };
-      return ctx;
-    };
-
-    // Reuse the surviving handle across session-swap remounts. The new App
-    // owns a fresh loop/refs, so we hand them off via updateContext rather
-    // than rebinding the port — which would race the OS-level release and
-    // fall back to a new ephemeral port (= URL change the user hates).
-    if (persistentDashboardHandle) {
-      persistentDashboardHandle.updateContext(buildCtx());
-      dashboardRef.current = persistentDashboardHandle;
-      setDashboardUrlState(persistentDashboardHandle.url);
-      return persistentDashboardHandle.url;
-    }
-
-    const startup = (async () => {
-      const { startDashboardServer } = await import("../../server/index.js");
-      const { saveDashboardPort } = await import("../../config.js");
-      const tryStart = (port: number | undefined) =>
-        startDashboardServer(buildCtx(), {
-          port,
-          host: dashboardHost,
-          token: dashboardToken,
-        });
-      let handle: Awaited<ReturnType<typeof tryStart>>;
-      try {
-        handle = await tryStart(dashboardPort);
-      } catch (err) {
-        const code = (err as NodeJS.ErrnoException)?.code;
-        if (dashboardPort && (code === "EADDRINUSE" || code === "EACCES")) {
-          // Pinned port collided — fall back to ephemeral, then re-persist so
-          // the next boot tries the new port first.
-          process.stderr.write(
-            `▲ dashboard port ${dashboardPort} taken (${code}) — falling back to ephemeral\n`,
-          );
-          handle = await tryStart(undefined);
-        } else {
-          throw err;
-        }
-      }
-      saveDashboardPort(handle.port);
-      persistentDashboardHandle = handle;
-      dashboardRef.current = handle;
-      setDashboardUrlState(handle.url);
-      return handle.url;
-    })();
-    dashboardStartingRef.current = startup;
-    try {
-      return await startup;
-    } finally {
-      dashboardStartingRef.current = null;
-    }
-  }, [
-    loop,
-    tools,
-    codeMode,
-    session,
-    togglePlanMode,
-    pendingShell,
-    pendingPath,
-    pendingChoice,
-    pendingCheckpoint,
-    pendingEditReview,
-    pendingRevision,
-    agentStore,
-    mcpRuntime,
-    getLoopStatus,
-    startLoop,
-    stopLoop,
-    pendingEdits,
-    editModeRef,
-    setEditModeLive,
-    currentRootDirRef,
-    reloadHooks,
-    onSwitchSession,
-    dashboardPort,
-    dashboardHost,
-    dashboardToken,
-  ]);
-
-  const stopDashboard = useCallback(async (): Promise<void> => {
-    const h = dashboardRef.current ?? persistentDashboardHandle;
-    if (!h) return;
-    dashboardRef.current = null;
-    persistentDashboardHandle = null;
-    setDashboardUrlState(null);
-    try {
-      await h.close();
-    } catch {
-      /* swallow —server going down is best-effort */
-    }
-    log.pushInfo(t("app.dashboardStopped"));
-  }, [log]);
-
-  const getDashboardUrl = useCallback((): string | null => {
-    const baseUrl = dashboardRef.current?.url ?? null;
-    if (!baseUrl || !session) return baseUrl;
-    try {
-      const url = new URL(baseUrl);
-      url.searchParams.set("session", session);
-      return url.toString();
-    } catch {
-      return baseUrl;
-    }
-  }, [session]);
-
-  // Auto-start the dashboard once the TUI is mounted unless the user
-  // opted out with --no-dashboard. The whole point is discoverability:
-  // most users had no idea /dashboard existed, so the URL needs to be
-  // visible from the first render. startDashboard updates the React
-  // state itself, so we just fire-and-forget. Failures stay silent —  // a missing dashboard never blocks the TUI.
-  useEffect(() => {
-    if (noDashboard) return;
-    if (dashboardRef.current) return;
-    startDashboard()
-      .then((url) => {
-        if (!url) return;
-        const sessionUrl = getDashboardUrl() ?? url;
-        log.pushInfo(`/dashboard  →  ${sessionUrl}`);
-        if (openDashboard) openUrl(sessionUrl);
-      })
-      .catch((err) => {
-        const reason = err instanceof Error ? err.message : String(err);
-        log.pushInfo(t("ui.dashboardAutoStartFailed", { reason }));
-      });
-  }, [noDashboard, openDashboard, startDashboard, log, getDashboardUrl]);
-
-  // Drop the local handle on unmount but DON'T close the server — chat.tsx
-  // remounts App on every session swap, so closing here would force a port
-  // rebind (and a new URL) for each switch. The persistent handle survives
-  // the swap and gets rewired via updateContext() in the next startDashboard().
-  // Real teardown happens in stopDashboard() or on process exit.
-  useEffect(() => {
-    return () => {
-      dashboardRef.current = null;
-    };
-  }, []);
-
   /**
    * onChoose for the walkthrough EditConfirm. Each pick mutates
    * pendingEdits via the existing codeApply/codeDiscard helpers, which
@@ -3050,9 +2354,6 @@ function AppInner({
           stopLoop,
           getLoopStatus,
           startWalkthrough: codeMode ? startWalkthrough : undefined,
-          startDashboard,
-          stopDashboard,
-          getDashboardUrl,
           qq: {
             connect: qq.connect,
             disconnect: qq.disconnect,
@@ -3203,22 +2504,6 @@ function AppInner({
           setInput(`/${result.openArgPickerFor} `);
           return;
         }
-        if (result.replayPlan) {
-          const rp = result.replayPlan;
-          const titleSuffix = rp.summary ? ` - ${rp.summary}` : "";
-          const done = new Set(rp.completedStepIds);
-          setPendingReplayViewer({
-            viewerKind: "replay-plan",
-            title: `Replay #${rp.index}/${rp.total} - ${rp.relativeTime}${titleSuffix}`,
-            body: rp.body,
-            steps: rp.steps.map((s) => ({
-              id: s.id,
-              title: s.title,
-              status: done.has(s.id) ? "done" : "queued",
-            })),
-            meta: rp.archiveBasename,
-          });
-        }
         const outcome = applySlashResult(result, {
           log,
           stdoutWrite: (chunk) => stdout?.write(chunk),
@@ -3297,8 +2582,7 @@ function AppInner({
       // text below via modelInput.
       pushHistory(text);
       const pasteDisplay = formatLongPaste(text);
-      const userId = log.pushUser(pasteDisplay.displayText);
-      broadcastDashboardEvent({ kind: "user", id: userId, text });
+      log.pushUser(pasteDisplay.displayText);
       const sessionMetaBeforeTurn = session ? loadSessionMeta(session) : {};
       if (session) {
         const existing = sessionMetaBeforeTurn;
@@ -3445,10 +2729,6 @@ function AppInner({
               for (const out of eventizer.consume(ev, ctx)) sink.append(out);
             }
           }
-          if (eventSubscribersRef.current.size > 0) {
-            const dashMsg = loopEventToDashboard(ev, { assistantId });
-            if (dashMsg) broadcastDashboardEvent(dashMsg);
-          }
           // Status lines are transient —any primary event (streaming
           // starts, a tool fires, etc.) means whatever we were waiting
           // FOR has now arrived, so drop the hint. We do this uniformly
@@ -3485,7 +2765,6 @@ function AppInner({
               assistantId,
               setSummary,
               log,
-              broadcastDashboardEvent,
               getSessionSummary: () => loop.stats.summary(),
               session: session ?? null,
               assistantIterCounter,
@@ -3681,10 +2960,6 @@ function AppInner({
       isLoopFiring,
       clearFiringFlag,
       startWalkthrough,
-      startDashboard,
-      stopDashboard,
-      getDashboardUrl,
-      broadcastDashboardEvent,
       touchedPaths,
       model,
       prefixHash,
@@ -3915,11 +3190,11 @@ function AppInner({
       feedback: string,
       override?: { plan: string; mode: "refine" | "approve" | "reject" },
     ) => {
-      // `override` lets the web `/dashboard` chat-bridge drive the same
-      // dispatch path without first having to setStagedInput() (which
-      // is async and would race the read below). When the override is
-      // present we also clear pendingPlan ourselves since web flow
-      // doesn't go through the picker —input two-step.
+      // `override` lets a caller drive the same dispatch path without
+      // first having to setStagedInput() (which is async and would race
+      // the read below). When the override is present we also clear
+      // pendingPlan ourselves since the caller skips the picker-input
+      // two-step.
       const staged = override ?? stagedInput;
       if (override) {
         setPendingPlan(null);
@@ -3993,9 +3268,8 @@ function AppInner({
     },
     [stagedInput, togglePlanMode, persistPlanState, agentStore, log],
   );
-  // Ref-mirror so startDashboard's resolvePlanConfirm closure can call
-  // the latest function —handleStagedInputSubmit's deps churn on every
-  // stagedInput change, which would freeze a captured reference.
+  // Ref-mirror so stable callbacks can call the latest function —
+  // handleStagedInputSubmit's deps churn on every stagedInput change.
   const handleStagedInputSubmitRef = useRef(handleStagedInputSubmit);
   useEffect(() => {
     handleStagedInputSubmitRef.current = handleStagedInputSubmit;
@@ -4040,10 +3314,6 @@ function AppInner({
 
   // Ref-wrap to keep ChoiceConfirm's React.memo from re-rendering on
   // every parent tick (same pattern as PlanConfirm / CheckpointConfirm).
-  // Stable refs over the modal handlers —used by the web chat-bridge
-  // to drive the same code path as a TUI button click without
-  // dragging the handlers (and their ever-shifting deps) into
-  // startDashboard's useCallback closure.
   useEffect(() => {
     handleShellConfirmRef.current = handleShellConfirm;
   }, [handleShellConfirm]);
@@ -4180,13 +3450,6 @@ function AppInner({
       }
     });
   }, [log, qq]);
-  // Ref-mirror of pendingPlan so the web's resolvePlanConfirm callback
-  // (registered in startDashboard, frozen at boot) can read the live
-  // body when the web resolves an approve/refine.
-  const pendingPlanRef = useRef<string | null>(null);
-  useEffect(() => {
-    pendingPlanRef.current = pendingPlan;
-  }, [pendingPlan]);
   const pendingCheckpointRef = useRef<typeof pendingCheckpoint>(null);
   useEffect(() => {
     pendingCheckpointRef.current = pendingCheckpoint;
@@ -4329,8 +3592,7 @@ function AppInner({
     if (snap) setPendingCheckpoint(snap);
   }, [stagedCheckpointRevise]);
 
-  // Ref-mirrors so the web's resolveXxx callbacks (registered in
-  // startDashboard, frozen at boot) keep calling the latest handler.
+  // Ref-mirrors so stable callbacks keep calling the latest handler.
   useEffect(() => {
     handleCheckpointReviseSubmitRef.current = handleCheckpointReviseSubmit;
   }, [handleCheckpointReviseSubmit]);
@@ -4465,7 +3727,6 @@ function AppInner({
                     <WelcomeBanner
                       inCodeMode={!!codeMode}
                       workspaceRoot={codeMode ? currentRootDir : undefined}
-                      dashboardUrl={dashboardUrl}
                       languageVersion={languageVersion}
                     />
                   </Box>
@@ -4564,7 +3825,6 @@ function AppInner({
                 <CheckpointPicker
                   checkpoints={checkpointPickerList}
                   workspace={currentRootDir}
-                  pickerPorts={pickerPorts}
                   onChoose={(outcome) => {
                     if (outcome.kind === "quit") {
                       setPendingCheckpointPicker(false);
@@ -4623,7 +3883,6 @@ function AppInner({
                   sessions={sessionsPickerList}
                   workspace={currentRootDir}
                   walletCurrency={walletCurrencyRef.current}
-                  pickerPorts={pickerPorts}
                   onFocusChange={setSessionsPickerFocus}
                   onChoose={(outcome) => {
                     if (outcome.kind === "open") {
@@ -4738,7 +3997,6 @@ function AppInner({
                   initialTab={pendingMcpHub.tab}
                   liveServers={liveMcpServers}
                   configPath={defaultConfigPath()}
-                  pickerPorts={pickerPorts}
                   onClose={() => setPendingMcpHub(null)}
                   postInfo={(text) => log.pushInfo(text)}
                   applyAppend={(target, addedTools) => {

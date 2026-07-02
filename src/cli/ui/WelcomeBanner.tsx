@@ -11,8 +11,6 @@ export interface WelcomeBannerProps {
   inCodeMode?: boolean;
   /** Pinned workspace root — only meaningful in code mode. Surfaced so first-time users see they can pass --dir at next launch. */
   workspaceRoot?: string;
-  /** Live URL of the embedded dashboard, or null when it isn't running. */
-  dashboardUrl?: string | null;
   /** Bumped on language change; forces re-render so t() picks up new locale. */
   languageVersion?: number;
 }
@@ -22,7 +20,6 @@ const HINTS = ["/help", "/skill", "/init", "/memory", "/cost"] as const;
 export function WelcomeBanner({
   inCodeMode,
   workspaceRoot,
-  dashboardUrl,
 }: WelcomeBannerProps): React.ReactElement {
   const tagline = inCodeMode ? t("ui.taglineCode") : t("ui.taglineChat");
   const taglineSub = t("ui.taglineSub");
@@ -75,16 +72,6 @@ export function WelcomeBanner({
           <Text color={FG.faint}>{"·"}</Text>
           <Text color={FG.body}>{workspaceRoot}</Text>
           <Text color={FG.faint}>{t("welcomeBanner.relaunchHint")}</Text>
-        </Box>
-      ) : null}
-
-      {dashboardUrl ? (
-        <Box marginTop={1} flexDirection="row" gap={1}>
-          <Text color={TONE.brand} bold>
-            {t("welcomeBanner.dashboard")}
-          </Text>
-          <Text color={FG.faint}>{"·"}</Text>
-          <Text color={TONE.accent}>{dashboardUrl}</Text>
         </Box>
       ) : null}
     </Box>
