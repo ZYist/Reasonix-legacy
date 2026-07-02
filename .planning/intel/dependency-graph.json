@@ -1,0 +1,597 @@
+{
+  "_meta": {
+    "updated_at": "2026-07-02T02:45:33.165Z",
+    "version": 2
+  },
+  "entries": {
+    "commander": {
+      "version": "^12.1.0",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "src/cli/index.ts"
+      ],
+      "purpose": "CLI argv parsing and subcommand routing."
+    },
+    "undici": {
+      "version": "^8.2.0",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "src/client.ts",
+        "src/tools/web.ts",
+        "src/net/proxy.ts"
+      ],
+      "purpose": "HTTP client + global dispatcher (proxy support)."
+    },
+    "eventsource-parser": {
+      "version": "^3.0.0",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "src/client.ts",
+        "src/loop/streaming.ts"
+      ],
+      "purpose": "SSE stream parsing for DeepSeek streaming responses."
+    },
+    "zod": {
+      "version": "^4.4.1",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "src/tools",
+        "src/mcp/types.ts"
+      ],
+      "purpose": "Runtime schema validation for tool args / MCP."
+    },
+    "ws": {
+      "version": "^8.20.1",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "src/server/api/events.ts",
+        "src/qq/bot.ts",
+        "src/weixin/bot.ts"
+      ],
+      "purpose": "WebSocket server (live events) + bot transports."
+    },
+    "grammy": {
+      "version": "^1.43.0",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "src/telegram/bot.ts"
+      ],
+      "purpose": "Telegram bot framework."
+    },
+    "web-tree-sitter": {
+      "version": "^0.26.9",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "src/code-query/parser.ts",
+        "src/java/index.ts"
+      ],
+      "purpose": "WASM tree-sitter host for code symbol parsing."
+    },
+    "node-html-parser": {
+      "version": "^7.1.0",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "src/tools/web.ts"
+      ],
+      "purpose": "HTML parsing for web fetch results."
+    },
+    "iconv-lite": {
+      "version": "^0.7.2",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "src/code/file-encoding.ts",
+        "src/tools/web.ts"
+      ],
+      "purpose": "Non-UTF8 encoding handling."
+    },
+    "qrcode": {
+      "version": "^1.5.4",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "src/cli/ui"
+      ],
+      "purpose": "Render QR codes in the TUI (login/share)."
+    },
+    "picomatch": {
+      "version": "^4.0.4",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "src/gitignore.ts",
+        "src/tools/fs/glob.ts"
+      ],
+      "purpose": "Glob/gitignore pattern matching."
+    },
+    "ignore": {
+      "version": "^7.0.5",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "src/gitignore.ts"
+      ],
+      "purpose": ".gitignore semantics."
+    },
+    "semver": {
+      "version": "^7.6.3",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "src/version.ts",
+        "packages/ink"
+      ],
+      "purpose": "Version comparison / update checks."
+    },
+    "lodash-es": {
+      "version": "^4.17.21",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink",
+        "src/cli/ui"
+      ],
+      "purpose": "Utility helpers (debounce/throttle/etc)."
+    },
+    "react": {
+      "version": "^19.2.6",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "src/cli/ui",
+        "packages/ink",
+        "dashboard"
+      ],
+      "purpose": "React — used as the Ink TUI render tree and dashboard frontend."
+    },
+    "react-reconciler": {
+      "version": "^0.32.0",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink"
+      ],
+      "purpose": "Custom React reconciler for the terminal."
+    },
+    "yoga-layout": {
+      "version": "^3.2.1",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink"
+      ],
+      "purpose": "Flexbox layout engine for the TUI."
+    },
+    "chalk": {
+      "version": "^5.3.0",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink",
+        "src/cli/ui"
+      ],
+      "purpose": "Terminal colors."
+    },
+    "cli-highlight": {
+      "version": "^2.1.11",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "src/cli/ui"
+      ],
+      "purpose": "Syntax highlighting in TUI."
+    },
+    "cli-boxes": {
+      "version": "^4.0.1",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink"
+      ],
+      "purpose": "Box drawing for TUI."
+    },
+    "slice-ansi": {
+      "version": "^7.1.0",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink"
+      ],
+      "purpose": "ANSI-aware string slicing."
+    },
+    "wrap-ansi": {
+      "version": "^9.0.0",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink"
+      ],
+      "purpose": "ANSI-aware wrapping."
+    },
+    "string-width": {
+      "version": "^7.2.0",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink"
+      ],
+      "purpose": "Display-width of strings (CJK aware)."
+    },
+    "strip-ansi": {
+      "version": "^7.1.0",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink",
+        "src/cli/ui"
+      ],
+      "purpose": "Strip ANSI escape codes."
+    },
+    "signal-exit": {
+      "version": "^4.1.0",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink"
+      ],
+      "purpose": "Run cleanup on exit signals."
+    },
+    "auto-bind": {
+      "version": "^5.0.1",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink"
+      ],
+      "purpose": "Auto-bind class methods."
+    },
+    "usehooks-ts": {
+      "version": "^3.1.0",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink",
+        "src/cli/ui"
+      ],
+      "purpose": "React hook utilities."
+    },
+    "indent-string": {
+      "version": "^5.0.0",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink"
+      ],
+      "purpose": "String indentation helper."
+    },
+    "code-excerpt": {
+      "version": "^4.0.0",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink"
+      ],
+      "purpose": "Extract code excerpts for stack traces."
+    },
+    "stack-utils": {
+      "version": "^2.0.6",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink"
+      ],
+      "purpose": "Stack-trace parsing."
+    },
+    "bidi-js": {
+      "version": "^1.0.3",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink"
+      ],
+      "purpose": "BiDi text algorithm for TUI."
+    },
+    "@alcalzone/ansi-tokenize": {
+      "version": "^0.3.0",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink"
+      ],
+      "purpose": "ANSI-aware tokenization."
+    },
+    "get-east-asian-width": {
+      "version": "^1.3.0",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink"
+      ],
+      "purpose": "East-Asian character width."
+    },
+    "emoji-regex": {
+      "version": "^10.4.0",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink"
+      ],
+      "purpose": "Emoji detection regex."
+    },
+    "supports-hyperlinks": {
+      "version": "^4.0.0",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "packages/ink"
+      ],
+      "purpose": "Detect terminal hyperlink support."
+    },
+    "ink (workspace)": {
+      "version": "workspace:*",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "src/cli/ui",
+        "src/cli/commands/chat.tsx"
+      ],
+      "purpose": "Custom Ink TUI runtime (path-aliased to packages/ink/src)."
+    },
+    "@reasonix/core-utils (workspace)": {
+      "version": "workspace:*",
+      "type": "production",
+      "invocation": "require",
+      "used_by": [
+        "src/cli",
+        "desktop",
+        "dashboard"
+      ],
+      "purpose": "Shared utilities (compaction, tildeify, tool-kind, permission types, approval prompt)."
+    },
+    "@biomejs/biome": {
+      "version": "^1.9.4",
+      "type": "development",
+      "invocation": "npm run lint",
+      "used_by": [
+        "src",
+        "tests"
+      ],
+      "purpose": "Lint + format."
+    },
+    "tsup": {
+      "version": "^8.3.5",
+      "type": "development",
+      "invocation": "npm run build",
+      "used_by": [
+        "src/index.ts",
+        "src/cli/index.ts"
+      ],
+      "purpose": "ESM bundler for library + CLI dist."
+    },
+    "esbuild": {
+      "version": "^0.21.5",
+      "type": "development",
+      "invocation": "npm run build",
+      "used_by": [
+        "tsup.config.ts"
+      ],
+      "purpose": "Bundler used by tsup."
+    },
+    "tsx": {
+      "version": "^4.19.2",
+      "type": "development",
+      "invocation": "npm run dev",
+      "used_by": [
+        "src/cli/index.ts"
+      ],
+      "purpose": "TypeScript execution for `npm run dev`."
+    },
+    "typescript": {
+      "version": "^5.6.3",
+      "type": "development",
+      "invocation": "npm run typecheck",
+      "used_by": [
+        "tsconfig.json"
+      ],
+      "purpose": "Type checker (noEmit)."
+    },
+    "vitest": {
+      "version": "^2.1.5",
+      "type": "development",
+      "invocation": "npm test",
+      "used_by": [
+        "tests",
+        "src"
+      ],
+      "purpose": "Unit test runner."
+    },
+    "@vitest/coverage-v8": {
+      "version": "^2.1.5",
+      "type": "development",
+      "invocation": "npm run test:coverage",
+      "used_by": [
+        "vitest.config.ts"
+      ],
+      "purpose": "V8 coverage provider."
+    },
+    "@stryker-mutator/core": {
+      "version": "^9.6.1",
+      "type": "development",
+      "invocation": "npm run test:mutation",
+      "used_by": [
+        "stryker.config.mjs"
+      ],
+      "purpose": "Mutation testing."
+    },
+    "@stryker-mutator/vitest-runner": {
+      "version": "^9.6.1",
+      "type": "development",
+      "invocation": "npm run test:mutation",
+      "used_by": [
+        "stryker.config.mjs"
+      ],
+      "purpose": "Stryker vitest runner."
+    },
+    "jsdom": {
+      "version": "^29.1.1",
+      "type": "development",
+      "invocation": "npm test",
+      "used_by": [
+        "tests"
+      ],
+      "purpose": "DOM env for dashboard component tests."
+    },
+    "@testing-library/react": {
+      "version": "^16.3.2",
+      "type": "development",
+      "invocation": "npm test",
+      "used_by": [
+        "tests"
+      ],
+      "purpose": "React component tests."
+    },
+    "react-test-renderer": {
+      "version": "^19.2.6",
+      "type": "development",
+      "invocation": "npm test",
+      "used_by": [
+        "tests"
+      ],
+      "purpose": "React test renderer."
+    },
+    "ink-testing-library": {
+      "version": "^4.0.0",
+      "type": "development",
+      "invocation": "npm test",
+      "used_by": [
+        "tests"
+      ],
+      "purpose": "Ink component testing."
+    },
+    "tree-sitter-go": {
+      "version": "^0.25.0",
+      "type": "development",
+      "invocation": "scripts/copy-tree-sitter-grammars.mjs",
+      "used_by": [
+        "build"
+      ],
+      "purpose": "Go grammar (bundled as wasm)."
+    },
+    "tree-sitter-java": {
+      "version": "^0.23.5",
+      "type": "development",
+      "invocation": "scripts/copy-tree-sitter-grammars.mjs",
+      "used_by": [
+        "build"
+      ],
+      "purpose": "Java grammar."
+    },
+    "tree-sitter-javascript": {
+      "version": "^0.25.0",
+      "type": "development",
+      "invocation": "scripts/copy-tree-sitter-grammars.mjs",
+      "used_by": [
+        "build"
+      ],
+      "purpose": "JavaScript grammar."
+    },
+    "tree-sitter-python": {
+      "version": "^0.25.0",
+      "type": "development",
+      "invocation": "scripts/copy-tree-sitter-grammars.mjs",
+      "used_by": [
+        "build"
+      ],
+      "purpose": "Python grammar."
+    },
+    "tree-sitter-rust": {
+      "version": "^0.24.0",
+      "type": "development",
+      "invocation": "scripts/copy-tree-sitter-grammars.mjs",
+      "used_by": [
+        "build"
+      ],
+      "purpose": "Rust grammar."
+    },
+    "tree-sitter-typescript": {
+      "version": "^0.23.2",
+      "type": "development",
+      "invocation": "scripts/copy-tree-sitter-grammars.mjs",
+      "used_by": [
+        "build"
+      ],
+      "purpose": "TypeScript grammar."
+    },
+    "highlight.js": {
+      "version": "^11.10.0",
+      "type": "development",
+      "invocation": "npm run build:dashboard",
+      "used_by": [
+        "dashboard"
+      ],
+      "purpose": "Dashboard syntax highlighting."
+    },
+    "marked": {
+      "version": "^15.0.12",
+      "type": "development",
+      "invocation": "npm run build:dashboard",
+      "used_by": [
+        "dashboard"
+      ],
+      "purpose": "Dashboard markdown rendering."
+    },
+    "uplot": {
+      "version": "^1.6.31",
+      "type": "development",
+      "invocation": "npm run build:dashboard",
+      "used_by": [
+        "dashboard"
+      ],
+      "purpose": "Dashboard charts."
+    },
+    "preact": {
+      "version": "^10.22.0",
+      "type": "development",
+      "invocation": "npm run build:dashboard",
+      "used_by": [
+        "dashboard"
+      ],
+      "purpose": "Dashboard alt render lib."
+    },
+    "htm": {
+      "version": "^3.1.1",
+      "type": "development",
+      "invocation": "npm run build:dashboard",
+      "used_by": [
+        "dashboard"
+      ],
+      "purpose": "Tagged-template HTML for dashboard."
+    },
+    "simple-git-hooks": {
+      "version": "^2.13.1",
+      "type": "development",
+      "invocation": "npm run prepare",
+      "used_by": [
+        "package.json"
+      ],
+      "purpose": "pre-commit / pre-push hooks."
+    },
+    "reasonix-legacy (self, file:)": {
+      "version": "file:../..",
+      "type": "production",
+      "invocation": "bin",
+      "used_by": [
+        "packages/dsnix"
+      ],
+      "purpose": "dsnix alias package depends on the root package."
+    }
+  }
+}
