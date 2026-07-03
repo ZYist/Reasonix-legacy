@@ -9,8 +9,8 @@
 // Coexistence (D-09/D-10): the desktop sidecar (desktopCommand +
 // qqRuntime + src/desktop/qq-*.ts) is byte-for-byte unchanged. QQ now
 // has TWO entries — the sidecar and this command — guarded against
-// same-account double-drive by QQ_LOCK_FILE (channel.ts:11). Phase 3
-// deletes the sidecar.
+// same-account double-drive by QQ_LOCK_FILE (channel.ts:11). Sidecar
+// deletion is deferred to a later milestone.
 import { DEFAULT_MODEL, bridgeEndpointEnv, loadModel } from "../../config.js";
 import { loadDotenv } from "../../env.js";
 import { t } from "../../i18n/index.js";
@@ -29,16 +29,11 @@ export interface QqCommandOptions {
   budgetUsd?: number;
 }
 
-/**
- * Mount the QQ channel onto a HeadlessHost and run until SIGINT/SIGTERM.
- *
- * Lifecycle: loadDotenv → bridgeEndpointEnv → resolveDir → HeadlessHost.create
- * → installHeadlessGateBridges → new QQChannel → install signal handlers →
- * channel.start. The WebSocket to QQ servers keeps Node alive; signal
- * handlers own the teardown (channel.stop releases QQ_LOCK_FILE,
- * host.shutdown aborts any in-flight turn, bridge.unsubscribe frees the
- * pauseGate listener).
- */
+// Mount the QQ channel onto a HeadlessHost and run until SIGINT/SIGTERM.
+// Lifecycle: loadDotenv → bridgeEndpointEnv → resolveDir → HeadlessHost.create →
+// installHeadlessGateBridges → new QQChannel → signal handlers → channel.start.
+// Signal handlers own teardown: channel.stop releases QQ_LOCK_FILE,
+// host.shutdown aborts in-flight turns, bridge.unsubscribe frees the listener.
 export async function qqCommand(opts: QqCommandOptions = {}): Promise<void> {
   // (1) Boot — mirror code.tsx:48-87 env discipline so buildCodeToolset's
   // eager DeepSeekClient constructions pick up a configured key.

@@ -146,13 +146,9 @@ function stripFollowupPrefix(text: string): string {
     .trim();
 }
 
-/**
- * Default prompt-text builder — i18n-localized form of
- * desktop.ts:1939-1985 `handleQQPauseRequest`. Each channel can override via
- * `HeadlessGateBridgeOptions.buildPrompt` to add channel-specific flavor
- * (e.g. Telegram inline-button hints); the default here is the unembellished
- * "Need confirmation / Reply with 1.2.3." body that all three channels reuse.
- */
+// Default prompt-text builder — i18n-localized form of desktop.ts:1939-1985
+// handleQQPauseRequest. Channels override via HeadlessGateBridgeOptions.buildPrompt
+// for flavor (e.g. Telegram inline-button hints); this default is the plain body.
 export function defaultBuildPrompt(kind: string, payload: Record<string, unknown>): string {
   switch (kind) {
     case "run_command":
@@ -217,16 +213,11 @@ function confirmationVerdict(
   return { type: "deny" };
 }
 
-/** Dispatch an inbound channel reply to the matching GateCallbacks field,
- *  replicating desktop.ts:1872-1933 handleQQPauseReply dispatch order exactly.
- *
- *  T-02-02 mitigation: every parse*Choice helper's default-else returns the
- *  "deny"/"cancel"/"stop" verdict — never the "run_once"/"approve"/"continue"
- *  auto-allow. Unknown/unmatched text therefore resolves the gate with a
- *  denying verdict (or cancels the gate for plan_proposed where the choice's
- *  cancel branch calls `pauseGate.cancel`), so a spoofed/ambiguous reply can
- *  never silently auto-approve a shell/path/plan interaction. Test pinned in
- *  tests/headless-gate-bridges.test.ts. */
+// Dispatch an inbound channel reply to the matching GateCallbacks field,
+// replicating desktop.ts:1872-1933 handleQQPauseReply dispatch order.
+// T-02-02: every parse*Choice default-else returns deny/cancel/stop — never the
+// auto-allow — so spoofed/ambiguous text resolves with a denying verdict (or
+// cancels for plan_proposed), never silently auto-approving. Test-pinned.
 function dispatchReply(
   pending: PendingInteraction,
   text: string,
@@ -332,20 +323,11 @@ function dispatchReply(
   }
 }
 
-/**
- * Install the headless gate bridge: subscribe to `pauseGate.on` ONCE per
- * process, route each PauseRequest through the (1) autoResolveVerdict
- * short-circuit, else (2) push the prompt text to the channel via
- * `sendPrompt` and stash the pending interaction against the active session.
- * The next inbound message is parsed by the returned `consumeReply` and
- * dispatched to the matching GateCallbacks field.
- *
- * Returns `{ consumeReply, unsubscribe }`. Channel commands hold the return
- * value, call `consumeReply(text)` on every inbound message (the bridge
- * returns true if it consumed the text as a gate reply, false otherwise), and
- * call `unsubscribe()` on `channel.stop()` so multiple installs don't
- * accumulate listeners across reloads.
- */
+// Install the headless gate bridge: subscribe to pauseGate.on ONCE per process.
+// Route each PauseRequest through (1) autoResolveVerdict short-circuit, else
+// (2) push the prompt via sendPrompt + stash pending against the active session;
+// the next inbound message is parsed by the returned consumeReply and dispatched.
+// Returns { consumeReply, unsubscribe } — call unsubscribe() on channel.stop().
 export function installHeadlessGateBridges(
   opts: HeadlessGateBridgeOptions,
 ): InstalledHeadlessGateBridge {
