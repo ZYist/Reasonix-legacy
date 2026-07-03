@@ -1051,5 +1051,12 @@ export interface TranslationSchema {
       error: string;
       busy: string;
     };
+    weixin: {
+      help: string;
+      workspaceHint: string;
+      sendFailed: string;
+      error: string;
+      busy: string;
+    };
   };
 }

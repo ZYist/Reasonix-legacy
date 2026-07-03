@@ -636,5 +636,12 @@ export const ru: TranslationSchema = {
       error: "Ошибка Telegram: {msg}",
       busy: "[занят] ход уже выполняется — подождите и отправьте снова.",
     },
+    weixin: {
+      help: "Запустить Weixin (WeChat) бота на headless-хосте (тот же движок, что у команды qq).",
+      workspaceHint: "корневой каталог рабочего пространства (по умолчанию: cwd)",
+      sendFailed: "Ошибка Weixin sendResponse: {msg}",
+      error: "Ошибка Weixin: {msg}",
+      busy: "[занят] ход уже выполняется — подождите и отправьте снова.",
+    },
   },
 };

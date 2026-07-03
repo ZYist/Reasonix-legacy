@@ -2137,5 +2137,12 @@ export const EN: TranslationSchema = {
       error: "Telegram error: {msg}",
       busy: "[busy] a turn is already in flight — please wait and resend.",
     },
+    weixin: {
+      help: "Start the Weixin (WeChat) bot on a headless host (same engine as the QQ command).",
+      workspaceHint: "workspace root directory (default: cwd)",
+      sendFailed: "Weixin sendResponse failed: {msg}",
+      error: "Weixin error: {msg}",
+      busy: "[busy] a turn is already in flight — please wait and resend.",
+    },
   },
 };

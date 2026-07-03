@@ -2018,5 +2018,12 @@ export const zhCN: TranslationSchema = {
       error: "Telegram 错误:{msg}",
       busy: "[忙碌] 一轮对话正在进行,请稍后重试。",
     },
+    weixin: {
+      help: "在无头宿主上启动微信机器人(与 QQ 命令共用同一引擎)。",
+      workspaceHint: "工作区根目录(默认:当前目录)",
+      sendFailed: "微信发送回复失败:{msg}",
+      error: "微信错误:{msg}",
+      busy: "[忙碌] 一轮对话正在进行,请稍后重试。",
+    },
   },
 };

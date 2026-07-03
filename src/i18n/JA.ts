@@ -2198,5 +2198,12 @@ export const JA: TranslationSchema = {
       error: "Telegram エラー: {msg}",
       busy: "[処理中] ターン進行中です — 完了後に再送してください。",
     },
+    weixin: {
+      help: "ヘッドレスホストでWeixin(WeChat)ボットを起動(QQコマンドと同じエンジン)。",
+      workspaceHint: "ワークスペースのルートディレクトリ(デフォルト: cwd)",
+      sendFailed: "Weixin 送信失敗: {msg}",
+      error: "Weixin エラー: {msg}",
+      busy: "[処理中] ターン進行中です — 完了後に再送してください。",
+    },
   },
 };

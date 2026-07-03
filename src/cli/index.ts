@@ -416,6 +416,29 @@ program
   });
 
 program
+  .command("weixin")
+  .description(t("commands.weixin.help"))
+  .option("-m, --model <id>", t("ui.modelIdHint"))
+  .option("--workspace <path>", t("commands.weixin.workspaceHint"))
+  .option("--effort <level>", t("ui.effortHintShort"))
+  .option("--budget <usd>", t("ui.budgetHintShort"), (v) => Number.parseFloat(v))
+  .action(async (opts) => {
+    persistEffortFlag(opts.effort);
+    const defaults = resolveDefaults({
+      model: opts.model,
+      mcp: [],
+      effort: opts.effort,
+      noConfig: false,
+    });
+    const { weixinCommand } = await import("./commands/weixin.js");
+    await weixinCommand({
+      model: defaults.model,
+      workspace: opts.workspace,
+      budgetUsd: parseBudgetFlag(opts.budget),
+    });
+  });
+
+program
   .command("stats [transcript]")
   .description(t("cli.stats"))
   .action(async (transcript: string | undefined) => {

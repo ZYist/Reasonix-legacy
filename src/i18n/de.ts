@@ -2099,5 +2099,12 @@ export const de: TranslationSchema = {
       error: "Telegram Fehler: {msg}",
       busy: "[beschäftigt] Ein Turn läuft bereits — bitte warten und erneut senden.",
     },
+    weixin: {
+      help: "Weixin (WeChat) Bot auf einem Headless-Host starten (gleiche Engine wie der QQ-Befehl).",
+      workspaceHint: "Wurzelverzeichnis des Workspaces (Standard: cwd)",
+      sendFailed: "Weixin SendResponse fehlgeschlagen: {msg}",
+      error: "Weixin Fehler: {msg}",
+      busy: "[beschäftigt] Ein Turn läuft bereits — bitte warten und erneut senden.",
+    },
   },
 };
