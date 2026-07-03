@@ -1,9 +1,9 @@
 ---
-status: testing
+status: complete
 phase: 02-bot-decoupling-to-standalone-cli
 source: [02-VERIFICATION.md]
 started: 2026-07-03T22:35:00Z
-updated: 2026-07-03T22:35:00Z
+updated: 2026-07-03T23:06:00Z
 ---
 
 # Phase 02 UAT — Bot Decoupling to Standalone CLI
@@ -15,13 +15,7 @@ stubs the channel transport, and the success criteria explicitly require 收发�
 
 ## Current Test
 
-number: 1
-name: reasonix qq live QQ message exchange
-expected: |
-  Inbound QQ message -> host.runTurn -> assistant reply delivered back to the QQ chat;
-  gate prompts (run_command / plan) surface as QQ messages and numeric replies resolve
-  the gate.
-awaiting: user response
+[testing complete]
 
 ## Tests
 
@@ -31,14 +25,15 @@ Run `reasonix qq --workspace <path>` with valid QQ credentials and exchange mess
 with a live QQ account.
 
 expected: Inbound QQ message -> host.runTurn -> assistant reply delivered back to the QQ chat; gate prompts surface as QQ messages and numeric replies resolve the gate.
-result: [pending]
+result: pass
 
 ### 2. reasonix telegram live exchange
 
 Run `reasonix telegram --workspace <path>` with a TELEGRAM_BOT_TOKEN and send/receive a message.
 
 expected: Inbound Telegram text -> host.runTurn -> reply posted back to the Telegram chat.
-result: [pending]
+result: skipped
+reason: 用户标记为待测项暂跳过——暂未配置 TELEGRAM_BOT_TOKEN / 未进行 live long-poll 实测,留待后续 cycle。
 
 ### 3. reasonix weixin cold-start QR scan + live exchange
 
@@ -46,22 +41,22 @@ Run `reasonix weixin --workspace <path>` cold (no saved token) and complete the 
 then exchange a message.
 
 expected: QR rendered to stderr -> operator scans with WeChat -> credentials persisted -> WeixinChannel.start connects -> inbound WeChat text drives a turn and reply is posted back.
-result: [pending]
+result: pass
 
 ### 4. reasonix desktop sidecar still launches (SC4)
 
 Confirm `reasonix desktop` still launches the sidecar.
 
 expected: desktopCommand starts without error (qqRuntime + src/desktop/qq-*.ts untouched per D-09); QQ-over-sidecar path still functional as the coexistence fallback.
-result: [pending]
+result: pass
 
 ## Summary
 
 total: 4
-passed: 0
+passed: 3
 issues: 0
-pending: 4
-skipped: 0
+pending: 0
+skipped: 1
 blocked: 0
 
 ## Gaps
