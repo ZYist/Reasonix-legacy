@@ -40,7 +40,7 @@ function persistEffortFlag(flag: unknown): void {
 }
 
 // HTTPS_PROXY / HTTP_PROXY only reach Node's fetch via undici's global
-// dispatcher; install before any client (DeepSeek, web tools, dashboard)
+// dispatcher; install before any client (DeepSeek, web tools)
 // constructs a fetch closure (#646). Argv is peeked manually here — commander
 // hasn't run yet — so position of `--no-proxy` doesn't matter and we can
 // honor it before any fetch closure captures the dispatcher.

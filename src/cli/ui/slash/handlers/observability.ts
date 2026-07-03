@@ -189,10 +189,9 @@ const cost: SlashHandler = (args, loop, ctx) => {
     reasonTokens: 0,
     outputTokens: turn.usage.completionTokens,
     promptCap: ctxMax,
-    // Session-aggregate cache hit so this card matches the bottom status bar
-    // and the web dashboard (#1479). The bar already shows the rolling total
-    // (state/events.ts comment) — displaying a per-turn number here just for
-    // the slash card produced two different "cache hit %" values on screen.
+    // Session-aggregate cache hit so this slash card matches the bottom status
+    // bar (#1479), which already shows the rolling total (state/events.ts). A
+    // per-turn number here produced two different "cache hit %" values on screen.
     cacheHit: summary.cacheHitRatio,
     cost: turn.cost,
     sessionCost: summary.totalCostUsd,
