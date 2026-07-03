@@ -2130,5 +2130,12 @@ export const EN: TranslationSchema = {
       error: "QQ error: {msg}",
       busy: "[busy] a turn is already in flight — please wait and resend.",
     },
+    telegram: {
+      help: "Start the Telegram bot on a headless host (same engine as the QQ command).",
+      workspaceHint: "workspace root directory (default: cwd)",
+      sendFailed: "Telegram sendResponse failed: {msg}",
+      error: "Telegram error: {msg}",
+      busy: "[busy] a turn is already in flight — please wait and resend.",
+    },
   },
 };

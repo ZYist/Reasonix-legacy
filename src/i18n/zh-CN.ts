@@ -2011,5 +2011,12 @@ export const zhCN: TranslationSchema = {
       error: "QQ 错误:{msg}",
       busy: "[忙碌] 一轮对话正在进行,请稍后重试。",
     },
+    telegram: {
+      help: "在无头宿主上启动 Telegram 机器人(与 QQ 命令共用同一引擎)。",
+      workspaceHint: "工作区根目录(默认:当前目录)",
+      sendFailed: "Telegram 发送回复失败:{msg}",
+      error: "Telegram 错误:{msg}",
+      busy: "[忙碌] 一轮对话正在进行,请稍后重试。",
+    },
   },
 };

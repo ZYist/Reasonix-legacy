@@ -629,5 +629,12 @@ export const ru: TranslationSchema = {
       error: "Ошибка QQ: {msg}",
       busy: "[занят] ход уже выполняется — подождите и отправьте снова.",
     },
+    telegram: {
+      help: "Запустить Telegram-бота на headless-хосте (тот же движок, что у команды qq).",
+      workspaceHint: "корневой каталог рабочего пространства (по умолчанию: cwd)",
+      sendFailed: "Ошибка Telegram sendResponse: {msg}",
+      error: "Ошибка Telegram: {msg}",
+      busy: "[занят] ход уже выполняется — подождите и отправьте снова.",
+    },
   },
 };

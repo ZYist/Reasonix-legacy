@@ -2191,5 +2191,12 @@ export const JA: TranslationSchema = {
       error: "QQ エラー: {msg}",
       busy: "[処理中] ターン進行中です — 完了後に再送してください。",
     },
+    telegram: {
+      help: "ヘッドレスホストでTelegramボットを起動(QQコマンドと同じエンジン)。",
+      workspaceHint: "ワークスペースのルートディレクトリ(デフォルト: cwd)",
+      sendFailed: "Telegram 送信失敗: {msg}",
+      error: "Telegram エラー: {msg}",
+      busy: "[処理中] ターン進行中です — 完了後に再送してください。",
+    },
   },
 };

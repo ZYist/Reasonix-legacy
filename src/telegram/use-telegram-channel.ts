@@ -78,38 +78,28 @@ interface UseTelegramChannelArgs {
   onSelectSession?: (name: string) => void;
   onModelPick: (target: string) => string;
   onThemePick: (target: ThemeChoice) => string;
-  onShellConfirmRef: {
-    current: (choice: "run_once" | "always_allow" | "deny") => void;
-  };
-  onPathConfirmRef: {
-    current: (choice: "run_once" | "always_allow" | "deny") => void;
-  };
-  onPlanCancelRef: {
-    current: () => void | Promise<void>;
-  };
-  onPlanFeedbackRef: {
-    current: (
-      feedback: string,
-      override: { plan: string; mode: "refine" | "approve" | "reject" },
-    ) => void | Promise<void>;
-  };
-  onCheckpointConfirmRef: {
-    current: (choice: "continue" | "revise" | "stop") => void;
-  };
-  onCheckpointReviseRef: {
-    current: (feedback: string, snap: { stepId: string; title?: string }) => void;
-  };
-  onPlanRevisionRef: {
-    current: (choice: ReviseChoice | "cancel") => void;
-  };
-  onChoiceResolveRef: {
-    current: (
-      resolution:
-        | { type: "pick"; optionId: string }
-        | { type: "text"; text: string }
-        | { type: "cancel" },
-    ) => void;
-  };
+  // Object-injection gate callbacks (D-05/D-06): plain closures the caller
+  // wires — the headless host passes pauseGate.resolve/cancel closures
+  // directly; the Ink-TUI caller wraps its ref via
+  // `onShellConfirm={(c) => shellConfirmRef.current?.(c)}`. Only the
+  // *external* gate-callback contract flipped to object form; internal
+  // adapter refs (pendingGateIdRef/interactionRef/etc.) stay refs.
+  onShellConfirm: (choice: "run_once" | "always_allow" | "deny") => void;
+  onPathConfirm: (choice: "run_once" | "always_allow" | "deny") => void;
+  onPlanCancel: () => void | Promise<void>;
+  onPlanFeedback: (
+    feedback: string,
+    override: { plan: string; mode: "refine" | "approve" | "reject" },
+  ) => void | Promise<void>;
+  onCheckpointConfirm: (choice: "continue" | "revise" | "stop") => void;
+  onCheckpointRevise: (feedback: string, snap: { stepId: string; title?: string }) => void;
+  onPlanRevision: (choice: ReviseChoice | "cancel") => void;
+  onChoiceResolve: (
+    resolution:
+      | { type: "pick"; optionId: string }
+      | { type: "text"; text: string }
+      | { type: "cancel" },
+  ) => void;
 }
 
 interface RemoteSlashHandlingArgs {
@@ -201,14 +191,14 @@ export function useTelegramChannel({
   onSelectSession,
   onModelPick,
   onThemePick,
-  onShellConfirmRef,
-  onPathConfirmRef,
-  onPlanCancelRef,
-  onPlanFeedbackRef,
-  onCheckpointConfirmRef,
-  onCheckpointReviseRef,
-  onPlanRevisionRef,
-  onChoiceResolveRef,
+  onShellConfirm,
+  onPathConfirm,
+  onPlanCancel,
+  onPlanFeedback,
+  onCheckpointConfirm,
+  onCheckpointRevise,
+  onPlanRevision,
+  onChoiceResolve,
 }: UseTelegramChannelArgs) {
   const channelRef = useRef<TelegramChannel | null>(initialChannel ?? null);
   const interactionRef = useRef<TelegramInteractionState>({
@@ -630,18 +620,18 @@ export function useTelegramChannel({
       switch (interaction.kind) {
         case "run_command":
         case "run_background":
-          onShellConfirmRef.current(parseRunPermissionChoice(choiceText));
+          onShellConfirm(parseRunPermissionChoice(choiceText));
           return true;
         case "path_access":
-          onPathConfirmRef.current(parseRunPermissionChoice(choiceText));
+          onPathConfirm(parseRunPermissionChoice(choiceText));
           return true;
         case "plan_proposed": {
           const payload = (interaction.payload as { plan?: string }) ?? {};
           const choice = parsePlanChoice(choiceText);
           if (choice === "cancel") {
-            void onPlanCancelRef.current();
+            void onPlanCancel();
           } else {
-            void onPlanFeedbackRef.current(followup, {
+            void onPlanFeedback(followup, {
               plan: payload.plan ?? "",
               mode: choice === "approve" ? "approve" : "refine",
             });
@@ -652,17 +642,17 @@ export function useTelegramChannel({
           const payload = (interaction.payload as { stepId?: string; title?: string }) ?? {};
           const choice = parseCheckpointChoice(choiceText);
           if (choice === "revise") {
-            onCheckpointReviseRef.current(followup, {
+            onCheckpointRevise(followup, {
               stepId: payload.stepId ?? "",
               title: payload.title,
             });
           } else {
-            onCheckpointConfirmRef.current(choice);
+            onCheckpointConfirm(choice);
           }
           return true;
         }
         case "plan_revision":
-          onPlanRevisionRef.current(parseRevisionChoice(choiceText));
+          onPlanRevision(parseRevisionChoice(choiceText));
           return true;
         case "choice": {
           const payload =
@@ -675,7 +665,7 @@ export function useTelegramChannel({
           if (pickedIndex >= 0 && pickedIndex < options.length) {
             const selected = options[pickedIndex];
             if (selected)
-              onChoiceResolveRef.current({
+              onChoiceResolve({
                 type: "pick",
                 optionId: selected.id,
               });
@@ -683,14 +673,14 @@ export function useTelegramChannel({
           }
           for (const option of options) {
             if (text.toLowerCase().includes(option.title.toLowerCase())) {
-              onChoiceResolveRef.current({ type: "pick", optionId: option.id });
+              onChoiceResolve({ type: "pick", optionId: option.id });
               return true;
             }
           }
           if (payload.allowCustom) {
-            onChoiceResolveRef.current({ type: "text", text });
+            onChoiceResolve({ type: "text", text });
           } else {
-            onChoiceResolveRef.current({ type: "cancel" });
+            onChoiceResolve({ type: "cancel" });
           }
           return true;
         }
@@ -699,14 +689,14 @@ export function useTelegramChannel({
       }
     },
     [
-      onCheckpointConfirmRef,
-      onCheckpointReviseRef,
-      onChoiceResolveRef,
-      onPathConfirmRef,
-      onPlanCancelRef,
-      onPlanFeedbackRef,
-      onPlanRevisionRef,
-      onShellConfirmRef,
+      onCheckpointConfirm,
+      onCheckpointRevise,
+      onChoiceResolve,
+      onPathConfirm,
+      onPlanCancel,
+      onPlanFeedback,
+      onPlanRevision,
+      onShellConfirm,
       pendingGateIdRef,
       sendText,
     ],

@@ -2092,5 +2092,12 @@ export const de: TranslationSchema = {
       error: "QQ Fehler: {msg}",
       busy: "[beschäftigt] Ein Turn läuft bereits — bitte warten und erneut senden.",
     },
+    telegram: {
+      help: "Telegram-Bot auf einem Headless-Host starten (gleiche Engine wie der QQ-Befehl).",
+      workspaceHint: "Wurzelverzeichnis des Workspaces (Standard: cwd)",
+      sendFailed: "Telegram SendResponse fehlgeschlagen: {msg}",
+      error: "Telegram Fehler: {msg}",
+      busy: "[beschäftigt] Ein Turn läuft bereits — bitte warten und erneut senden.",
+    },
   },
 };
