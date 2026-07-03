@@ -2165,4 +2165,22 @@ export const JA: TranslationSchema = {
     buildSpecFailed: "{name} のインストール仕様を構築できません: {message}",
     alreadyInstalled: "インストール済み: {spec}",
   },
+  headless: {
+    host: {
+      abortedSentinel: "(中断しました)",
+      errorFallback: "(ターン失敗 — 上記のエラーを参照)",
+    },
+    gate: {
+      runCommandPrompt:
+        "確認が必要です\n\nコマンド: `{command}`\n\n返信:\n1. 1回だけ実行\n2. 常に許可\n3. 拒否",
+      pathAccessPrompt:
+        "ファイルアクセスの確認が必要です\n\n操作: {intent}\nパス: {path}\nツール: {toolName}\n\n返信:\n1. 1回だけ実行\n2. 常に許可\n3. 拒否",
+      planProposedPrompt: "計画の確認\n\n{plan}\n\n返信:\n1. 承認\n2. 修正\n3. キャンセル",
+      planCheckpointPrompt:
+        "ステップ完了 ({completed}/{total})\n\n{stepTitle}結果: {result}\n\n返信:\n1. 続行\n2. 修正\n3. 停止",
+      planRevisionPrompt:
+        "計画修正の提案\n\n{reason}\n\n返信:\n1. 受け入れる\n2. 拒否\n3. キャンセル",
+      choicePrompt: "選択してください\n\n{question}\n\nオプション:\n{options}{customHint}",
+    },
+  },
 };

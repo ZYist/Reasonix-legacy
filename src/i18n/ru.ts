@@ -602,4 +602,23 @@ export const ru: TranslationSchema = {
         " Укажите параметр BRAVE_SEARCH_API_KEY (или BRAVE_API_KEY) или `braveApiKey` в файле конфигурации; 2000 бесплатных запросов в месяц доступны по адресу https://brave.com/search/api/.",
     },
   },
+  headless: {
+    host: {
+      abortedSentinel: "(прервано)",
+      errorFallback: "(сбой хода — см. ошибку выше)",
+    },
+    gate: {
+      runCommandPrompt:
+        "Требуется подтверждение\n\nКоманда: `{command}`\n\nОтвет:\n1. Выполнить один раз\n2. Всегда разрешать\n3. Отклонить",
+      pathAccessPrompt:
+        "Требуется подтверждение доступа к файлу\n\nДействие: {intent}\nПуть: {path}\nИнструмент: {toolName}\n\nОтвет:\n1. Выполнить один раз\n2. Всегда разрешать\n3. Отклонить",
+      planProposedPrompt:
+        "Подтверждение плана\n\n{plan}\n\nОтвет:\n1. Одобрить\n2. Уточнить\n3. Отменить",
+      planCheckpointPrompt:
+        "Шаг выполнен ({completed}/{total})\n\n{stepTitle}Результат: {result}\n\nОтвет:\n1. Продолжить\n2. Уточнить\n3. Остановить",
+      planRevisionPrompt:
+        "Предложена переработка плана\n\n{reason}\n\nОтвет:\n1. Принять\n2. Отклонить\n3. Отменить",
+      choicePrompt: "Выберите\n\n{question}\n\nВарианты:\n{options}{customHint}",
+    },
+  },
 };

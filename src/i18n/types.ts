@@ -1022,4 +1022,18 @@ export interface TranslationSchema {
     buildSpecFailed: string;
     alreadyInstalled: string;
   };
+  headless: {
+    host: {
+      abortedSentinel: string;
+      errorFallback: string;
+    };
+    gate: {
+      runCommandPrompt: string;
+      pathAccessPrompt: string;
+      planProposedPrompt: string;
+      planCheckpointPrompt: string;
+      planRevisionPrompt: string;
+      choicePrompt: string;
+    };
+  };
 }

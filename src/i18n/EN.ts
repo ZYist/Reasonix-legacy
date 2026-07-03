@@ -2103,4 +2103,23 @@ export const EN: TranslationSchema = {
     buildSpecFailed: "Cannot build install spec for {name}: {message}",
     alreadyInstalled: "Already installed: {spec}",
   },
+  headless: {
+    host: {
+      abortedSentinel: "(aborted)",
+      errorFallback: "(turn failed — see error above)",
+    },
+    gate: {
+      runCommandPrompt:
+        "Need confirmation\n\nCommand: `{command}`\n\nReply with:\n1. Run once\n2. Always allow\n3. Deny",
+      pathAccessPrompt:
+        "Need file access confirmation\n\nAction: {intent}\nPath: {path}\nTool: {toolName}\n\nReply with:\n1. Run once\n2. Always allow\n3. Deny",
+      planProposedPrompt:
+        "Plan confirmation\n\n{plan}\n\nReply with:\n1. Approve\n2. Refine\n3. Cancel",
+      planCheckpointPrompt:
+        "Step complete ({completed}/{total})\n\n{stepTitle}Result: {result}\n\nReply with:\n1. Continue\n2. Revise\n3. Stop",
+      planRevisionPrompt:
+        "Plan revision proposed\n\n{reason}\n\nReply with:\n1. Accept\n2. Reject\n3. Cancel",
+      choicePrompt: "Please choose\n\n{question}\n\nOptions:\n{options}{customHint}",
+    },
+  },
 };

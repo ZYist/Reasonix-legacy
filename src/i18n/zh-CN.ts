@@ -1986,4 +1986,21 @@ export const zhCN: TranslationSchema = {
     buildSpecFailed: "无法为 {name} 构建安装 spec：{message}",
     alreadyInstalled: "已安装：{spec}",
   },
+  headless: {
+    host: {
+      abortedSentinel: "(已中止)",
+      errorFallback: "(本轮失败 — 请查看上方错误)",
+    },
+    gate: {
+      runCommandPrompt:
+        "需要确认\n\n命令：`{command}`\n\n回复：\n1. 仅本次执行\n2. 始终允许\n3. 拒绝",
+      pathAccessPrompt:
+        "需要文件访问确认\n\n操作：{intent}\n路径：{path}\n工具：{toolName}\n\n回复：\n1. 仅本次执行\n2. 始终允许\n3. 拒绝",
+      planProposedPrompt: "计划确认\n\n{plan}\n\n回复：\n1. 批准\n2. 修改\n3. 取消",
+      planCheckpointPrompt:
+        "步骤完成 ({completed}/{total})\n\n{stepTitle}结果：{result}\n\n回复：\n1. 继续\n2. 修改\n3. 停止",
+      planRevisionPrompt: "计划修订提议\n\n{reason}\n\n回复：\n1. 接受\n2. 拒绝\n3. 取消",
+      choicePrompt: "请选择\n\n{question}\n\n选项：\n{options}{customHint}",
+    },
+  },
 };

@@ -2065,4 +2065,23 @@ export const de: TranslationSchema = {
     buildSpecFailed: "Kann Installationsspec für {name} nicht erstellen: {message}",
     alreadyInstalled: "Bereits installiert: {spec}",
   },
+  headless: {
+    host: {
+      abortedSentinel: "(abgebrochen)",
+      errorFallback: "(Turn fehlgeschlagen — siehe Fehler oben)",
+    },
+    gate: {
+      runCommandPrompt:
+        "Bestätigung erforderlich\n\nBefehl: `{command}`\n\nAntworte mit:\n1. Einmal ausführen\n2. Immer erlauben\n3. Ablehnen",
+      pathAccessPrompt:
+        "Dateizugriffsbestätigung erforderlich\n\nAktion: {intent}\nPfad: {path}\nWerkzeug: {toolName}\n\nAntworte mit:\n1. Einmal ausführen\n2. Immer erlauben\n3. Ablehnen",
+      planProposedPrompt:
+        "Planbestätigung\n\n{plan}\n\nAntworte mit:\n1. Genehmigen\n2. Überarbeiten\n3. Abbrechen",
+      planCheckpointPrompt:
+        "Schritt abgeschlossen ({completed}/{total})\n\n{stepTitle}Ergebnis: {result}\n\nAntworte mit:\n1. Fortfahren\n2. Überarbeiten\n3. Stoppen",
+      planRevisionPrompt:
+        "Planüberarbeitung vorgeschlagen\n\n{reason}\n\nAntworte mit:\n1. Akzeptieren\n2. Ablehnen\n3. Abbrechen",
+      choicePrompt: "Bitte wählen\n\n{question}\n\nOptionen:\n{options}{customHint}",
+    },
+  },
 };
