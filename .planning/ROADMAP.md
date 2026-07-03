@@ -33,12 +33,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. `reasonix chat` TUI 能正常发起并完成一轮对话(发消息 → 收模型回复 → 执行一次工具),无面板相关报错
   4. typecheck 与 build 通过(剥离 Web 面板后 CLI 可独立构建)
 
-**Plans**: 1/2 plans executed
+**Plans**: 2/2 plans executed
 
 Plans:
 
 - [x] 01-01-PLAN.md
-- [ ] 01-02-PLAN.md
+- [x] 01-02-PLAN.md
 
 **Wave 1**
 
@@ -46,7 +46,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [~] 01-02: 清理 i18n 面板死串 + 运行时 TUI 冒烟 — **Task 1 完成**(panel i18n 死串移除,types.ts+5 locale 同步,收敛 116→24,commit cff185e7,typecheck/build/lint 绿);**Task 2 待人确认**(运行时 TUI 一轮对话冒烟,blocking checkpoint:human-verify)
+- [x] 01-02: 清理 i18n 面板死串 + 运行时 TUI 冒烟 — **完成**(panel i18n 死串移除,types.ts+5 locale 同步,收敛 116→24,commit cff185e7,typecheck/build/lint 绿);运行时冒烟通过(reasonix code 模式 read_file 读到 package.json 0.55.0,chat/code 双模式干净启动无面板报错)
 
 **UI hint**: yes
 
@@ -117,7 +117,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Web Panel Removal | 1/2 | In Progress|  |
+| 1. Web Panel Removal | 2/2 | Verification pending |  |
 | 2. Bot Decoupling to Standalone CLI | 0/3 | Not started | - |
 | 3. Desktop GUI Removal | 0/1 | Not started | - |
 | 4. Build Chain Cleanup & Full Regression | 0/2 | Not started | - |

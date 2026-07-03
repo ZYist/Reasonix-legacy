@@ -5,16 +5,16 @@ milestone_name: milestone
 current_phase: 01
 current_phase_name: Web Panel Removal
 status: executing
-stopped_at: 01-02 Task 1 complete (i18n dead strings removed, commit cff185e7); Task 2 (runtime TUI smoke) awaiting human verify — blocking checkpoint
-last_updated: "2026-07-02T15:35:45Z"
-last_activity: 2026-07-02
-last_activity_desc: 01-02 Task 1 done — panel i18n dead strings cleared; Task 2 TUI smoke pending human
+stopped_at: 01-02 complete (i18n dead strings cleared + code-mode runtime smoke passed: read_file → 0.55.0); Phase 01 plans done, ready for goal verification
+last_updated: "2026-07-03T00:49:12Z"
+last_activity: 2026-07-03
+last_activity_desc: 01-02 complete — panel i18n dead strings cleared + code-mode runtime smoke (read_file read package.json 0.55.0)
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 2
-  completed_plans: 1
-  percent: 50
+  completed_plans: 2
+  percent: 100
 ---
 
 # Project State
@@ -28,26 +28,26 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 
 ## Current Position
 
-Phase: 01 (Web Panel Removal) — EXECUTING
-Plans: 2 planned (1 complete, 1 in-progress) in current phase — 01-01 done (wave 1), 01-02 Task 1 done / Task 2 awaiting human verify (wave 2)
-Status: Executing Phase 01 — 01-02 at blocking checkpoint (runtime TUI smoke)
-Last activity: 2026-07-02 — 01-02 Task 1 complete (panel i18n dead strings removed)
+Phase: 01 (Web Panel Removal) — plans complete, ready for goal verification
+Plans: 2 planned (2 complete) in current phase — 01-01 done (wave 1), 01-02 done (wave 2)
+Status: Phase 01 plans complete — ready for goal verification (gsd-verifier)
+Last activity: 2026-07-03 — 01-02 complete (i18n dead strings cleared + code-mode runtime smoke: read_file → 0.55.0)
 
-Progress: [█████░░░░░] 50%
+Progress: [██████████] 100% (plans); phase goal verification pending
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 1
-- Average duration: 57 min
-- Total execution time: 0.95 hours
+- Total plans completed: 2
+- Average duration: ~69 min (01-01: 57min, 01-02: ~24min incl. human smoke)
+- Total execution time: ~1.35 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Web Panel Removal | 1/2 | 57 min | 57 min |
+| 1. Web Panel Removal | 2/2 | ~81 min | ~69 min |
 | 2. Bot Decoupling | 0/3 | — | — |
 | 3. Desktop GUI Removal | 0/1 | — | — |
 | 4. Build Chain & Regression | 0/2 | — | — |
@@ -91,10 +91,10 @@ None yet.
 |----------|------|--------|-------------|
 | i18n | 93 条面板死串(/dashboard、--no-dashboard、dashboardPortInvalid、dashboardAutoStartFailed 等) | 已清理(01-02 Task 1, commit cff185e7) | 01-01 |
 | 叙事注释 | 23 处 src/ 内描述性 "dashboard" 注释(非耦合代码) | 事故叙事已清理(plan-store.ts/App.tsx);合法 stats 命名 + 隐藏约束注释作基线保留(01-02 Task 1) | 01-01 |
-| 运行时冒烟 | TUI 一轮对话冒烟(需交互式 TTY + DeepSeek key) | 待人确认(01-02 Task 2 checkpoint) | 01-01 |
+| 运行时冒烟 | TUI 一轮对话冒烟(需交互式 TTY + DeepSeek key) | 已通过(01-02 Task 2:code 模式 read_file → 0.55.0) | 01-01 |
 
 ## Session Continuity
 
-Last session: 2026-07-02
-Stopped at: 01-02 Task 1 complete (panel i18n dead strings removed, commit cff185e7, typecheck/build/lint green); Task 2 blocking checkpoint — runtime TUI smoke awaiting human verify (interactive TTY + DeepSeek key)
-Resume file: .planning/phases/01-web-panel-removal/01-02-PLAN.md (Task 2: checkpoint:human-verify)
+Last session: 2026-07-03
+Stopped at: Phase 01 plans complete (01-01 + 01-02 done); ready for goal verification (gsd-verifier). 01-02 Task 2 runtime smoke passed — reasonix code mode read_file read package.json 0.55.0, no panel errors.
+Resume file: .planning/phases/01-web-panel-removal/01-02-SUMMARY.md
