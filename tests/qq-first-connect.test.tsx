@@ -61,14 +61,14 @@ describe("QQ first-connect onboarding", () => {
         planStepsRef: { current: null },
         onModelPick: () => "",
         onThemePick: () => "",
-        onShellConfirmRef: { current: () => undefined },
-        onPathConfirmRef: { current: () => undefined },
-        onPlanCancelRef: { current: () => undefined },
-        onPlanFeedbackRef: { current: () => undefined },
-        onCheckpointConfirmRef: { current: () => undefined },
-        onCheckpointReviseRef: { current: () => undefined },
-        onPlanRevisionRef: { current: () => undefined },
-        onChoiceResolveRef: { current: () => undefined },
+        onShellConfirm: () => undefined,
+        onPathConfirm: () => undefined,
+        onPlanCancel: () => undefined,
+        onPlanFeedback: () => undefined,
+        onCheckpointConfirm: () => undefined,
+        onCheckpointRevise: () => undefined,
+        onPlanRevision: () => undefined,
+        onChoiceResolve: () => undefined,
       });
       return null;
     }

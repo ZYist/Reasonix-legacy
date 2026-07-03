@@ -2043,14 +2043,15 @@ function AppInner({
     onSelectSession: onSwitchSession ? (name) => onSwitchSession(name) : undefined,
     onModelPick: handleQQModelPick,
     onThemePick: handleQQThemePick,
-    onShellConfirmRef: handleShellConfirmRef,
-    onPathConfirmRef: handlePathConfirmRef,
-    onPlanCancelRef: handlePlanCancelRef,
-    onPlanFeedbackRef: handlePlanFeedbackRef,
-    onCheckpointConfirmRef: handleCheckpointConfirmRef,
-    onCheckpointReviseRef: handleCheckpointReviseSubmitRef,
-    onPlanRevisionRef: handleReviseConfirmRef,
-    onChoiceResolveRef: handleChoiceResolveRef,
+    onShellConfirm: (choice) => handleShellConfirmRef.current?.(choice),
+    onPathConfirm: (choice) => handlePathConfirmRef.current?.(choice),
+    onPlanCancel: () => handlePlanCancelRef.current?.(),
+    onPlanFeedback: (feedback, override) => handlePlanFeedbackRef.current?.(feedback, override),
+    onCheckpointConfirm: (choice) => handleCheckpointConfirmRef.current?.(choice),
+    onCheckpointRevise: (feedback, snap) =>
+      handleCheckpointReviseSubmitRef.current?.(feedback, snap),
+    onPlanRevision: (choice) => handleReviseConfirmRef.current?.(choice),
+    onChoiceResolve: (resolution) => handleChoiceResolveRef.current?.(resolution),
   });
 
   const telegram = useTelegramChannel({
