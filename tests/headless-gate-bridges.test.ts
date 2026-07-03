@@ -12,6 +12,7 @@ import { pathToFileURL } from "node:url";
 import {
   defaultBuildPrompt,
   installHeadlessGateBridges,
+  parseRunPermissionChoice,
 } from "../src/cli/headless/gate-bridges.js";
 import { headlessContext } from "../src/cli/headless/turn-driver.js";
 import { saveEditMode } from "../src/config.js";
@@ -276,6 +277,27 @@ async function runAutoResolvePolicyCase(): Promise<void> {
 let testCount = 0;
 let failure: Error | null = null;
 
+async function runParseRunPermissionChoiceCase(): Promise<void> {
+  // WR-02 regression: deny-intent replies must never approve a destructive
+  // run_command. "don't run it" contains "run" but must resolve to "deny".
+  assert.equal(parseRunPermissionChoice("don't run it"), "deny");
+  assert.equal(parseRunPermissionChoice("do not run"), "deny");
+  assert.equal(parseRunPermissionChoice("no"), "deny");
+  assert.equal(parseRunPermissionChoice("cancel"), "deny");
+  assert.equal(parseRunPermissionChoice("never run that"), "deny");
+  // Positive + indexed approvals still resolve.
+  assert.equal(parseRunPermissionChoice("1"), "run_once");
+  assert.equal(parseRunPermissionChoice("run"), "run_once");
+  assert.equal(parseRunPermissionChoice("yes"), "run_once");
+  assert.equal(parseRunPermissionChoice("2"), "always_allow");
+  assert.equal(parseRunPermissionChoice("always"), "always_allow");
+  // Substring safety: "rerun" must not match the \brun\ boundary.
+  assert.equal(parseRunPermissionChoice("rerun"), "deny");
+  // Empty / unrecognized fail closed to deny.
+  assert.equal(parseRunPermissionChoice(""), "deny");
+  assert.equal(parseRunPermissionChoice("maybe"), "deny");
+}
+
 async function run(): Promise<void> {
   const cases: Array<[string, () => Promise<void>]> = [
     [
@@ -293,6 +315,10 @@ async function run(): Promise<void> {
     [
       "T-02-02 tampering mitigation: unmatched reply defaults to deny, never auto-allow",
       runTamperingMitigationCase,
+    ],
+    [
+      "WR-02 run-permission parser: deny-intent replies fail closed, never approve",
+      runParseRunPermissionChoiceCase,
     ],
     [
       "defaultBuildPrompt renders the i18n-localized gate prompt strings",

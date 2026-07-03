@@ -128,9 +128,13 @@ function isNewText(text: string): boolean {
 }
 
 function parseRunPermissionChoice(text: string): "run_once" | "always_allow" | "deny" {
-  const lower = text.toLowerCase();
-  if (lower.includes("1") || lower.includes("run")) return "run_once";
-  if (lower.includes("2") || lower.includes("always")) return "always_allow";
+  const lower = text.toLowerCase().trim();
+  if (/\b(don't|do not|no|nope|cancel|deny|stop|never)\b/.test(lower)) return "deny";
+  const idx = parseIndexedChoice(text);
+  if (idx === 0) return "run_once";
+  if (idx === 1) return "always_allow";
+  if (/\b(run|yes|ok|allow|approve)\b/.test(lower)) return "run_once";
+  if (/\balways\b/.test(lower)) return "always_allow";
   return "deny";
 }
 
