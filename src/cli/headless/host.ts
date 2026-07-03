@@ -122,13 +122,18 @@ export class HeadlessHost {
 
   // Drive a single conversation turn end-to-end. Returns the captured
   // assistant_final text, the "(aborted)" sentinel on abort, or the
-  // errorMeta-classified error message on throw (surfaces to the caller —
-  // the channel / command layer writes it via sendResponse, never console).
+  // errorMeta-classified error message captured via runHeadlessTurn's onError
+  // (surfaces to the caller via sendResponse, and is mirrored to stderr so a
+  // detached-bot operator tailing the log can diagnose it).
   async runTurn(text: string): Promise<string> {
     this.aborter = new AbortController();
     let lastAssistantText = "";
     let outcome: "end_turn" | "aborted" | "error" = "end_turn";
     let errMessage = "";
+    // runHeadlessTurn classifies a thrown loop error via errorMeta and reports
+    // it through onError — it never rethrows — so the cause is captured here
+    // rather than dropped to the generic fallback. Detached bots have no TUI
+    // "error above" to read, so the same message is mirrored to stderr.
     try {
       outcome = await runHeadlessTurn({
         loop: this.loop,
@@ -140,15 +145,14 @@ export class HeadlessHost {
         onAssistantText: (content) => {
           lastAssistantText = content;
         },
+        onError: (cause, meta) => {
+          errMessage =
+            meta.code || meta.phase
+              ? `${cause.message} [code=${meta.code ?? "?"} phase=${meta.phase ?? "?"}]`
+              : cause.message;
+          process.stderr.write(`${errMessage}\n`);
+        },
       });
-    } catch (err) {
-      const cause = err instanceof Error ? err : new Error(String(err));
-      const meta = errorMeta(cause);
-      errMessage =
-        meta.code || meta.phase
-          ? `${cause.message} [code=${meta.code ?? "?"} phase=${meta.phase ?? "?"}]`
-          : cause.message;
-      outcome = "error";
     } finally {
       this.aborter = null;
     }
