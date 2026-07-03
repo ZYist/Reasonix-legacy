@@ -63,11 +63,15 @@ Plans:
   3. Telegram/微信 channel 可经同一无头宿主启动并收发消息——迁移现有 `src/telegram`/`src/weixin` 模块,未重写协议(BOT-02)
   4. 此阶段 `desktop.ts` sidecar 仍可运行(QQ 已迁出但 sidecar 未删,保证系统持续可用)
 
-**Plans**: 3 plans
+**Plans**: 1/3 plans executed
 
 Plans:
 
-- [ ] 02-01: 从 `src/cli/commands/desktop.ts` 提取传输协议无关的"无头对话宿主"(对话循环 / 暂停门 / 工具集),核心复用不重复实现
+- [x] 02-01-PLAN.md
+- [ ] 02-02-PLAN.md
+- [ ] 02-03-PLAN.md
+
+- [x] 02-01: 从 `src/cli/commands/desktop.ts` 提取传输协议无关的"无头对话宿主"(对话循环 / 暂停门 / 工具集),核心复用不重复实现
 - [ ] 02-02: 将 QQ channel 挂载到无头宿主,提供独立 `reasonix qq` CLI 命令,脱离 Tauri JSON-RPC
 - [ ] 02-03: 把 Telegram/微信 channel 迁移到同一无头宿主,经独立 CLI 命令可启动收发消息
 
@@ -118,7 +122,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Web Panel Removal | 2/2 | Complete    | 2026-07-03 |
-| 2. Bot Decoupling to Standalone CLI | 0/3 | Not started | - |
+| 2. Bot Decoupling to Standalone CLI | 1/3 | In Progress|  |
 | 3. Desktop GUI Removal | 0/1 | Not started | - |
 | 4. Build Chain Cleanup & Full Regression | 0/2 | Not started | - |
 
