@@ -204,6 +204,19 @@ export function defaultBuildPrompt(kind: string, payload: Record<string, unknown
   }
 }
 
+// Rule 1 fix: the bridge owns resolution (it has the gateId; the observer
+// callbacks do not). Mirrors desktop.ts:1876 resolve shape — the object
+// form satisfies ConfirmationChoice so tools' type guards
+// (`choice.type === "deny"`) work via the headless path. Extracted to a
+// helper so the typed object literal doesn't trip the ternary `as const`.
+function confirmationVerdict(
+  choice: "run_once" | "always_allow" | "deny",
+): { type: "run_once" } | { type: "always_allow"; prefix: string } | { type: "deny" } {
+  if (choice === "run_once") return { type: "run_once" };
+  if (choice === "always_allow") return { type: "always_allow", prefix: "" };
+  return { type: "deny" };
+}
+
 /** Dispatch an inbound channel reply to the matching GateCallbacks field,
  *  replicating desktop.ts:1872-1933 handleQQPauseReply dispatch order exactly.
  *
@@ -223,21 +236,35 @@ function dispatchReply(
   const followup = stripFollowupPrefix(text);
   switch (pending.kind) {
     case "run_command":
-    case "run_background":
-      gateCallbacks.onShellConfirm(parseRunPermissionChoice(text));
+    case "run_background": {
+      // Rule 1 fix: the bridge owns resolution (it has the gateId; the
+      // observer callbacks do not). The verdict is the object form of
+      // ConfirmationChoice so tools' type guards (`choice.type === "deny"`)
+      // work via the headless path (desktop.ts:1876 resolves with a bare
+      // string — a latent type bug we don't perpetuate here).
+      const choice = parseRunPermissionChoice(text);
+      pauseGate.resolve(gateId, confirmationVerdict(choice));
+      gateCallbacks.onShellConfirm(choice);
       return true;
-    case "path_access":
-      gateCallbacks.onPathConfirm(parseRunPermissionChoice(text));
+    }
+    case "path_access": {
+      const choice = parseRunPermissionChoice(text);
+      pauseGate.resolve(gateId, confirmationVerdict(choice));
+      gateCallbacks.onPathConfirm(choice);
       return true;
+    }
     case "plan_proposed": {
       const payload = (pending.payload as { plan?: string }) ?? {};
       const choice = parsePlanChoice(text);
       if (choice === "cancel") {
+        pauseGate.cancel(gateId);
         void gateCallbacks.onPlanCancel();
       } else {
+        const mode = choice === "approve" ? "approve" : "refine";
+        pauseGate.resolve(gateId, { type: mode, feedback: followup });
         void gateCallbacks.onPlanFeedback(followup, {
           plan: payload.plan ?? "",
-          mode: choice === "approve" ? "approve" : "refine",
+          mode,
         });
       }
       return true;
@@ -246,18 +273,33 @@ function dispatchReply(
       const payload = (pending.payload as { stepId?: string; title?: string }) ?? {};
       const choice = parseCheckpointChoice(text);
       if (choice === "revise") {
+        pauseGate.resolve(gateId, {
+          type: "revise",
+          feedback: followup,
+          checkpoint: { stepId: payload.stepId ?? "", title: payload.title },
+        });
         gateCallbacks.onCheckpointRevise(followup, {
           stepId: payload.stepId ?? "",
           title: payload.title,
         });
       } else {
+        pauseGate.resolve(gateId, { type: choice });
         gateCallbacks.onCheckpointConfirm(choice);
       }
       return true;
     }
-    case "plan_revision":
-      gateCallbacks.onPlanRevision(parseRevisionChoice(text));
+    case "plan_revision": {
+      const parsed = parseRevisionChoice(text);
+      const verdict =
+        parsed === "accept"
+          ? { type: "accepted" as const }
+          : parsed === "reject"
+            ? { type: "rejected" as const }
+            : { type: "cancelled" as const };
+      pauseGate.resolve(gateId, verdict);
+      gateCallbacks.onPlanRevision(parsed);
       return true;
+    }
     case "choice": {
       const payload =
         (pending.payload as { options?: ChoiceOption[]; allowCustom?: boolean }) ?? {};
@@ -265,18 +307,24 @@ function dispatchReply(
       const pickedIndex = parseIndexedChoice(text);
       if (pickedIndex >= 0 && pickedIndex < options.length) {
         const selected = options[pickedIndex];
-        if (selected) gateCallbacks.onChoiceResolve({ type: "pick", optionId: selected.id });
+        if (selected) {
+          pauseGate.resolve(gateId, { type: "pick", optionId: selected.id });
+          gateCallbacks.onChoiceResolve({ type: "pick", optionId: selected.id });
+        }
         return true;
       }
       for (const option of options) {
         if (text.toLowerCase().includes(option.title.toLowerCase())) {
+          pauseGate.resolve(gateId, { type: "pick", optionId: option.id });
           gateCallbacks.onChoiceResolve({ type: "pick", optionId: option.id });
           return true;
         }
       }
-      gateCallbacks.onChoiceResolve(
-        payload.allowCustom ? { type: "text", text } : { type: "cancel" },
-      );
+      const resolution: ChoiceResolution = payload.allowCustom
+        ? { type: "text", text }
+        : { type: "cancel" };
+      pauseGate.resolve(gateId, resolution);
+      gateCallbacks.onChoiceResolve(resolution);
       return true;
     }
     default:

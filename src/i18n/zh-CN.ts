@@ -2003,4 +2003,13 @@ export const zhCN: TranslationSchema = {
       choicePrompt: "请选择\n\n{question}\n\n选项：\n{options}{customHint}",
     },
   },
+  commands: {
+    qq: {
+      help: "在无头宿主上启动 QQ 机器人(与桌面 sidecar 解耦)。",
+      workspaceHint: "工作区根目录(默认:当前目录)",
+      sendFailed: "QQ 发送回复失败:{msg}",
+      error: "QQ 错误:{msg}",
+      busy: "[忙碌] 一轮对话正在进行,请稍后重试。",
+    },
+  },
 };

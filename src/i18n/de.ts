@@ -2084,4 +2084,13 @@ export const de: TranslationSchema = {
       choicePrompt: "Bitte wählen\n\n{question}\n\nOptionen:\n{options}{customHint}",
     },
   },
+  commands: {
+    qq: {
+      help: "QQ-Bot auf einem Headless-Host starten (vom Desktop-Sidecar entkoppelt).",
+      workspaceHint: "Wurzelverzeichnis des Workspaces (Standard: cwd)",
+      sendFailed: "QQ SendResponse fehlgeschlagen: {msg}",
+      error: "QQ Fehler: {msg}",
+      busy: "[beschäftigt] Ein Turn läuft bereits — bitte warten und erneut senden.",
+    },
+  },
 };

@@ -1036,4 +1036,13 @@ export interface TranslationSchema {
       choicePrompt: string;
     };
   };
+  commands: {
+    qq: {
+      help: string;
+      workspaceHint: string;
+      sendFailed: string;
+      error: string;
+      busy: string;
+    };
+  };
 }

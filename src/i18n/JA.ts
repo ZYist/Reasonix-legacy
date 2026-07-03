@@ -2183,4 +2183,13 @@ export const JA: TranslationSchema = {
       choicePrompt: "選択してください\n\n{question}\n\nオプション:\n{options}{customHint}",
     },
   },
+  commands: {
+    qq: {
+      help: "ヘッドレスホストでQQボットを起動(デスクトップsidecarから切り離す)。",
+      workspaceHint: "ワークスペースのルートディレクトリ(デフォルト: cwd)",
+      sendFailed: "QQ 送信失敗: {msg}",
+      error: "QQ エラー: {msg}",
+      busy: "[処理中] ターン進行中です — 完了後に再送してください。",
+    },
+  },
 };

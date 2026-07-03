@@ -621,4 +621,13 @@ export const ru: TranslationSchema = {
       choicePrompt: "Выберите\n\n{question}\n\nВарианты:\n{options}{customHint}",
     },
   },
+  commands: {
+    qq: {
+      help: "Запустить QQ-бота на headless-хосте (отвязан от desktop sidecar).",
+      workspaceHint: "корневой каталог рабочего пространства (по умолчанию: cwd)",
+      sendFailed: "Ошибка QQ sendResponse: {msg}",
+      error: "Ошибка QQ: {msg}",
+      busy: "[занят] ход уже выполняется — подождите и отправьте снова.",
+    },
+  },
 };
