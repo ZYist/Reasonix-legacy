@@ -16,7 +16,7 @@
 
 ### Bot Decoupling(聊天机器人解耦)
 
-- [ ] **BOT-01**: QQ 接入从桌面 sidecar 解耦为独立 CLI 命令,不依赖 Tauri JSON-RPC 协议即可运行
+- [x] **BOT-01**: QQ 接入从桌面 sidecar 解耦为独立 CLI 命令,不依赖 Tauri JSON-RPC 协议即可运行
 - [ ] **BOT-02**: Telegram/微信 channel 保留可用,可经独立 CLI 宿主启动(迁移现有接入,不重写协议)
 - [ ] **BOT-03**: 机器人复用核心对话循环 / 暂停门 / 工具集,不重复实现
 
@@ -41,7 +41,7 @@
 |-------------|-------|--------|
 | PANEL-01 | Phase 1 | Complete |
 | PANEL-03 | Phase 1 | Complete |
-| BOT-01 | Phase 2 | Pending |
+| BOT-01 | Phase 2 | Complete |
 | BOT-02 | Phase 2 | Pending |
 | BOT-03 | Phase 2 | Pending |
 | PANEL-02 | Phase 3 | Pending |

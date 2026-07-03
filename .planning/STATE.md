@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 2
 current_phase_name: not yet planned
 status: verifying
-stopped_at: Phase 2 02-01 complete — headless host + gate-bridges foundation (BOT-03)
-last_updated: "2026-07-03T08:24:26.356Z"
+stopped_at: Phase 2 02-02 complete — reasonix qq mounts QQ on HeadlessHost (BOT-01)
+last_updated: "2026-07-03T08:53:23.515Z"
 last_activity: 2026-07-03
 last_activity_desc: Phase 01 complete (goal verified 4/4, code review clean), transitioned to Phase 2
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 5
-  completed_plans: 3
+  completed_plans: 4
   percent: 25
 ---
 
@@ -28,10 +28,10 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 
 ## Current Position
 
-Phase: 2 — Bot Decoupling to Standalone CLI (not yet planned)
-Plans: Phase 01 complete (2/2 — 01-01, 01-02); Phase 02 has 3 plans pending planning
-Status: Phase 01 verified + complete; ready to plan Phase 02 (Bot Decoupling)
-Last activity: 2026-07-03 — Phase 01 complete (goal verified 4/4, code review clean), transitioned to Phase 2
+Phase: 2 — Bot Decoupling to Standalone CLI (in progress)
+Plans: Phase 01 complete (2/2 — 01-01, 01-02); Phase 02 in progress (2/3 — 02-01 headless host, 02-02 reasonix qq; 02-03 telegram/weixin pending)
+Status: Phase 02 02-02 complete — reasonix qq mounts QQ on HeadlessHost (BOT-01); next is 02-03
+Last activity: 2026-07-03 — Phase 02 02-02 complete (QQ decoupled from Tauri sidecar)
 
 Progress: [███░░░░░░░] 25% milestone (1/4 phases)
 
@@ -95,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-03T08:24:26.348Z
-Stopped at: Phase 2 02-01 complete — headless host + gate-bridges foundation (BOT-03)
-Resume file: .planning/phases/02-bot-decoupling-to-standalone-cli/02-01-SUMMARY.md
+Last session: 2026-07-03T08:52:58.286Z
+Stopped at: Phase 2 02-02 complete — reasonix qq mounts QQ on HeadlessHost (BOT-01)
+Resume file: .planning/phases/02-bot-decoupling-to-standalone-cli/02-02-SUMMARY.md
