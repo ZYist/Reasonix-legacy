@@ -5,10 +5,10 @@ milestone_name: milestone
 current_phase: 02
 current_phase_name: bot-decoupling-to-standalone-cli
 status: executing
-stopped_at: Phase 02 complete pending verification — reasonix telegram + weixin mount on HeadlessHost (BOT-02); all 3 bots have standalone CLI entries
-last_updated: "2026-07-03T13:25:46.000Z"
+stopped_at: Phase 02 verification human_needed — 8/8 architectural must-haves verified (BOT-01/02/03 delivered, D-09 intact, CR-01+WR-02 fixed); 4 live-exchange UAT items pending (/gsd-verify-work 02)
+last_updated: "2026-07-03T22:35:46.000Z"
 last_activity: 2026-07-03
-last_activity_desc: Phase 02 02-03 complete — telegram/weixin on HeadlessHost
+last_activity_desc: Phase 02 verified human_needed — live-exchange UAT pending
 progress:
   total_phases: 4
   completed_phases: 1
@@ -95,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-03T13:25:46.000Z
-Stopped at: Phase 02 complete pending verification — reasonix telegram + weixin mount on HeadlessHost (BOT-02)
-Resume file: .planning/phases/02-bot-decoupling-to-standalone-cli/02-03-SUMMARY.md
+Last session: 2026-07-03T22:35:46.000Z
+Stopped at: Phase 02 verification human_needed — 8/8 architectural must-haves verified; 4 live-exchange UAT items pending (/gsd-verify-work 02)
+Resume file: .planning/phases/02-bot-decoupling-to-standalone-cli/02-VERIFICATION.md
