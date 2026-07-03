@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 2
-current_phase_name: not yet planned
-status: verifying
-stopped_at: Phase 2 02-02 complete — reasonix qq mounts QQ on HeadlessHost (BOT-01)
-last_updated: "2026-07-03T08:53:23.515Z"
+current_phase: 02
+current_phase_name: bot-decoupling-to-standalone-cli
+status: executing
+stopped_at: Phase 02 complete pending verification — reasonix telegram + weixin mount on HeadlessHost (BOT-02); all 3 bots have standalone CLI entries
+last_updated: "2026-07-03T13:25:46.000Z"
 last_activity: 2026-07-03
-last_activity_desc: Phase 01 complete (goal verified 4/4, code review clean), transitioned to Phase 2
+last_activity_desc: Phase 02 02-03 complete — telegram/weixin on HeadlessHost
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 5
-  completed_plans: 4
+  completed_plans: 5
   percent: 25
 ---
 
@@ -24,14 +24,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-02)
 
 **Core value:** 在终端里跑一个低成本、不中断的 DeepSeek 编程 agent——缓存优先压低成本,工具调用 JSON 自修复保证 loop 不被打断。
-**Current focus:** Phase 02 — Bot Decoupling to Standalone CLI
+**Current focus:** Phase 02 — bot-decoupling-to-standalone-cli
 
 ## Current Position
 
-Phase: 2 — Bot Decoupling to Standalone CLI (in progress)
-Plans: Phase 01 complete (2/2 — 01-01, 01-02); Phase 02 in progress (2/3 — 02-01 headless host, 02-02 reasonix qq; 02-03 telegram/weixin pending)
-Status: Phase 02 02-02 complete — reasonix qq mounts QQ on HeadlessHost (BOT-01); next is 02-03
-Last activity: 2026-07-03 — Phase 02 02-02 complete (QQ decoupled from Tauri sidecar)
+Phase: 02 (bot-decoupling-to-standalone-cli) — COMPLETE pending verification
+Plans: Phase 01 complete (2/2 — 01-01, 01-02); Phase 02 complete (3/3 — 02-01 headless host, 02-02 reasonix qq, 02-03 telegram/weixin)
+Status: Phase 02 complete pending verification — all 3 bots (qq/telegram/weixin) have standalone CLI entries on the same HeadlessHost
+Last activity: 2026-07-03 — 02-03 telegram/weixin mounted on HeadlessHost
 
 Progress: [███░░░░░░░] 25% milestone (1/4 phases)
 
@@ -48,14 +48,14 @@ Progress: [███░░░░░░░] 25% milestone (1/4 phases)
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Web Panel Removal | 2/2 | ~81 min | ~69 min |
-| 2. Bot Decoupling | 0/3 | — | — |
+| 2. Bot Decoupling | 3/3 | ~37 min | ~12 min (02-01, 02-02, 02-03) |
 | 3. Desktop GUI Removal | 0/1 | — | — |
 | 4. Build Chain & Regression | 0/2 | — | — |
 
 **Recent Trend:**
 
-- Last 5 plans: —
-- Trend: — (not started)
+- Last 5 plans: 01-02 (~24min), 02-01, 02-02 (~21min), 02-03 (~16min)
+- Trend: Phase 02 three-plan arc trending faster (recipe reuse 02-02→02-03)
 
 *Updated after each plan completion*
 
@@ -95,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-03T08:52:58.286Z
-Stopped at: Phase 2 02-02 complete — reasonix qq mounts QQ on HeadlessHost (BOT-01)
-Resume file: .planning/phases/02-bot-decoupling-to-standalone-cli/02-02-SUMMARY.md
+Last session: 2026-07-03T13:25:46.000Z
+Stopped at: Phase 02 complete pending verification — reasonix telegram + weixin mount on HeadlessHost (BOT-02)
+Resume file: .planning/phases/02-bot-decoupling-to-standalone-cli/02-03-SUMMARY.md
