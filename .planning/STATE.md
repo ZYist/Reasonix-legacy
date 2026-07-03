@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 01
-current_phase_name: Web Panel Removal
-status: executing
-stopped_at: 01-02 complete (i18n dead strings cleared + code-mode runtime smoke passed: read_file → 0.55.0); Phase 01 plans done, ready for goal verification
-last_updated: "2026-07-03T00:49:12Z"
+current_phase: 2
+current_phase_name: Bot Decoupling to Standalone CLI
+status: verifying
+stopped_at: Phase 01 plans complete (01-01 + 01-02 done); ready for goal verification (gsd-verifier). 01-02 Task 2 runtime smoke passed — reasonix code mode read_file read package.json 0.55.0, no panel errors.
+last_updated: "2026-07-03T01:14:02.128Z"
 last_activity: 2026-07-03
-last_activity_desc: 01-02 complete — panel i18n dead strings cleared + code-mode runtime smoke (read_file read package.json 0.55.0)
+last_activity_desc: Phase 01 complete, transitioned to Phase 2
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
   completed_plans: 2
-  percent: 100
+  percent: 25
 ---
 
 # Project State
@@ -24,16 +24,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-02)
 
 **Core value:** 在终端里跑一个低成本、不中断的 DeepSeek 编程 agent——缓存优先压低成本,工具调用 JSON 自修复保证 loop 不被打断。
-**Current focus:** Phase 01 — Web Panel Removal
+**Current focus:** Phase 02 — Bot Decoupling to Standalone CLI
 
 ## Current Position
 
-Phase: 01 (Web Panel Removal) — plans complete, ready for goal verification
-Plans: 2 planned (2 complete) in current phase — 01-01 done (wave 1), 01-02 done (wave 2)
-Status: Phase 01 plans complete — ready for goal verification (gsd-verifier)
-Last activity: 2026-07-03 — 01-02 complete (i18n dead strings cleared + code-mode runtime smoke: read_file → 0.55.0)
+Phase: 2 — Bot Decoupling to Standalone CLI (not yet planned)
+Plans: Phase 01 complete (2/2 — 01-01, 01-02); Phase 02 has 3 plans pending planning
+Status: Phase 01 verified + complete; ready to plan Phase 02 (Bot Decoupling)
+Last activity: 2026-07-03 — Phase 01 complete (goal verified 4/4, code review clean), transitioned to Phase 2
 
-Progress: [██████████] 100% (plans); phase goal verification pending
+Progress: [███░░░░░░░] 25% milestone (1/4 phases)
 
 ## Performance Metrics
 
