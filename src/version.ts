@@ -16,7 +16,8 @@ export const LATEST_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 /** Network timeout. Short — we never block the UI waiting on this. */
 export const LATEST_FETCH_TIMEOUT_MS = 2_000;
 
-/** `name === "reasonix"` guard avoids picking up an outer package.json when loaded as a dep. */
+/** Name guard accepts reasonix + reasonix-legacy so VERSION tracks the real package.json. */
+const OWN_PACKAGE_NAMES = new Set(["reasonix", "reasonix-legacy"]);
 function readPackageVersion(): string {
   try {
     let dir = dirname(fileURLToPath(import.meta.url));
@@ -24,7 +25,7 @@ function readPackageVersion(): string {
       const p = join(dir, "package.json");
       if (existsSync(p)) {
         const pkg = JSON.parse(readFileSync(p, "utf8"));
-        if (pkg?.name === "reasonix" && typeof pkg.version === "string") {
+        if (pkg && OWN_PACKAGE_NAMES.has(pkg.name) && typeof pkg.version === "string") {
           return pkg.version;
         }
       }

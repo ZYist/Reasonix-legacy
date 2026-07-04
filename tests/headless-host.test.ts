@@ -8,6 +8,7 @@
 // exit code.
 import assert from "node:assert/strict";
 import { pathToFileURL } from "node:url";
+import { describe, expect, it } from "vitest";
 import {
   type HeadlessHostContext,
   getActiveSessionId,
@@ -213,4 +214,12 @@ if (isDirectRun) {
   });
 }
 
-export { run as runHeadlessHostTests };
+// Vitest registration: the dual-mode `run()` above also runs under `npm test`
+// so this file counts toward the vitest suite. The node-direct tail
+// (`isDirectRun`) still drives the plan's `node --import tsx` gate exit code.
+describe("headless-host", () => {
+  it("runs all headless host cases (assistant text, abort, error, AsyncLocalStorage)", async () => {
+    await run();
+    expect(failure, failure?.message ?? "").toBeNull();
+  });
+});

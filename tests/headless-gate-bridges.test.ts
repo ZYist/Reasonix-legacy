@@ -9,6 +9,7 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
+import { describe, expect, it } from "vitest";
 import {
   defaultBuildPrompt,
   installHeadlessGateBridges,
@@ -357,4 +358,12 @@ if (isDirectRun) {
   });
 }
 
-export { run as runHeadlessGateBridgesTests };
+// Vitest registration: the dual-mode `run()` above also runs under `npm test`
+// so this file counts toward the vitest suite. The node-direct tail
+// (`isDirectRun`) still drives the plan's `node --import tsx` gate exit code.
+describe("headless-gate-bridges", () => {
+  it("runs all gate-bridge cases (policy, auto-resolve, interactive, tampering, parser, prompt)", async () => {
+    await run();
+    expect(failure, failure?.message ?? "").toBeNull();
+  });
+});
