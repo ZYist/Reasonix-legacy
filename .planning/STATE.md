@@ -5,10 +5,10 @@ milestone_name: milestone
 current_phase: 04
 current_phase_name: Build Chain Cleanup & Full Regression
 status: executing
-stopped_at: Completed 04-02-PLAN.md (full regression — SAFE-01/02/03 satisfied, milestone M1 closeable)
-last_updated: "2026-07-05T00:55:00.000Z"
+stopped_at: Phase 04 human_needed — 3 UAT items pending (live chat/code/run turn, live qq/telegram/weixin bot turn, CLAUDE.md skim); awaiting /gsd-verify-work 04
+last_updated: "2026-07-04T17:52:32.745Z"
 last_activity: 2026-07-05
-last_activity_desc: 04-02 complete (14 reds → 3 deferred, commands smoke green, tree-sitter e2e green)
+last_activity_desc: 04-02 complete (14 baseline reds → 3 evidence-deferred, every CLI command launches, tree-sitter code-query e2e green)
 progress:
   total_phases: 4
   completed_phases: 4
@@ -112,6 +112,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-05T00:55:00.000Z
-Stopped at: Completed 04-02-PLAN.md (full regression — SAFE-01/02/03 satisfied, milestone M1 closeable)
-Resume file: milestone M1 ready to close (/gsd-complete-milestone or audit-UAT flow); next work is fix-cycle for the 3 bucket-3 deferred reds + hydrate-cards Biome warning + WR-05/IN-* items
+Last session: 2026-07-04T17:52:32.738Z
+Stopped at: Phase 04 human_needed — 3 UAT items pending (live chat/code/run turn, live qq/telegram/weixin bot turn, CLAUDE.md skim); awaiting /gsd-verify-work 04
+Resume file: .planning/phases/04-build-chain-cleanup-full-regression/04-UAT.md
