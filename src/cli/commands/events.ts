@@ -20,7 +20,6 @@ export function eventsCommand(opts: EventsOptions): void {
   if (events.length === 0) {
     console.error(t("app.noEventsFor", { name: opts.name }));
     console.error(t("app.lookedAtFile", { path }));
-    console.error(t("app.sidecarHint"));
     process.exit(1);
     return;
   }

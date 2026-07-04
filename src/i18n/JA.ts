@@ -793,8 +793,6 @@ export const JA: TranslationSchema = {
     discardedCount: "\u25b8 {count} 件の保留中編集ブロックを破棄しました",
     noEventsFor: 'セッション "{name}" のイベントはありません',
     lookedAtFile: "参照: {path}",
-    sidecarHint:
-      "（セッションは最初のターンでサイドカーを自動作成します — このセッションはまだ実行されていませんか？）",
   },
   hooks: {
     ...EN.hooks,
@@ -2204,6 +2202,10 @@ export const JA: TranslationSchema = {
       sendFailed: "Weixin 送信失敗: {msg}",
       error: "Weixin エラー: {msg}",
       busy: "[処理中] ターン進行中です — 完了後に再送してください。",
+    },
+    desktop: {
+      retired:
+        "`reasonix desktop` は廃止されました。ターミナルからボットを操作するには、代わりに `reasonix qq`・`reasonix telegram`・`reasonix weixin` を使用してください。",
     },
   },
 };

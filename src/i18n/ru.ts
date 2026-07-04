@@ -643,5 +643,9 @@ export const ru: TranslationSchema = {
       error: "Ошибка Weixin: {msg}",
       busy: "[занят] ход уже выполняется — подождите и отправьте снова.",
     },
+    desktop: {
+      retired:
+        "`reasonix desktop` выведен из эксплуатации. Чтобы управлять ботами из терминала, используйте `reasonix qq`, `reasonix telegram` или `reasonix weixin`.",
+    },
   },
 };

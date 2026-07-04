@@ -702,8 +702,6 @@ export const EN: TranslationSchema = {
     discardedCount: "\u25b8 discarded {count} pending edit block(s)",
     noEventsFor: 'no events for session "{name}"',
     lookedAtFile: "looked at: {path}",
-    sidecarHint:
-      "(sessions auto-create the sidecar on first turn \u2014 has this session run yet?)",
   },
   hooks: {
     head: "hook {tag} `{cmd}` {decision}{truncTag}",
@@ -2143,6 +2141,10 @@ export const EN: TranslationSchema = {
       sendFailed: "Weixin sendResponse failed: {msg}",
       error: "Weixin error: {msg}",
       busy: "[busy] a turn is already in flight — please wait and resend.",
+    },
+    desktop: {
+      retired:
+        "`reasonix desktop` has been retired. To drive bots from the terminal, use `reasonix qq`, `reasonix telegram`, or `reasonix weixin` instead.",
     },
   },
 };

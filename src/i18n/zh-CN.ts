@@ -673,7 +673,6 @@ export const zhCN: TranslationSchema = {
     discardedCount: "▸ 已丢弃 {count} 个待处理编辑",
     noEventsFor: '没有会话 "{name}" 的事件',
     lookedAtFile: "位置：{path}",
-    sidecarHint: "（会话会在第一轮时自动创建 sidecar — 此会话是否运行过？）",
   },
   hooks: {
     head: "钩子 {tag} `{cmd}` {decision}{truncTag}",
@@ -2024,6 +2023,10 @@ export const zhCN: TranslationSchema = {
       sendFailed: "微信发送回复失败:{msg}",
       error: "微信错误:{msg}",
       busy: "[忙碌] 一轮对话正在进行,请稍后重试。",
+    },
+    desktop: {
+      retired:
+        "`reasonix desktop` 已下线。若要在终端驱动机器人,请改用 `reasonix qq`、`reasonix telegram` 或 `reasonix weixin`。",
     },
   },
 };

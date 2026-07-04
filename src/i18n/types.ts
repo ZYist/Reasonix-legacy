@@ -254,7 +254,6 @@ export interface TranslationSchema {
     discardedCount: string;
     noEventsFor: string;
     lookedAtFile: string;
-    sidecarHint: string;
   };
   mcpBrowse: {
     noResources: string;
@@ -1057,6 +1056,9 @@ export interface TranslationSchema {
       sendFailed: string;
       error: string;
       busy: string;
+    };
+    desktop: {
+      retired: string;
     };
   };
 }

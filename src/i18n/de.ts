@@ -690,8 +690,6 @@ export const de: TranslationSchema = {
     discardedCount: "▸ {count} ausstehende Edit-Block(s) verworfen",
     noEventsFor: 'Keine Ereignisse für Sitzung "{name}"',
     lookedAtFile: "Angesehen: {path}",
-    sidecarHint:
-      "(Sitzungen erstellen den Sidecar automatisch beim ersten Turn — wurde diese Sitzung bereits ausgeführt?)",
   },
   hooks: {
     ...EN.hooks,
@@ -2105,6 +2103,10 @@ export const de: TranslationSchema = {
       sendFailed: "Weixin SendResponse fehlgeschlagen: {msg}",
       error: "Weixin Fehler: {msg}",
       busy: "[beschäftigt] Ein Turn läuft bereits — bitte warten und erneut senden.",
+    },
+    desktop: {
+      retired:
+        "`reasonix desktop` wurde eingestellt. Um Bots vom Terminal aus zu steuern, verwenden Sie stattdessen `reasonix qq`, `reasonix telegram` oder `reasonix weixin`.",
     },
   },
 };
