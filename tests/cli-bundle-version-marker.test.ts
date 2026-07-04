@@ -38,6 +38,25 @@ describe("write-cli-package-marker", () => {
     });
   });
 
+  it("carries the reasonix-legacy package name through unchanged", () => {
+    // The fork publishes as reasonix-legacy; the script must echo that name
+    // from package.json rather than silently coercing to upstream reasonix.
+    writeFileSync(
+      join(tmp, "package.json"),
+      JSON.stringify({ name: "reasonix-legacy", version: "0.55.0" }),
+    );
+    const script = resolve("scripts/write-cli-package-marker.mjs");
+    const run = spawnSync(process.execPath, [script], { cwd: tmp, encoding: "utf8" });
+
+    expect(run.status).toBe(0);
+    const marker = JSON.parse(readFileSync(join(tmp, "dist/cli/package.json"), "utf8"));
+    expect(marker).toEqual({
+      name: "reasonix-legacy",
+      version: "0.55.0",
+      type: "module",
+    });
+  });
+
   it("creates the dist/cli directory if it does not exist", () => {
     // No pre-create of dist/cli — the script must mkdirSync(recursive: true).
     const script = resolve("scripts/write-cli-package-marker.mjs");
@@ -59,7 +78,7 @@ describe("write-cli-package-marker", () => {
 
     expect(run.status).toBe(0);
     const marker = JSON.parse(readFileSync(join(tmp, "dist/cli/package.json"), "utf8"));
-    expect(marker.name).toBe("reasonix");
+    expect(marker.name).toBe("reasonix-legacy");
     expect(marker.version).toBe("0.0.0-dev");
     expect(marker.type).toBe("module");
   });

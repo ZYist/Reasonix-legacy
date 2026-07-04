@@ -6,7 +6,7 @@ import { dirname, resolve } from "node:path";
 const cliMarker = resolve("dist/cli/package.json");
 const rootPackage = JSON.parse(readFileSync(resolve("package.json"), "utf8"));
 const cliPackage = {
-  name: rootPackage.name ?? "reasonix",
+  name: rootPackage.name ?? "reasonix-legacy",
   version: rootPackage.version ?? "0.0.0-dev",
   type: "module",
 };
