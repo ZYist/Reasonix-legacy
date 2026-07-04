@@ -167,6 +167,20 @@ describe("detectNpmInstallPrefix", () => {
     ).toBe("C:/Users/me/AppData/Roaming/npm");
   });
 
+  it("extracts the prefix from a reasonix-legacy POSIX install path", () => {
+    expect(
+      detectNpmInstallPrefix("/usr/local/lib/node_modules/reasonix-legacy/dist/cli/index.js"),
+    ).toBe("/usr/local");
+  });
+
+  it("extracts the prefix from a reasonix-legacy Windows install path", () => {
+    expect(
+      detectNpmInstallPrefix(
+        "C:\\Users\\me\\AppData\\Roaming\\npm\\node_modules\\reasonix-legacy\\dist\\cli\\index.js",
+      ),
+    ).toBe("C:/Users/me/AppData/Roaming/npm");
+  });
+
   it("returns null when no reasonix node_modules segment is present", () => {
     expect(detectNpmInstallPrefix("/opt/custom/bin/reasonix")).toBeNull();
   });
