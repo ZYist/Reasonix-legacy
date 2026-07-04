@@ -25,13 +25,13 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 - ✓ **多语言 i18n** — zh/EN/ja/de/ru — existing
 - ✓ **tree-sitter 代码符号语义检索** — code-query 工具 — existing
 - ✓ **Web 面板剥离** — `dashboard/` + `src/server/` + CLI 内部面板适配代码完全切除,CLI/TUI 无面板运行 — Validated in Phase 1: Web Panel Removal (2026-07-03)
+- ✓ **机器人接入解耦为独立 CLI 命令** — QQ/Telegram/微信 channel 经传输协议无关的 HeadlessHost 作为独立 CLI 命令运行,复用核心 CacheFirstLoop/PauseGate/完整 ToolRegistry,脱离桌面 sidecar 与 Tauri JSON-RPC — Validated in Phase 2: Bot Decoupling to Standalone CLI (2026-07-04)
 
 ### Active
 
 <!-- 当前里程碑:精简为纯 CLI -->
 
 - [ ] 剥离 Tauri 桌面 GUI(`desktop/` + sidecar 外壳)
-- [ ] 将 QQ/Telegram/微信机器人接入从桌面 sidecar 解耦为独立 CLI 命令
 - [ ] 清理面板相关死代码、config 项与构建链(build / files / postinstall / typecheck)
 - [ ] 保证纯 CLI 路径(chat/code/run/acp 等)功能不回归
 
@@ -51,6 +51,7 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
   - `src/qq|telegram|weixin` 已是独立 channel 模块,解耦成本低;目前只有 QQ 接进了 sidecar。
 - ⚠️ `scripts/copy-tree-sitter-grammars.mjs` + `src/code-query/` 服务于 CLI 代码符号搜索,**与面板无关,任何阶段必须保留**。
 - **当前进度(2026-07-03):** Phase 1(Web Panel Removal)完成 —— `dashboard/` + `src/server/` 已删,CLI 内部面板适配代码清零,typecheck/build/lint 绿,运行时冒烟通过(reasonix code 模式 read_file 读到 package.json 0.55.0)。收敛基线:src/ 下 24 处 "dashboard" 字面量(合法 stats CLI 命名 + 锚点注释),作 Phase 4 drift 基线。下一步 Phase 2:机器人从桌面 sidecar 解耦到无头宿主。
+- **当前进度(2026-07-04):** Phase 2(Bot Decoupling to Standalone CLI)完成 —— 传输协议无关的 HeadlessHost(`src/cli/headless/`)复用 CacheFirstLoop/PauseGate/完整 ToolRegistry(零重实现);`reasonix qq`/`telegram`/`weixin` 三命令挂载同一宿主,脱离 Tauri JSON-RPC;`desktop` sidecar 字节未动(D-09 共存)。UAT:QQ + WeChat + desktop live-verified,Telegram deferred(缺 token,acknowledged)。8/8 架构 truth VERIFIED,`threats_open: 0`(WR-05 medium deferred)。下一步 Phase 3:移除桌面 GUI。
 
 ## Constraints
 
@@ -63,8 +64,8 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
 | 放弃 Web 面板 + Tauri 桌面 GUI,走纯 CLI | 用户不再维护面板,聚焦 CLI 体验 | Web 面板已剥离(Phase 1,2026-07-03);桌面 GUI 待 Phase 3 |
-| 保留 QQ/Telegram/微信机器人接入 | 远程/移动控制能力仍有价值 | — Pending |
-| 机器人接入解耦为独立 CLI 命令(非删、非保留 GUI) | 当前寄生在桌面 sidecar,删 GUI 必须先解耦 | — Pending |
+| 保留 QQ/Telegram/微信机器人接入 | 远程/移动控制能力仍有价值 | ✓ Phase 2 — qq/telegram/weixin 经 HeadlessHost 独立 CLI(2026-07-04) |
+| 机器人接入解耦为独立 CLI 命令(非删、非保留 GUI) | 当前寄生在桌面 sidecar,删 GUI 必须先解耦 | ✓ Phase 2 完成 — core reuse 零重实现,脱离 Tauri JSON-RPC(2026-07-04) |
 
 ## Evolution
 
@@ -84,4 +85,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-03 after Phase 1 (Web Panel Removal) completion*
+*Last updated: 2026-07-04 after Phase 2 (Bot Decoupling to Standalone CLI) completion*

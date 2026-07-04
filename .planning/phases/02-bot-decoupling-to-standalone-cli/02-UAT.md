@@ -3,7 +3,7 @@ status: complete
 phase: 02-bot-decoupling-to-standalone-cli
 source: [02-VERIFICATION.md]
 started: 2026-07-03T22:35:00Z
-updated: 2026-07-03T23:06:00Z
+updated: 2026-07-04T00:12:00Z
 ---
 
 # Phase 02 UAT — Bot Decoupling to Standalone CLI
@@ -34,6 +34,7 @@ Run `reasonix telegram --workspace <path>` with a TELEGRAM_BOT_TOKEN and send/re
 expected: Inbound Telegram text -> host.runTurn -> reply posted back to the Telegram chat.
 result: skipped
 reason: 用户标记为待测项暂跳过——暂未配置 TELEGRAM_BOT_TOKEN / 未进行 live long-poll 实测,留待后续 cycle。
+acknowledged: true (2026-07-04 开发者授权接受为 deferred UAT 推进 phase;详见 02-VERIFICATION.md `Acknowledged Gaps`;架构覆盖由 tests/telegram-command.test.ts 5/5 + 同源 HeadlessHost——QQ/WeChat 已 live-verified——保证,仅 Telegram 传输特异路径待 live 复测)
 
 ### 3. reasonix weixin cold-start QR scan + live exchange
 

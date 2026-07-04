@@ -14,7 +14,7 @@ Milestone M1「精简为纯 CLI」把项目从多前端(CLI/TUI + Web 面板 + T
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Web Panel Removal** - 切除 dashboard/ + src/server/ 及 CLI 内部面板适配代码,CLI/TUI 无面板运行 (completed 2026-07-03)
-- [ ] **Phase 2: Bot Decoupling to Standalone CLI** - 提取无头对话宿主,QQ/TG/微信经独立 CLI 命令运行,复用核心循环
+- [x] **Phase 2: Bot Decoupling to Standalone CLI** - 提取无头对话宿主,QQ/TG/微信经独立 CLI 命令运行,复用核心循环 (completed 2026-07-04)
 - [ ] **Phase 3: Desktop GUI Removal** - 移除 Tauri 桌面应用与 sidecar 外壳,desktop 命令下线,机器人不受影响
 - [ ] **Phase 4: Build Chain Cleanup & Full Regression** - 构建链简化,CLI 独立构建发布,全量 verify 通过零回归
 
@@ -122,7 +122,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Web Panel Removal | 2/2 | Complete    | 2026-07-03 |
-| 2. Bot Decoupling to Standalone CLI | 3/3 | Complete (pending verification) | 2026-07-03 |
+| 2. Bot Decoupling to Standalone CLI | 3/3 | Complete    | 2026-07-03 |
 | 3. Desktop GUI Removal | 0/1 | Not started | - |
 | 4. Build Chain Cleanup & Full Regression | 0/2 | Not started | - |
 

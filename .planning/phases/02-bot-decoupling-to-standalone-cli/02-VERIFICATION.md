@@ -1,7 +1,7 @@
 ---
 phase: 02-bot-decoupling-to-standalone-cli
 verified: 2026-07-03T22:35:00Z
-status: human_needed
+status: passed
 score: 8/8 must-haves verified
 behavior_unverified: 0
 overrides_applied: 0
@@ -9,28 +9,35 @@ re_verification:
   previous_status: none
   is_re_verification: false
 human_verification:
+
   - test: "Run `reasonix qq --workspace <path>` with valid QQ credentials and exchange messages with a live QQ account"
     expected: "Inbound QQ message -> host.runTurn -> assistant reply delivered back to the QQ chat; gate prompts (run_command/plan) surface as QQ messages and numeric replies resolve the gate"
     why_human: "All 4 phase-02 command tests stub QQChannel.start/sendResponse; no automated test drives the real QQ WebSocket gateway. The success criteria explicitly require '收发 QQ 消息' (send/receive QQ messages), which needs live network + credentials."
+
   - test: "Run `reasonix telegram --workspace <path>` with a TELEGRAM_BOT_TOKEN and send/receive a message"
     expected: "Inbound Telegram text -> host.runTurn -> reply posted back to the Telegram chat"
     why_human: "tests/telegram-command.test.ts stubs TelegramChannel (botToken long-poll). The live Telegram long-poll exchange cannot be driven without a real bot token + network."
+
   - test: "Run `reasonix weixin --workspace <path>` cold (no saved token) and complete the QR scan, then exchange a message"
     expected: "QR rendered to stderr -> operator scans with WeChat -> credentials persisted -> WeixinChannel.start connects -> inbound WeChat text drives a turn and reply is posted back"
     why_human: "tests/weixin-command.test.ts stubs runWeixinQrLogin + WeixinChannel and only asserts ordering; the actual QR state-machine + WeChat HTTP exchange needs a human scanner + live WeChat endpoints."
+
   - test: "Confirm `reasonix desktop` still launches the sidecar (SC4: sidecar still runs)"
     expected: "desktopCommand starts without error (qqRuntime + src/desktop/qq-*.ts untouched per D-09); QQ-over-sidecar path still functional as the coexistence fallback"
     why_human: "D-09 zero-diff is statically proven, but 'sidecar still runs' (SC4) is a runtime assertion no phase-02 test exercises end-to-end."
 security_review_items:
+
   - item: "WR-05 (deferred): raw (err as Error).message flows unfiltered to stderr via t('commands.{qq,telegram,weixin}.error', {msg}) in all 3 command controllers"
     risk: "If an upstream HTTP/auth failure embeds a bot token, appSecret, or DeepSeek key in the message, it is written verbatim to stderr. Threat-model T-02-08/T-02-13 mitigations claim no secret interpolation, but the code path does not redact."
     recommendation: "Route stderr-bound error text through src/core/event-redaction.ts redactEventValue before writing. Tracked as a separate fix-cycle follow-up (not a phase-02 goal blocker)."
 followups_deferred:
+
   - "WR-01: turn-driver marks outcome='error' on any kernel 'error' event (incl. recoverable) and never resets — assistant_final discarded on recoverable mid-turn errors (turn-driver.ts:80-83). Quality issue in error-recovery path; no must-have asserts error-recovery semantics."
   - "WR-03: single-slot `pending` interaction in gate-bridges (gate-bridges.ts:344) — parallel pausing tools within one turn orphan the first gate. Latent concurrency edge case; no must-have asserts intra-turn gate concurrency."
   - "WR-04: Weixin QR-login (weixin.ts:77) runs before SIGINT handlers installed (weixin.ts:172) — Ctrl-C during the multi-minute QR window hits Node's default handler with no graceful teardown. T-02-14 (sigint-before-start) is satisfied; the QR window is the uncovered gap."
   - "WR-06: // -comment essays in phase-02 files (mitigated by fix(02) commit cf584737; comment-policy test passes 9/9). Spirit-of-rules concern, not a policy violation."
   - "IN-01..IN-06: dead `effort` option, double defaultBuildPrompt call, unused gateCallbacks bag, undocumented checkpoint field, unused lowerText binding, parse*Choice duplicated across 4 modules — all cleanup items, none goal-blocking."
+
 ---
 
 # Phase 2: Bot Decoupling to Standalone CLI — Verification Report
@@ -155,6 +162,14 @@ The phase routes to `human_needed` (not `passed`) strictly because the success c
 **BOT-03 traceability action for the orchestrator:** REQUIREMENTS.md line 46 (`BOT-03 | Phase 2 | Pending`) should be updated to `Complete` — core reuse is verified (canonical imports, zero reimplementation, full ToolRegistry via buildCodeToolset, pauseGate singleton bridged).
 
 **On status `human_needed`:** proceed to the end-of-phase human checkpoint. Once the 4 live-exchange UAT items confirm (or are explicitly accepted as deferred UAT by the developer), the phase advances. None of the deferred code-review follow-ups (WR-01/03/04/05/06 + infos) block this — they are scheduled for a separate fix cycle per user decision.
+
+## Acknowledged Gaps
+
+Deferred UAT accepted by the developer on 2026-07-04 (explicit authorization during `/gsd-verify-work 02` completion gate):
+
+- **Test 2 — `reasonix telegram` live exchange [DEFERRED]:** Not exercised against a live Telegram long-poll endpoint this cycle (no `TELEGRAM_BOT_TOKEN` / live bot configured at verification time). Architectural coverage is complete — `tests/telegram-command.test.ts` (5/5) drives the full vertical slice (assembly + ctor divergence `{onSubmitMessage, onError}` + inbound dispatch + gate-reply routing + SIGINT-before-start), and the same HeadlessHost + GateCallbacks recipe is live-verified via QQ (Test 1) and WeChat (Test 3). The Telegram-specific path differs only in transport (botToken long-poll vs QQ WebSocket / WeChat HTTP), owned by the untouched `src/telegram/bot.ts`. The live Telegram round-trip remains a deferred UAT item to confirm before the next milestone boundary; it is not a code defect.
+
+This deferred item is the sole reason `phase uat-passed --require-verification` reports `passed: false` (blocker: `02-UAT.md: test 2 (skipped)`). UAT, verification, and security gates (`threats_open: 0`) are otherwise fully satisfied, and the developer authorized advancing the phase with this single UAT item deferred.
 
 ---
 
