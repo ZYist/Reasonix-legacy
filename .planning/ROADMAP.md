@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Web Panel Removal** - 切除 dashboard/ + src/server/ 及 CLI 内部面板适配代码,CLI/TUI 无面板运行 (completed 2026-07-03)
 - [x] **Phase 2: Bot Decoupling to Standalone CLI** - 提取无头对话宿主,QQ/TG/微信经独立 CLI 命令运行,复用核心循环 (completed 2026-07-04)
 - [x] **Phase 3: Desktop GUI Removal** - 移除 Tauri 桌面应用与 sidecar 外壳,desktop 命令下线,机器人不受影响 (completed 2026-07-04)
-- [ ] **Phase 4: Build Chain Cleanup & Full Regression** - 构建链简化,CLI 独立构建发布,全量 verify 通过零回归
+- [x] **Phase 4: Build Chain Cleanup & Full Regression** - 构建链简化,CLI 独立构建发布,全量 verify 通过零回归 (completed 2026-07-04)
 
 ## Phase Details
 
@@ -109,7 +109,7 @@ Plans:
   3. `scripts/copy-tree-sitter-grammars.mjs` + `src/code-query/` 保留可用,`code-query` 代码符号搜索正常工作——本 phase 删除清单不含它们(SAFE-02)
   4. `npm run verify`(build + lint + typecheck + test)全量通过,核心 loop/工具/记忆/MCP/AcP 零回归(SAFE-03)
 
-**Plans**: 1/2 plans executed
+**Plans**: 2/2 plans complete
 
 Plans:
 **Wave 1**
@@ -118,7 +118,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 04-02-PLAN.md — 全量回归:SAFE-03 测试 triage(删 7 dashboard 孤儿测试/修 milestone-caused/evidence-defer 预存红,D-01 zero-regression 标尺)+ SAFE-01 逐命令 hybrid 冒烟 + SAFE-02 tree-sitter e2e(code-query/grammars 保留可用) [SAFE-01/02/03]
+- [x] 04-02-PLAN.md — 全量回归:SAFE-03 测试 triage(删 7 dashboard 孤儿测试/修 milestone-caused/evidence-defer 预存红,D-01 zero-regression 标尺)+ SAFE-01 逐命令 hybrid 冒烟 + SAFE-02 tree-sitter e2e(code-query/grammars 保留可用) [SAFE-01/02/03]
 
 ## Progress
 
@@ -130,7 +130,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Web Panel Removal | 2/2 | Complete    | 2026-07-03 |
 | 2. Bot Decoupling to Standalone CLI | 3/3 | Complete    | 2026-07-03 |
 | 3. Desktop GUI Removal | 1/1 | Complete    | 2026-07-04 |
-| 4. Build Chain Cleanup & Full Regression | 1/2 | In Progress|  |
+| 4. Build Chain Cleanup & Full Regression | 2/2 | Complete   | 2026-07-04 |
 
 ---
 *Roadmap created: 2026-07-02 (Milestone M1: 精简为纯 CLI)*

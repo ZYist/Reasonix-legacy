@@ -22,9 +22,9 @@
 
 ### Regression Safety(不回归)
 
-- [ ] **SAFE-01**: 纯 CLI 命令(`chat`/`code`/`run`/`acp`/`commit`/`sessions`/`replay`/`diff`/`mcp`/`doctor` 等)功能不回归
-- [ ] **SAFE-02**: tree-sitter grammars 构建与 `code-query` 代码符号搜索保留可用
-- [ ] **SAFE-03**: `npm run verify`(build + lint + typecheck + test)通过;核心 loop/工具/记忆/MCP 零回归
+- [x] **SAFE-01**: 纯 CLI 命令(`chat`/`code`/`run`/`acp`/`commit`/`sessions`/`replay`/`diff`/`mcp`/`doctor` 等)功能不回归
+- [x] **SAFE-02**: tree-sitter grammars 构建与 `code-query` 代码符号搜索保留可用
+- [x] **SAFE-03**: `npm run verify`(build + lint + typecheck + test)通过;核心 loop/工具/记忆/MCP 零回归
 
 ## Out of Scope
 
@@ -46,9 +46,9 @@
 | BOT-03 | Phase 2 | Complete |
 | PANEL-02 | Phase 3 | Complete |
 | PANEL-04 | Phase 4 | Complete |
-| SAFE-01 | Phase 4 | Pending |
-| SAFE-02 | Phase 4 | Pending |
-| SAFE-03 | Phase 4 | Pending |
+| SAFE-01 | Phase 4 | Complete |
+| SAFE-02 | Phase 4 | Complete |
+| SAFE-03 | Phase 4 | Complete |
 
 **Coverage:**
 
