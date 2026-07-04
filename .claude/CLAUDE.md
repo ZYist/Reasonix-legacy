@@ -114,13 +114,13 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 - `style.noNonNullAssertion`: off (allowed).
 - `style.useImportType`: warn — use `import type` for type-only imports.
 - `suspicious.noExplicitAny`: off, BUT per CONTRIBUTING "No `any` without a `// biome-ignore` and a reason." In practice `any` appears in test fixtures and JSON parsing; production code prefers narrow types and adds an ignore comment with justification.
-- Ignored paths: `dist`, `node_modules`, `coverage`, `*.d.ts`, `dashboard/codemirror.js`, `packages/ink/**`.
+- Ignored paths: `dist`, `node_modules`, `coverage`, `*.d.ts`, `packages/ink/**`.
 - `strict: true`, plus `noUncheckedIndexedAccess`, `noImplicitOverride`, `noFallthroughCasesInSwitch`.
 - Target `ES2022`, `module: ESNext`, `moduleResolution: Bundler`.
 - Path aliases: `@/*` → `src/*`, `ink` → `packages/ink/src/index.ts`.
 - `isolatedModules: true` — every file must be independently transpilable (matters for tsup/esbuild builds).
 - `biome check src tests`
-- `tsc --noEmit` (and `tsc --noEmit -p dashboard`)
+- `tsc --noEmit`
 - `tsup` build
 - `vitest run` (incl. `tests/comment-policy.test.ts`)
 - Wired into git hooks via `simple-git-hooks`: `pre-commit` = lint, `pre-push` = full `verify`.
@@ -273,7 +273,7 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 - Purpose: Stable, hashable chat prefix for prompt-cache hits.
 - Examples: `src/memory/runtime.ts:42`.
 - Pattern: Tool specs sorted locale-independently; fingerprint invalidated on mutation.
-- Purpose: Discriminated-union event types emitted by `step()`; surfaces reduce them to UI/dashboard.
+- Purpose: Discriminated-union event types emitted by `step()`; surfaces reduce them to the TUI.
 - Examples: `src/loop/types.ts`, `src/core/events.ts` (`user.message`, `model.delta`, `model.final`, `tool.preparing/intent/dispatched/denied/result`, `slash.invoked`).
 - Pattern: Consumers subscribe via `loop.run(input, onEvent)` or `Eventizer` (`src/core/eventize.ts`).
 - Purpose: Track prefix hash drift so cache misses are explainable.
