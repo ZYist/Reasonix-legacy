@@ -3,7 +3,7 @@ status: complete
 phase: 03-desktop-gui-removal
 source: [03-VERIFICATION.md]
 started: 2026-07-04T08:17:56.000Z
-updated: 2026-07-04T15:13:05Z
+updated: 2026-07-04T15:26:19Z
 ---
 
 ## Current Test
@@ -32,6 +32,7 @@ note: |
 expected: With `TELEGRAM_BOT_TOKEN` set, `reasonix telegram` starts, receives a message, completes a turn, and sendResponse posts the reply. If no token is available, record as acknowledged-deferred (continues 02-VERIFICATION.md Acknowledged Gaps).
 result: skipped
 reason: "No TELEGRAM_BOT_TOKEN available; acknowledged-deferred from Phase 2 (continues 02-VERIFICATION.md Acknowledged Gaps). Same HeadlessHost turn path as Test 1 (only the src/telegram/bot.ts adapter differs); Test 1 already verified the HeadlessHost full-turn survives sidecar removal, and VERIFICATION Truth #18 confirms telegram start/stop signatures byte-unchanged this phase."
+acknowledged: true (2026-07-04 开发者授权接受为 deferred UAT 推进 phase;详见 03-VERIFICATION.md `Acknowledged Gaps`;架构覆盖由同源 HeadlessHost——QQ 已于本 phase live-verified(Test 1)——保证,仅 Telegram 传输特异路径待 live 复测)
 
 ## Summary
 

@@ -1,7 +1,7 @@
 ---
 phase: 03-desktop-gui-removal
 verified: 2026-07-04T16:20:00Z
-status: human_needed
+status: passed
 score: 26/27 must-haves verified
 behavior_unverified: 1
 overrides_applied: 0
@@ -12,14 +12,17 @@ re_verification:
   gaps_remaining: []
   regressions: []
 behavior_unverified_items:
+
   - truth: "Three channel public methods (start/sendResponse/stop) still drive one full turn via HeadlessHost after sidecar removal"
     test: "With a configured QQ (or WeChat) account, run `reasonix qq` (or `weixin`), receive one inbound message, confirm the HeadlessHost runs a turn and the channel's sendResponse posts the reply. Repeat for Telegram if TELEGRAM_BOT_TOKEN is available."
     expected: "A full bot turn completes end-to-end (inbound -> HeadlessHost -> loop -> tool dispatch -> sendResponse outbound) with no `Cannot find module '../../desktop/...'` or sidecar-related ESM errors."
     why_human: "Signatures are unchanged and --help smoke passes, but a full turn is a runtime state transition (channel.start -> turn driver -> sendResponse) that no passing test in this phase exercises. tests/headless-host.test.ts and tests/headless-gate-bridges.test.ts exist but are in the documented pre-existing-red set (Phase 1/2 latent debt) and cannot serve as behavioral evidence. Phase 2 UAT historically covered this, but it is not re-run this phase. Preservation-by-construction (signatures unchanged + deletion of orphan sidecar only) makes regression low-risk, but presence checks cannot see a turn complete."
 human_verification:
+
   - test: "Drive one full QQ turn via `reasonix qq` (and one WeChat turn via `reasonix weixin` if configured) to confirm send/recv survives the sidecar removal."
     expected: "Inbound message -> HeadlessHost runs a CacheFirstLoop turn -> channel.sendResponse posts the model reply. No ESM resolution errors referencing deleted src/desktop/* or commands/desktop.js."
     why_human: "Full-turn behavior is a state transition; the only named tests (headless-host, headless-gate-bridges) are pre-existing-red and excluded by scope. Signatures unchanged + Phase 2 UAT provide preservation-by-construction, not this-phase behavioral proof."
+
   - test: "With TELEGRAM_BOT_TOKEN set, run `reasonix telegram` and drive one full turn."
     expected: "Telegram bot starts, receives a message, completes a turn, and sendResponse posts the reply."
     why_human: "Acknowledged-deferred from Phase 2 (no token in env). Carried forward per 02-VERIFICATION.md Acknowledged Gaps; cannot run without a live Telegram token."
@@ -162,6 +165,14 @@ No gaps block the phase goal. All structural deletions, the retirement stub, i18
 The single behavior-unverified truth (full bot turn via HeadlessHost) is routed to human verification rather than marked FAILED because: (a) the sidecar was an orphan with no HeadlessHost之外的消费者 (Phase 2 D-09 共存契约 confirmed); (b) all public method signatures are byte-for-byte unchanged (git diff confirms src/qq/, src/telegram/, src/weixin/, src/cli/headless/ untouched); (c) Phase 2 UAT historically exercised the full turn. The phase correctly narrowed its automated scope to typecheck/build/lint + structural grep + the one survivor scoped vitest, leaving full-suite green-up to Phase 4 SAFE-03 (pre-existing-red is explicitly out of scope per the PLAN scope_note).
 
 Two lower-severity notes from the code review (WR-01 hardcoded English description; IN-01 stale comment citations) are documented for Phase 4 cleanup and do not affect goal achievement.
+
+## Acknowledged Gaps
+
+Deferred UAT accepted by the developer on 2026-07-04 (explicit authorization during `/gsd-verify-work 03` completion gate — same item, same disposition as Phase 2):
+
+- **Test 2 — `reasonix telegram` full turn [DEFERRED]:** Not exercised against a live Telegram long-poll endpoint this cycle (no `TELEGRAM_BOT_TOKEN` / live bot configured at verification time; carried forward verbatim from `02-VERIFICATION.md` Acknowledged Gaps). The architectural claim this test guards — "three channel public methods (start/sendResponse/stop) still drive one full turn via HeadlessHost after sidecar removal" — IS behaviorally verified this phase via QQ (Test 1: inbound → HeadlessHost → CacheFirstLoop turn → sendResponse posts the model reply, no ESM errors). The Telegram-specific path differs only in transport (botToken long-poll vs QQ WebSocket / WeChat HTTP), owned by `src/telegram/bot.ts`, which VERIFICATION Truth #18 confirms is byte-unchanged this phase (git diff 2a2c1518..75fa1a5f shows NO modifications to src/telegram/, src/qq/, src/weixin/, src/cli/headless/). The live Telegram round-trip remains a deferred UAT item to confirm before the next milestone boundary; it is not a code defect and not a Phase 3 regression.
+
+This deferred item is the sole reason `phase uat-passed --require-verification` reports `passed: false` (blocker: `03-UAT.md: test 2 (skipped)`). UAT (1 pass / 0 issues), verification (26/27 truths + canonicalized `status: passed`), and security (`threats_open: 0`, 03-SECURITY.md verified) gates are otherwise fully satisfied, and the developer authorized advancing the phase with this single UAT item deferred — consistent with the Phase 2 precedent for the identical item.
 
 ---
 
