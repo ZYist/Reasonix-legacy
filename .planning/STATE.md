@@ -4,11 +4,11 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 3
 current_phase_name: Desktop GUI Removal
-status: verifying
-stopped_at: Phase 3 context gathered
-last_updated: "2026-07-04T06:14:16.904Z"
+status: ready_to_execute
+stopped_at: Phase 3 planned (03-01 ready)
+last_updated: "2026-07-04T07:35:35.000Z"
 last_activity: 2026-07-04
-last_activity_desc: Phase 02 complete, transitioned to Phase 3
+last_activity_desc: Phase 3 planned — 03-01 (desktop/sidecar removal + desktop stub + smoke), plan-checker passed iter 3
 progress:
   total_phases: 4
   completed_phases: 2
@@ -29,9 +29,9 @@ See: .planning/PROJECT.md (updated 2026-07-04)
 ## Current Position
 
 Phase: 3 — Desktop GUI Removal
-Plans: Phase 01 complete (2/2); Phase 02 complete (3/3 — headless host, reasonix qq, telegram/weixin); Phase 03 not started (1 plan)
-Status: Phase 3 ready to plan — Phase 02 verified (UAT QQ+WeChat+desktop live-pass, Telegram deferred; verification passed; security threats_open: 0)
-Last activity: 2026-07-04 — Phase 02 complete, transitioned to Phase 3
+Plans: Phase 01 complete (2/2); Phase 02 complete (3/3 — headless host, reasonix qq, telegram/weixin); Phase 03 planned (1/1 — 03-01 desktop/sidecar removal + desktop stub + smoke)
+Status: Phase 3 planned — 03-01 plan-checker passed (3 iterations, 0 issues; scoped test gate, full verify deferred to Phase 4 SAFE-03)
+Last activity: 2026-07-04 — Phase 3 planned (03-01, 3-iteration verification)
 
 Progress: [█████░░░░░] 50% milestone (2/4 phases)
 
@@ -98,6 +98,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-04T06:14:16.895Z
-Stopped at: Phase 3 context gathered
-Resume file: .planning/phases/03-desktop-gui-removal/03-CONTEXT.md
+Last session: 2026-07-04T07:35:35.000Z
+Stopped at: Phase 3 planned (03-01 ready to execute)
+Resume file: .planning/phases/03-desktop-gui-removal/03-01-PLAN.md
