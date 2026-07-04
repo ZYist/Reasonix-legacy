@@ -31,10 +31,10 @@ export interface PlanUpdateInput {
 }
 
 export const MANUAL_UPDATE_COMMANDS: readonly string[] = [
-  "npm install -g reasonix@latest",
-  "bun add -g reasonix",
-  "pnpm add -g reasonix@latest",
-  "yarn global add reasonix@latest",
+  "npm install -g reasonix-legacy@latest",
+  "bun add -g reasonix-legacy",
+  "pnpm add -g reasonix-legacy@latest",
+  "yarn global add reasonix-legacy@latest",
 ];
 
 /** Pure decision — split out so tests don't need to spawn child processes or hit the network. */
@@ -85,14 +85,14 @@ function buildUpdateCommand(
   switch (source) {
     case "npm":
       return npmPrefix
-        ? ["npm", "--prefix", npmPrefix, "install", "-g", "reasonix@latest"]
-        : ["npm", "install", "-g", "reasonix@latest"];
+        ? ["npm", "--prefix", npmPrefix, "install", "-g", "reasonix-legacy@latest"]
+        : ["npm", "install", "-g", "reasonix-legacy@latest"];
     case "bun":
-      return ["bun", "add", "-g", "reasonix"];
+      return ["bun", "add", "-g", "reasonix-legacy"];
     case "pnpm":
-      return ["pnpm", "add", "-g", "reasonix@latest"];
+      return ["pnpm", "add", "-g", "reasonix-legacy@latest"];
     case "yarn":
-      return ["yarn", "global", "add", "reasonix@latest"];
+      return ["yarn", "global", "add", "reasonix-legacy@latest"];
   }
 }
 
