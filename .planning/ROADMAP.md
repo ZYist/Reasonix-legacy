@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Web Panel Removal** - 切除 dashboard/ + src/server/ 及 CLI 内部面板适配代码,CLI/TUI 无面板运行 (completed 2026-07-03)
 - [x] **Phase 2: Bot Decoupling to Standalone CLI** - 提取无头对话宿主,QQ/TG/微信经独立 CLI 命令运行,复用核心循环 (completed 2026-07-04)
-- [ ] **Phase 3: Desktop GUI Removal** - 移除 Tauri 桌面应用与 sidecar 外壳,desktop 命令下线,机器人不受影响
+- [x] **Phase 3: Desktop GUI Removal** - 移除 Tauri 桌面应用与 sidecar 外壳,desktop 命令下线,机器人不受影响 (completed 2026-07-04)
 - [ ] **Phase 4: Build Chain Cleanup & Full Regression** - 构建链简化,CLI 独立构建发布,全量 verify 通过零回归
 
 ## Phase Details
@@ -88,11 +88,13 @@ Plans:
   3. `reasonix qq` / Telegram / 微信 命令仍能正常启动并收发消息(验证删 sidecar 未伤机器人宿主)
   4. CLI 核心命令(`chat`/`code`/`run`/`acp`)正常工作,系统保持可用
 
-**Plans**: 1 plan
+**Plans**: 1/1 plans complete
 
 Plans:
 
-- [ ] 03-01: 移除 `desktop/` 与 sidecar 外壳代码,从 Commander 注销 `reasonix desktop`,冒烟验证机器人三通道与 CLI 核心命令
+- [x] 03-01-PLAN.md
+
+- [x] 03-01: 移除 `desktop/` 与 sidecar 外壳代码,从 Commander 注销 `reasonix desktop`,冒烟验证机器人三通道与 CLI 核心命令
 
 ### Phase 4: Build Chain Cleanup & Full Regression
 
@@ -123,7 +125,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Web Panel Removal | 2/2 | Complete    | 2026-07-03 |
 | 2. Bot Decoupling to Standalone CLI | 3/3 | Complete    | 2026-07-03 |
-| 3. Desktop GUI Removal | 0/1 | Not started | - |
+| 3. Desktop GUI Removal | 1/1 | Complete   | 2026-07-04 |
 | 4. Build Chain Cleanup & Full Regression | 0/2 | Not started | - |
 
 ---

@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 3
+current_phase: 03
 current_phase_name: Desktop GUI Removal
-status: ready_to_execute
-stopped_at: Phase 3 planned (03-01 ready)
-last_updated: "2026-07-04T07:35:35.000Z"
+status: executing
+stopped_at: Phase 3 plan 03-01 complete (03-02 ready if planned)
+last_updated: "2026-07-04T16:00:00.000Z"
 last_activity: 2026-07-04
-last_activity_desc: Phase 3 planned — 03-01 (desktop/sidecar removal + desktop stub + smoke), plan-checker passed iter 3
+last_activity_desc: Phase 03 plan 03-01 complete (desktop/sidecar removed)
 progress:
   total_phases: 4
-  completed_phases: 2
-  total_plans: 5
-  completed_plans: 5
-  percent: 50
+  completed_phases: 3
+  total_plans: 6
+  completed_plans: 6
+  percent: 75
 ---
 
 # Project State
@@ -24,14 +24,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-04)
 
 **Core value:** 在终端里跑一个低成本、不中断的 DeepSeek 编程 agent——缓存优先压低成本,工具调用 JSON 自修复保证 loop 不被打断。
-**Current focus:** Phase 3 — Desktop GUI Removal
+**Current focus:** Phase 03 — Desktop GUI Removal
 
 ## Current Position
 
-Phase: 3 — Desktop GUI Removal
-Plans: Phase 01 complete (2/2); Phase 02 complete (3/3 — headless host, reasonix qq, telegram/weixin); Phase 03 planned (1/1 — 03-01 desktop/sidecar removal + desktop stub + smoke)
-Status: Phase 3 planned — 03-01 plan-checker passed (3 iterations, 0 issues; scoped test gate, full verify deferred to Phase 4 SAFE-03)
-Last activity: 2026-07-04 — Phase 3 planned (03-01, 3-iteration verification)
+Phase: 03 (Desktop GUI Removal) — 03-01 COMPLETE
+Plans: Phase 01 complete (2/2); Phase 02 complete (3/3 — headless host, reasonix qq, telegram/weixin); Phase 03 plan 03-01 complete (1/1 — desktop/sidecar removed + stub + smoke green)
+Status: Phase 03 plan 03-01 complete; Phase 04 next
+Last activity: 2026-07-04 — Phase 03 plan 03-01 executed (desktop/ + sidecar + 27 tests removed; typecheck/build/lint + scoped gate green)
 
 Progress: [█████░░░░░] 50% milestone (2/4 phases)
 
@@ -49,7 +49,7 @@ Progress: [█████░░░░░] 50% milestone (2/4 phases)
 |-------|-------|-------|----------|
 | 1. Web Panel Removal | 2/2 | ~81 min | ~69 min |
 | 2. Bot Decoupling | 3/3 | ~37 min | ~12 min (02-01, 02-02, 02-03) |
-| 3. Desktop GUI Removal | 0/1 | — | — |
+| 3. Desktop GUI Removal | 1/1 | ~18 min | ~18 min (03-01) |
 | 4. Build Chain & Regression | 0/2 | — | — |
 
 **Recent Trend:**
@@ -74,6 +74,8 @@ Recent decisions affecting current work:
 - 01-01: 删除 12 个面板专属测试(仅覆盖已删 server/bridge 表面,无核心逻辑存活)
 - 01-02 Task 1: 移除面板 i18n 死串(types.ts 契约 + 5 locale 同步,handlers/slash 索引签名段一并清理),收敛基线 116→24;顺手清理 plan-store.ts 事故叙事与 App.tsx 过期面板引用注释
 - 01-02 Task 1: 剩余 24 处 "dashboard" 字面量为合法 stats CLI 功能命名(reasonix stats 的 dashboard()/renderDashboard)与带 issue 锚点的隐藏约束注释,作为 Phase 4 drift 基线保留
+- 03-01: D-04 reasonix desktop 退役为 i18n 薄 stub(console.error + process.exit(1),无 options/dynamic import);commands.desktop.retired 新增 5 locale,app.sidecarHint 死串清理
+- 03-01: Phase 3 的「绿」= typecheck/build/lint + scoped gate(structure grep + theme-tokens scoped vitest + 已删文件确认);全量 vitest 绿是 Phase 4 SAFE-03 职责(22 文件 pre-existing-red,无一由 desktop removal 引起)
 
 ### Pending Todos
 
@@ -94,10 +96,13 @@ None yet.
 | 运行时冒烟 | TUI 一轮对话冒烟(需交互式 TTY + DeepSeek key) | 已通过(01-02 Task 2:code 模式 read_file → 0.55.0) | 01-01 |
 | 安全 WR-05 | 3 个 command controller 的 raw (err as Error).message 未脱敏直写 stderr | medium,non-blocking,留待 fix cycle(02-SECURITY.md AR-06) | 02 |
 | 代码质量 | WR-01/03/04/06 + IN-01..06(turn-driver error 恢复、gate 并发、Weixin QR 窗口 SIGINT、dead effort option 等) | 留待 fix cycle(02-VERIFICATION.md followups_deferred) | 02 |
-| UAT | reasonix telegram live long-poll exchange | 缺 TELEGRAM_BOT_TOKEN,acknowledged deferred(02-VERIFICATION.md Acknowledged Gaps) | 02 |
+| UAT | reasonix telegram live long-poll exchange | 缺 TELEGRAM_BOT_TOKEN,acknowledged deferred(02-VERIFICATION.md Acknowledged Gaps,延续至 03-01 smoke) | 02 |
+| 构建链清理 | package.json files/postinstall/typecheck trim、release.yml Tauri 退役、CI Rust 矩阵、CLAUDE.md Rust 段、R2/GitHub updater endpoint | Phase 4(PANEL-04,D-03 deferred) | 03 |
+| 全量 verify 绿 | 22 文件 pre-existing-red(dashboard-*、headless-*、version、ssh-remote、mcp-runtime-failures、ui-*) | Phase 4(SAFE-03) | 03 |
+| 代码质量 | tests/hydrate-cards.test.ts:135 Biome suppressions/unused 预存警告(noExplicitAny off 导致 biome-ignore 失效) | 留待 fix cycle | 03 |
 
 ## Session Continuity
 
-Last session: 2026-07-04T07:35:35.000Z
-Stopped at: Phase 3 planned (03-01 ready to execute)
-Resume file: .planning/phases/03-desktop-gui-removal/03-01-PLAN.md
+Last session: 2026-07-04T16:00:00.000Z
+Stopped at: Phase 3 plan 03-01 complete (desktop/sidecar removed; typecheck/build/lint + scoped gate green)
+Resume file: .planning/phases/03-desktop-gui-removal/03-01-SUMMARY.md

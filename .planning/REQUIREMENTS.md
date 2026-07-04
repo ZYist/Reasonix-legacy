@@ -10,7 +10,7 @@
 ### Panel Removal(面板剥离)
 
 - [x] **PANEL-01**: `dashboard/` 与 `src/server/` 整体移除——`src/` 核心无残留引用,构建无残留依赖
-- [ ] **PANEL-02**: `desktop/`(Tauri 应用)与桌面 sidecar 外壳移除,`reasonix desktop` 子命令下线
+- [x] **PANEL-02**: `desktop/`(Tauri 应用)与桌面 sidecar 外壳移除,`reasonix desktop` 子命令下线
 - [x] **PANEL-03**: CLI 内部面板适配代码清理(`App.tsx` 的 dashboard 钩子、`loop-to-dashboard`、`/dashboard` slash、`cards-to-messages`、`picker-broadcast`)
 - [ ] **PANEL-04**: 构建链简化——`build` 不再依赖 `build:dashboard`/`copy-dashboard-vendor-css`,`files`/`postinstall`/`typecheck` 去掉 dashboard/desktop,CLI 可独立构建发布
 
@@ -44,7 +44,7 @@
 | BOT-01 | Phase 2 | Complete |
 | BOT-02 | Phase 2 | Complete |
 | BOT-03 | Phase 2 | Complete |
-| PANEL-02 | Phase 3 | Pending |
+| PANEL-02 | Phase 3 | Complete |
 | PANEL-04 | Phase 4 | Pending |
 | SAFE-01 | Phase 4 | Pending |
 | SAFE-02 | Phase 4 | Pending |
