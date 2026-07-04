@@ -125,7 +125,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Web Panel Removal | 2/2 | Complete    | 2026-07-03 |
 | 2. Bot Decoupling to Standalone CLI | 3/3 | Complete    | 2026-07-03 |
-| 3. Desktop GUI Removal | 1/1 | Complete   | 2026-07-04 |
+| 3. Desktop GUI Removal | 1/1 | Complete    | 2026-07-04 |
 | 4. Build Chain Cleanup & Full Regression | 0/2 | Not started | - |
 
 ---

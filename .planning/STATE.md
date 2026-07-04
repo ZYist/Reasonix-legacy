@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 03
-current_phase_name: Desktop GUI Removal
-status: executing
-stopped_at: Phase 3 plan 03-01 complete (03-02 ready if planned)
-last_updated: "2026-07-04T16:00:00.000Z"
+current_phase: 4
+current_phase_name: Build Chain Cleanup & Full Regression
+status: completed
+stopped_at: Phase 3 plan 03-01 complete (desktop/sidecar removed; typecheck/build/lint + scoped gate green)
+last_updated: "2026-07-04T15:32:17.413Z"
 last_activity: 2026-07-04
-last_activity_desc: Phase 03 plan 03-01 complete (desktop/sidecar removed)
+last_activity_desc: Phase 03 complete, transitioned to Phase 4
 progress:
   total_phases: 4
   completed_phases: 3
@@ -24,22 +24,22 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-04)
 
 **Core value:** 在终端里跑一个低成本、不中断的 DeepSeek 编程 agent——缓存优先压低成本,工具调用 JSON 自修复保证 loop 不被打断。
-**Current focus:** Phase 03 — Desktop GUI Removal
+**Current focus:** Phase 04 — Build Chain Cleanup & Full Regression
 
 ## Current Position
 
-Phase: 03 (Desktop GUI Removal) — 03-01 COMPLETE
+Phase: 4 — Build Chain Cleanup & Full Regression
 Plans: Phase 01 complete (2/2); Phase 02 complete (3/3 — headless host, reasonix qq, telegram/weixin); Phase 03 plan 03-01 complete (1/1 — desktop/sidecar removed + stub + smoke green)
-Status: Phase 03 plan 03-01 complete; Phase 04 next
-Last activity: 2026-07-04 — Phase 03 plan 03-01 executed (desktop/ + sidecar + 27 tests removed; typecheck/build/lint + scoped gate green)
+Status: Phase 03 complete (UAT 1 pass / 1 dev-authorized deferred / 0 issues; SECURITY threats_open: 0); ready to plan Phase 04
+Last activity: 2026-07-04 — Phase 03 complete, transitioned to Phase 4
 
-Progress: [█████░░░░░] 50% milestone (2/4 phases)
+Progress: [███████████████░░░░░] 75% milestone (3/4 phases)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 5
+- Total plans completed: 1
 - Average duration: ~69 min (01-01: 57min, 01-02: ~24min incl. human smoke)
 - Total execution time: ~1.35 hours
 
@@ -51,6 +51,7 @@ Progress: [█████░░░░░] 50% milestone (2/4 phases)
 | 2. Bot Decoupling | 3/3 | ~37 min | ~12 min (02-01, 02-02, 02-03) |
 | 3. Desktop GUI Removal | 1/1 | ~18 min | ~18 min (03-01) |
 | 4. Build Chain & Regression | 0/2 | — | — |
+| 03 | 1 | - | - |
 
 **Recent Trend:**
 
@@ -103,6 +104,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-04T16:00:00.000Z
-Stopped at: Phase 3 plan 03-01 complete (desktop/sidecar removed; typecheck/build/lint + scoped gate green)
-Resume file: .planning/phases/03-desktop-gui-removal/03-01-SUMMARY.md
+Last session: 2026-07-04
+Stopped at: Phase 3 complete (desktop GUI + sidecar removed; QQ full-turn live-verified; Telegram UAT deferred per developer authorization), ready to plan Phase 4
+Resume file: None
