@@ -33,7 +33,7 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Build (tsup + dashboard)
+      - name: Build (tsup)
         run: npm run build
 
       - name: Test (vitest + coverage)

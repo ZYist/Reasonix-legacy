@@ -20,7 +20,6 @@
     "dist",
     "data/deepseek-tokenizer.json.gz",
     "patches",
-    "scripts/postinstall.mjs",
     "README.md",
     "LICENSE"
   ],
@@ -28,7 +27,6 @@
     "packages/*"
   ],
   "scripts": {
-    "postinstall": "node scripts/postinstall.mjs",
     "build": "tsup && node scripts/write-cli-package-marker.mjs && node scripts/copy-tree-sitter-grammars.mjs",
     "dev": "tsx src/cli/index.ts",
     "chat": "tsx src/cli/index.ts chat",
