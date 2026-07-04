@@ -113,8 +113,8 @@ Plans:
 
 Plans:
 
-- [ ] 04-01: 简化构建链(移除 build:dashboard/copy-dashboard-vendor-css 依赖,清理 files/postinstall/typecheck 中 dashboard/desktop 配置),验证 CLI 独立构建发布
-- [ ] 04-02: 全量回归——逐命令冒烟所有纯 CLI 命令,确认 tree-sitter grammars + code-query 保留可用,`npm run verify` 全绿
+- [ ] 04-01-PLAN.md — 构建链全面简化(git rm postinstall.mjs/sync-desktop-version.mjs/release.yml;清理 package.json files+scripts.postinstall;ci.yml 步骤名校正;CLAUDE.md 裁剪 desktop/Rust/Tauri 段),CLI 独立构建发布 + npm pack 无 desktop 痕迹 [PANEL-04]
+- [ ] 04-02-PLAN.md — 全量回归:SAFE-03 测试 triage(删 7 dashboard 孤儿测试/修 milestone-caused/evidence-defer 预存红,D-01 zero-regression 标尺)+ SAFE-01 逐命令 hybrid 冒烟 + SAFE-02 tree-sitter e2e(code-query/grammars 保留可用) [SAFE-01/02/03]
 
 ## Progress
 
