@@ -24,25 +24,18 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 
 ## Languages
 
-- TypeScript (ES2022 / ESNext modules, `strict` + `noUncheckedIndexedAccess`) — all CLI, agent loop, MCP, tools, dashboard, and desktop frontend logic. Source under `src/`, `dashboard/src/`, `desktop/src/`, `packages/*/src/`.
-- Rust (edition 2021) — Tauri desktop shell native layer (`desktop/src-tauri/src/`: `main.rs`, `rpc.rs`, `cc_switch.rs`). Uses `tauri`, `rusqlite`, `serde`, `parking_lot`, `anyhow`.
-- CSS — vendor styles (`dashboard/app.css`, copied via `scripts/copy-dashboard-vendor-css.mjs`) and desktop UI (`desktop/src/styles.css`).
-- HTML — entry shells (`dashboard/index.html`, `desktop/index.html`).
+- TypeScript (ES2022 / ESNext modules, `strict` + `noUncheckedIndexedAccess`) — all CLI, agent loop, MCP, tools, and TUI logic. Source under `src/`, `packages/*/src/`.
 
 ## Runtime
 
 - Node.js `>=22` (enforced via `engines` in `package.json` and `src/cli/node-version-guard.ts`; CLI re-execs with a larger V8 heap via `src/cli/heap-limit-launch.ts`).
-- Tauri 2 webview runtime for the desktop bundle.
-- Browser (any modern) for the standalone dashboard.
 - npm (lockfile `package-lock.json` present and committed).
-- npm workspaces — root `workspaces: ["packages/*"]` plus `desktop/` and `dashboard/` as nested npm projects (each with its own `package-lock.json`).
+- npm workspaces — root `workspaces: ["packages/*"]`.
 
 ## Frameworks
 
 - Custom agent loop — `CacheFirstLoop` in `src/loop.ts` (+ `src/loop/`): DeepSeek-native, cache-first, tool-call repair (`src/repair/`), reasoning retention (`src/loop/reasoning-retention.ts`).
 - React 19 + custom Ink fork (`packages/ink/`, aliased to `ink` in `tsconfig.json`/`vitest.config.ts`) — TUI rendering. `react-reconciler` + `yoga-layout` drive the terminal renderer.
-- React 19 + Vite 5 — dashboard (`dashboard/`) and desktop (`desktop/`) web frontends.
-- Tauri 2 — desktop shell (`desktop/src-tauri/`).
 - commander 12 — CLI parsing (`src/cli/index.ts`).
 - Vitest 2 (`vitest.config.ts`) — `pool: "forks"` for per-file process isolation (tokenizer BPE / tree-sitter wasms / native handles). Coverage via `@vitest/coverage-v8`.
 - Stryker 9 (`stryker.config.mjs`) — mutation testing (`npm run test:mutation`).
@@ -50,7 +43,6 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 - jsdom 29 — DOM environment for select tests.
 - tsup 8 (`tsup.config.ts`) — bundles `src/index.ts` (library, with DTS) and `src/cli/index.ts` (CLI, noExternal `[/.*/]`, node banner) to `dist/`. Target `node22`, ESM only.
 - esbuild 0.21 — bundler backend for tsup.
-- Vite 5 — dashboard + desktop frontend builds (`npm run build:dashboard`).
 - tsx 4 — `dev` / `chat` script runner.
 - TypeScript 5.6 (`tsconfig.json`) — `target: ES2022`, `moduleResolution: Bundler`, path aliases `@/* → src/*` and `ink → packages/ink/src/index.ts`.
 - Biome 1.9 (`biome.json`) — lint + format (double quotes, semicolons, 100-col, 2-space).
@@ -67,9 +59,7 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 - `grammy` 1.43 — Telegram bot (`src/telegram/bot.ts`).
 - `ws` 8 — QQ bot gateway WebSocket client (`src/qq/bot.ts`).
 - `qrcode` — WeChat login QR (`src/weixin/bot.ts`).
-- React 19, react-dom, react-reconciler, yoga-layout — TUI + dashboard + desktop UI.
-- `@tauri-apps/api` 2 + plugins (`dialog`, `notification`, `opener`, `process`, `updater`) — desktop frontend.
-- `react-markdown` 9 + `remark-gfm`, `remark-math`, `remark-breaks`, `rehype-katex`, `katex`, `prism-react-renderer`, `lucide-react`, `react-virtuoso`, `@fontsource/{geist,geist-mono,inter}` — markdown / math / code rendering in dashboard and desktop.
+- React 19, react-reconciler, yoga-layout — TUI rendering.
 - `marked` 15, `highlight.js` 11, `preact` 10, `htm` 3, `uplot` 1.6 — dev/build helpers and charting.
 
 ## Configuration
@@ -79,21 +69,18 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 - DeepSeek key resolution: `process.env.DEEPSEEK_API_KEY` ← CLI bridges from `~/.reasonix/config.json` (`src/config.ts`).
 - Config file: `~/.reasonix/config.json` (read/written via `atomicWriteSync` in `src/core/atomic-write.ts`).
 - Base URL override: `DEEPSEEK_BASE_URL` env or config `baseUrl` (default `https://api.deepseek.com`); Azure-compatible hosts detected in `DeepSeekClient._isAzureEndpoint()`.
-- `tsconfig.json` (root, library/CLI), `dashboard/tsconfig.json`, `desktop/tsconfig.json` (frontends), `packages/*/tsconfig.json`.
-- `tsup.config.ts` (two-entry bundle), `dashboard/vite.config.ts`, `desktop/vite.config.ts`.
-- `biome.json` (lint/format; ignores `dist`, `node_modules`, `coverage`, `*.d.ts`, `dashboard/codemirror.js`, `packages/ink/**`).
-- `vitest.config.ts` (aliases React/Ink/Tauri mocks; coverage `include: ["src/**"]`).
+- `tsconfig.json` (root, library/CLI), `packages/*/tsconfig.json`.
+- `tsup.config.ts` (two-entry bundle).
+- `biome.json` (lint/format; ignores `dist`, `node_modules`, `coverage`, `*.d.ts`, `packages/ink/**`).
+- `vitest.config.ts` (aliases React/Ink; coverage `include: ["src/**"]`).
 - `stryker.config.mjs` (mutation testing).
-- `scripts/postinstall.mjs` (runs on `npm install`), `scripts/copy-tree-sitter-grammars.mjs`, `scripts/copy-dashboard-vendor-css.mjs`.
+- `scripts/copy-tree-sitter-grammars.mjs`.
 
 ## Platform Requirements
 
 - Node.js 22+ (CI matrix pins node `"22"` on ubuntu-latest + windows-latest in `.github/workflows/ci.yml`).
-- Rust toolchain (stable, targets `x86_64-unknown-linux-gnu`, `x86_64-apple-darwin`, `aarch64-apple-darwin`, `x86_64-pc-windows-msvc`) for desktop builds.
 - OS: Windows, macOS, or Linux. Tests tolerate Windows scheduler hiccups via `vitest` `retry: 1`.
 - CLI: published to npm as `reasonix-legacy` (binaries `reasonix` / `dsnix` → `dist/cli/index.js`).
-- Desktop: Tauri bundles (NSIS on Windows, DMG on macOS single-arch shards, deb/AppImage on Linux) built by `.github/workflows/release.yml` on `desktop-v*` tags. Auto-updater endpoints: Cloudflare R2 + GitHub Releases (`tauri.conf.json`).
-- Dashboard: standalone static site or embedded HTTP server (`src/server/index.ts`, loopback by default, token-gated).
 
 <!-- GSD:stack-end -->
 
@@ -204,8 +191,6 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 - **No `Co-Authored-By: Claude` trailer.**
 - Don't edit `CHANGELOG.md` in PRs — maintainer-only at release time.
 
-## Special: Desktop (Tauri) Subdir
-
 <!-- GSD:conventions-end -->
 
 <!-- GSD:architecture-start source:ARCHITECTURE.md -->
@@ -232,7 +217,6 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 | `Eventizer` / events | Event-log kernel: typed events (`src/core/events.ts`) + reducer projections (`src/core/reducers.ts`) | `src/core/eventize.ts`, `src/core/events.ts` |
 | `PauseGate` | Singleton confirmation/approval gate injected into tools and loop | `src/core/pause-gate.ts` |
 | MCP subsystem | Bridge external MCP servers (stdio / SSE / streamable-HTTP) as tool providers | `src/mcp/client.ts`, `src/mcp/registry.ts`, `src/mcp/{stdio,sse,streamable-http}.ts` |
-| Dashboard server | Loopback HTTP server with per-boot CSRF token, serves dashboard SPA + JSON API | `src/server/index.ts`, `src/server/router.ts`, `src/server/api/*.ts` |
 | ACP server | NDJSON JSON-RPC 2.0 protocol surface (editor/IDE integration) | `src/acp/server.ts`, `src/acp/{dispatch,gates,protocol}.ts` |
 | CLI/TUI | Commander entry point + Ink (React) terminal UI; cards, slash, effects, hooks | `src/cli/index.ts`, `src/cli/ui/App.tsx` |
 | Semantic index | Local code-semantic embeddings (Ollama) for retrieval tool | `src/index/semantic/{builder,store,embedding,tool}.ts` |
@@ -245,13 +229,13 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 - **Repair-as-first-class.** Models emit malformed JSON; `ToolCallRepair` + `src/repair/*` flatten schemas, scavenge dangling tool_calls, detect storm loops, and recover truncated arguments before the request 400s.
 - **Token-budget defense in depth.** `ContextManager` uses layered thresholds (`TURN_START_FOLD_THRESHOLD=0.9`, `HISTORY_FOLD_THRESHOLD=0.75`, `FORCE_SUMMARY_THRESHOLD=0.8` of ctxMax) with normal, aggressive, and forced-summary folds, plus fold-economics gates.
 - **Injectable boundaries.** `CacheFirstLoopOptions` accepts a client, prefix, tools, hooks, `confirmationGate`, and `rebuildSystem` callback — the loop is fully testable without I/O.
-- **Multi-surface, single core.** CLI/TUI, HTTP dashboard, ACP, and desktop all drive the same `CacheFirstLoop`.
+- **Multi-surface, single core.** CLI/TUI and ACP all drive the same `CacheFirstLoop`.
 
 ## Layers
 
 - Purpose: Accept input from humans / editors / chat networks and translate to loop calls.
-- Location: `src/cli/`, `src/server/`, `src/acp/`, `src/desktop/`, `src/qq/`, `src/telegram/`, `src/weixin/`
-- Contains: Commander commands, Ink React components, HTTP router, JSON-RPC dispatcher, chat ingress.
+- Location: `src/cli/`, `src/acp/`, `src/qq/`, `src/telegram/`, `src/weixin/`
+- Contains: Commander commands, Ink React components, JSON-RPC dispatcher, chat ingress.
 - Depends on: `CacheFirstLoop`, `@reasonix/core-utils`, `src/config.ts`.
 - Used by: End users / IDEs / mobile.
 - Purpose: Orchestrate one turn: stream → tool calls → repair → fold → next iter.
@@ -303,9 +287,6 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 - Location: `src/index.ts`
 - Triggers: `import { CacheFirstLoop, DeepSeekClient, ToolRegistry, ... } from "reasonix-legacy"`.
 - Responsibilities: Re-exports the public API (client, loop, memory, tools, MCP, telemetry, transcript, hooks, version).
-- Location: `src/server/index.ts`
-- Triggers: `--dashboard` flag in TUI or explicit start.
-- Responsibilities: Loopback HTTP server, per-boot CSRF token, serves dashboard SPA + routes API to `src/server/router.ts` → `src/server/api/*`.
 - Location: `src/acp/server.ts`
 - Triggers: `reasonix acp` subcommand (editor integrations).
 - Responsibilities: NDJSON JSON-RPC 2.0 stdio protocol.
