@@ -171,7 +171,10 @@ let failure: Error | null = null;
 async function run(): Promise<void> {
   const cases: Array<[string, () => Promise<void>]> = [
     ["assistant_final captures text + eventizer consumes every event", runAssistantTextCase],
-    ["abort renders the aborted sentinel and still surfaces prior assistant text", runAbortedCase],
+    [
+      "abort renders the aborted sentinel and does NOT surface prior assistant text",
+      runAbortedCase,
+    ],
     ["loop error calls onError and resolves with the error sentinel", runErrorCase],
     [
       "headlessContext AsyncLocalStorage is set for the duration of the turn",
