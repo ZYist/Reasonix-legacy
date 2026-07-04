@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 4
+current_phase: 04
 current_phase_name: Build Chain Cleanup & Full Regression
 status: executing
-stopped_at: Phase 4 context gathered
-last_updated: "2026-07-04T16:20:04.595Z"
+stopped_at: Completed 04-01-PLAN.md (build chain cleanup + CLAUDE.md trim)
+last_updated: "2026-07-04T16:34:17.977Z"
 last_activity: 2026-07-04
-last_activity_desc: Phase 03 complete, transitioned to Phase 4
+last_activity_desc: Completed 04-01 (build-chain residue retired, CLAUDE.md trimmed)
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
-  percent: 75
+  total_plans: 8
+  completed_plans: 7
+  percent: 88
 ---
 
 # Project State
@@ -28,20 +28,20 @@ See: .planning/PROJECT.md (updated 2026-07-04)
 
 ## Current Position
 
-Phase: 4 — Build Chain Cleanup & Full Regression
-Plans: Phase 01 complete (2/2); Phase 02 complete (3/3 — headless host, reasonix qq, telegram/weixin); Phase 03 plan 03-01 complete (1/1 — desktop/sidecar removed + stub + smoke green)
-Status: Ready to execute
-Last activity: 2026-07-04 — Phase 03 complete, transitioned to Phase 4
+Phase: 04 (Build Chain Cleanup & Full Regression) — EXECUTING
+Plans: Phase 01 complete (2/2); Phase 02 complete (3/3 — headless host, reasonix qq, telegram/weixin); Phase 03 plan 03-01 complete (1/1 — desktop/sidecar removed + stub + smoke green); Phase 04 plan 04-01 complete (1/2 — dormant build artifacts deleted, package.json/ci.yml aligned, CLAUDE.md trimmed)
+Status: Executing Phase 04 — next plan 04-02 (full regression)
+Last activity: 2026-07-04 — 04-01 complete (build-chain residue retired, npm pack clean)
 
-Progress: [███████████████░░░░░] 75% milestone (3/4 phases)
+Progress: [██████████████████░░] 88% milestone (3/4 phases, 7/8 plans)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 1
-- Average duration: ~69 min (01-01: 57min, 01-02: ~24min incl. human smoke)
-- Total execution time: ~1.35 hours
+- Total plans completed: 7
+- Average duration: ~25 min/plan (01-01: 57min, 01-02: ~24min, 02-01/02-02/02-03: ~12min avg, 03-01: 18min, 04-01: 7min)
+- Total execution time: ~2.6 hours (1/2/3 phases + 04-01)
 
 **By Phase:**
 
@@ -50,13 +50,12 @@ Progress: [███████████████░░░░░] 75% mil
 | 1. Web Panel Removal | 2/2 | ~81 min | ~69 min |
 | 2. Bot Decoupling | 3/3 | ~37 min | ~12 min (02-01, 02-02, 02-03) |
 | 3. Desktop GUI Removal | 1/1 | ~18 min | ~18 min (03-01) |
-| 4. Build Chain & Regression | 0/2 | — | — |
-| 03 | 1 | - | - |
+| 4. Build Chain & Regression | 1/2 | ~7 min so far | ~7 min (04-01) |
 
 **Recent Trend:**
 
-- Last 5 plans: 01-02 (~24min), 02-01, 02-02 (~21min), 02-03 (~16min)
-- Trend: Phase 02 three-plan arc trending faster (recipe reuse 02-02→02-03)
+- Last 5 plans: 02-01, 02-02 (~21min), 02-03 (~16min), 03-01 (18min), 04-01 (7min)
+- Trend: 04-01 fastest plan in M1 (pure deletion + scoped config/doc edits, no source changes); recipe = `git rm dormant artifact` + scoped package.json/ci.yml edit + CLAUDE.md trim
 
 *Updated after each plan completion*
 
@@ -77,6 +76,8 @@ Recent decisions affecting current work:
 - 01-02 Task 1: 剩余 24 处 "dashboard" 字面量为合法 stats CLI 功能命名(reasonix stats 的 dashboard()/renderDashboard)与带 issue 锚点的隐藏约束注释,作为 Phase 4 drift 基线保留
 - 03-01: D-04 reasonix desktop 退役为 i18n 薄 stub(console.error + process.exit(1),无 options/dynamic import);commands.desktop.retired 新增 5 locale,app.sidecarHint 死串清理
 - 03-01: Phase 3 的「绿」= typecheck/build/lint + scoped gate(structure grep + theme-tokens scoped vitest + 已删文件确认);全量 vitest 绿是 Phase 4 SAFE-03 职责(22 文件 pre-existing-red,无一由 desktop removal 引起)
+- [Phase ?]: 04-01: D-02 full-sweep applied — release.yml + postinstall.mjs + sync-desktop-version.mjs all retired (not dormant-only); release-mirror.yml RETAINED (all-release trigger, not desktop-only); prepare (simple-git-hooks) independent of postinstall and survives; CLAUDE.md trimmed of all Rust/Tauri/dashboard refs in GSD-managed sections
+- 04-01: 构建链清理 deferred 项收口 — package.json files/postinstall trim、release.yml Tauri 退役、CLAUDE.md Rust 段全部完成 (commit 53a64966 + bc4995cd)；CI Rust 矩阵本就不存在 (ci.yml 仅 ubuntu/windows + node 22)；R2/GitHub updater endpoint 随 release.yml 删除移除引用,外部 bucket 清理留作发布运维
 
 ### Pending Todos
 
@@ -98,12 +99,12 @@ None yet.
 | 安全 WR-05 | 3 个 command controller 的 raw (err as Error).message 未脱敏直写 stderr | medium,non-blocking,留待 fix cycle(02-SECURITY.md AR-06) | 02 |
 | 代码质量 | WR-01/03/04/06 + IN-01..06(turn-driver error 恢复、gate 并发、Weixin QR 窗口 SIGINT、dead effort option 等) | 留待 fix cycle(02-VERIFICATION.md followups_deferred) | 02 |
 | UAT | reasonix telegram live long-poll exchange | 缺 TELEGRAM_BOT_TOKEN,acknowledged deferred(02-VERIFICATION.md Acknowledged Gaps,延续至 03-01 smoke) | 02 |
-| 构建链清理 | package.json files/postinstall/typecheck trim、release.yml Tauri 退役、CI Rust 矩阵、CLAUDE.md Rust 段、R2/GitHub updater endpoint | Phase 4(PANEL-04,D-03 deferred) | 03 |
+| 构建链清理 | package.json files/postinstall/typecheck trim、release.yml Tauri 退役、CI Rust 矩阵、CLAUDE.md Rust 段、R2/GitHub updater endpoint | **完成**(04-01, commit 53a64966 + bc4995cd) — release.yml/postinstall.mjs/sync-desktop-version.mjs 删除;package.json scripts+files 对齐;ci.yml 步骤名校正;CLAUDE.md trim。CI Rust 矩阵本就不存在;R2/GitHub bucket 外部资源清留作发布运维 | 03 |
 | 全量 verify 绿 | 22 文件 pre-existing-red(dashboard-*、headless-*、version、ssh-remote、mcp-runtime-failures、ui-*) | Phase 4(SAFE-03) | 03 |
 | 代码质量 | tests/hydrate-cards.test.ts:135 Biome suppressions/unused 预存警告(noExplicitAny off 导致 biome-ignore 失效) | 留待 fix cycle | 03 |
 
 ## Session Continuity
 
-Last session: 2026-07-04T15:52:43.762Z
-Stopped at: Phase 4 context gathered
-Resume file: .planning/phases/04-build-chain-cleanup-full-regression/04-CONTEXT.md
+Last session: 2026-07-04T16:34:17.969Z
+Stopped at: Completed 04-01-PLAN.md (build-chain residue retired, CLAUDE.md trimmed, npm pack clean)
+Resume file: .planning/phases/04-build-chain-cleanup-full-regression/04-02-PLAN.md (full regression)

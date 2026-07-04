@@ -109,12 +109,12 @@ Plans:
   3. `scripts/copy-tree-sitter-grammars.mjs` + `src/code-query/` 保留可用,`code-query` 代码符号搜索正常工作——本 phase 删除清单不含它们(SAFE-02)
   4. `npm run verify`(build + lint + typecheck + test)全量通过,核心 loop/工具/记忆/MCP/AcP 零回归(SAFE-03)
 
-**Plans**: 2 plans
+**Plans**: 1/2 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 04-01-PLAN.md — 构建链全面简化(git rm postinstall.mjs/sync-desktop-version.mjs/release.yml;清理 package.json files+scripts.postinstall;ci.yml 步骤名校正;CLAUDE.md 裁剪 desktop/Rust/Tauri 段),CLI 独立构建发布 + npm pack 无 desktop 痕迹 [PANEL-04]
+- [x] 04-01-PLAN.md — 构建链全面简化(git rm postinstall.mjs/sync-desktop-version.mjs/release.yml;清理 package.json files+scripts.postinstall;ci.yml 步骤名校正;CLAUDE.md 裁剪 desktop/Rust/Tauri 段),CLI 独立构建发布 + npm pack 无 desktop 痕迹 [PANEL-04]
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -130,7 +130,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Web Panel Removal | 2/2 | Complete    | 2026-07-03 |
 | 2. Bot Decoupling to Standalone CLI | 3/3 | Complete    | 2026-07-03 |
 | 3. Desktop GUI Removal | 1/1 | Complete    | 2026-07-04 |
-| 4. Build Chain Cleanup & Full Regression | 0/2 | Not started | - |
+| 4. Build Chain Cleanup & Full Regression | 1/2 | In Progress|  |
 
 ---
 *Roadmap created: 2026-07-02 (Milestone M1: 精简为纯 CLI)*
