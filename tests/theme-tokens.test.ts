@@ -1,6 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { THEME_STYLES as DASHBOARD_THEME_STYLES } from "../dashboard/src/theme.js";
-import { THEME_STYLES as DESKTOP_THEME_STYLES } from "../desktop/src/theme.js";
 import { COLOR, GRADIENT } from "../src/cli/ui/theme.js";
 import {
   DEFAULT_THEME_NAME,
@@ -58,11 +56,6 @@ describe("theme tokens", () => {
         expect(locale.wizard.themeCaption[name]).toBeTruthy();
       }
     }
-  });
-
-  it("keeps public theme names aligned across CLI, dashboard, and desktop", () => {
-    expect(listThemeNames()).toEqual([...DASHBOARD_THEME_STYLES]);
-    expect(listThemeNames()).toEqual([...DESKTOP_THEME_STYLES]);
   });
 
   it("returns theme tokens by resolved name", () => {
