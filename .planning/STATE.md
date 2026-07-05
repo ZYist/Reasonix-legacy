@@ -3,18 +3,18 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 04
-current_phase_name: Build Chain Cleanup & Full Regression
-status: executing
-stopped_at: Phase 04 human_needed — 3 UAT items pending (live chat/code/run turn, live qq/telegram/weixin bot turn, CLAUDE.md skim); awaiting /gsd-verify-work 04
-last_updated: "2026-07-04T17:52:32.745Z"
+status: completed
+stopped_at: Phase 04 complete — milestone M1 100% (4/4 phases, 8/8 plans). UAT 2/3 pass (live read_file→0.55.0, CLAUDE.md coherence); 1/3 (weixin internal feedback) acknowledged-deferred as pre-existing shared HeadlessHost rendering gap. Ready for /gsd-complete-milestone v1.0
+last_updated: "2026-07-05T07:43:42.115Z"
 last_activity: 2026-07-05
-last_activity_desc: 04-02 complete (14 baseline reds → 3 evidence-deferred, every CLI command launches, tree-sitter code-query e2e green)
+last_activity_desc: Phase 04 complete
 progress:
   total_phases: 4
   completed_phases: 4
   total_plans: 8
   completed_plans: 8
   percent: 100
+current_phase_name: Build Chain Cleanup & Full Regression
 ---
 
 # Project State
@@ -24,14 +24,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-04)
 
 **Core value:** 在终端里跑一个低成本、不中断的 DeepSeek 编程 agent——缓存优先压低成本,工具调用 JSON 自修复保证 loop 不被打断。
-**Current focus:** Phase 04 — Build Chain Cleanup & Full Regression
+**Current focus:** Milestone M1 complete — ready to archive via `/gsd-complete-milestone v1.0`
 
 ## Current Position
 
-Phase: 04 (Build Chain Cleanup & Full Regression) — COMPLETE (last plan done)
+Phase: 04
 Plans: Phase 01 complete (2/2); Phase 02 complete (3/3 — headless host, reasonix qq, telegram/weixin); Phase 03 complete (1/1 — desktop/sidecar removed + stub + smoke green); Phase 04 complete (2/2 — 04-01 build-chain cleanup, 04-02 full regression SAFE-01/02/03 satisfied)
 Status: Milestone M1 ready to close — all 4 phases / 8 plans complete; 3 pre-existing-red test files formally acknowledged-deferred to fix cycle (not blocking)
-Last activity: 2026-07-05 — 04-02 complete (14 baseline reds → 3 evidence-deferred, every CLI command launches, tree-sitter code-query e2e green)
+Last activity: 2026-07-05 — Phase 04 complete
 
 Progress: [████████████████████] 100% milestone (4/4 phases, 8/8 plans)
 
@@ -82,6 +82,7 @@ Recent decisions affecting current work:
 - 04-02: cli-bundle-version-marker.test.ts classified bucket-2 (rewrite), not bucket-1 (delete) — its INTENT (verify dist/cli ESM marker) maps to the 01-01 anti-regression red line and was otherwise untested; now exercises the live scripts/write-cli-package-marker.mjs
 - 04-02: SAFE-01 smoke — Tier 1 all 19 commands incl. qq/telegram/weixin/index pass --help (checker advisory closed the plan's incomplete CMD_LIST); Tier 2 all 8 offline commands functional on real data; Tier 3 `run` live turn completed (MCP bridge + model + telemetry, key from config.json); chat/code TTY-gated + qq/telegram/weixin cred/QR-gated acknowledged-deferred
 - 04-02: SAFE-02 e2e — both scripts/e2e-dist-grammars.mts + scripts/e2e-code-query.mts green (6 languages: TS/Python/Go/Rust/Java/JS); red lines (copy-tree-sitter-grammars.mjs, src/code-query/, build chain) intact; zero escalation needed
+- 04-UAT: 2/3 pass (live read_file→0.55.0, CLAUDE.md coherence skim); weixin "无内部反馈" 诊断为 Phase-2 既存的共享 HeadlessHost 渲染缺口(HeadlessHost.runTurn 未订阅 turn-driver 的 onEvent 回调 → 所有 channel 都丢弃 reasoning/tool 事件;qqCommand ≅ weixinCommand 结构同构),非 Phase-04 回归(git diff 9d7b706c HEAD 在 src/ 仅 update.ts + version.ts);accept-and-defer 到 fix cycle / 未来 channel-streaming phase
 - [Phase ?]: test
 
 ### Pending Todos
@@ -109,9 +110,10 @@ None yet.
 | 代码质量 | tests/hydrate-cards.test.ts:135 Biome suppressions/unused 预存警告(noExplicitAny off 导致 biome-ignore 失效) | 留待 fix cycle | 03 |
 | 预存红测试 | tests/ssh-remote.test.ts(RFC dry-run,"SSH tunnel" feature 未实现)、tests/ui-mcp-marketplace-snapshot.test.ts(buildMarketplacePickerSnapshot 从未导出)、tests/ui-slash-suggestions.test.tsx(advanced 命令数 10→9 drift) | **acknowledged-deferred**(04-02 bucket 3,3-leg proof 证明 pre-existing)→ fix cycle | 04 |
 | Tier-3 命令 | chat/code 交互 TTY turn(loop 已被 `run` live turn 证明)、qq/telegram 缺 bot 凭据、weixin 需 QR 扫码 | acknowledged-deferred → UAT/fix-cycle(04-02 Tier 3) | 04 |
+| UAT | weixin bot 不显示内部反馈(思考过程/工具输出)——qq 在终端可见、weixin 在微信会话只收到最终回复 | acknowledged-deferred(04-UAT.md 诊断 + 04-VERIFICATION.md §deferred):非 weixin 专属 bug,是共享 HeadlessHost 渲染缺口(runTurn 未订阅 onEvent 回调),Phase-2 既存架构,Phase 04 零触碰;feature gap(streaming-to-chat)→ fix cycle / 未来 channel-streaming phase | 04 |
 
 ## Session Continuity
 
-Last session: 2026-07-04T17:52:32.738Z
-Stopped at: Phase 04 human_needed — 3 UAT items pending (live chat/code/run turn, live qq/telegram/weixin bot turn, CLAUDE.md skim); awaiting /gsd-verify-work 04
-Resume file: .planning/phases/04-build-chain-cleanup-full-regression/04-UAT.md
+Last session: 2026-07-05
+Stopped at: Phase 04 complete — milestone M1 100% ready to close. UAT: live read_file turn ✓、CLAUDE.md coherence ✓、weixin internal-feedback acknowledged-deferred(pre-existing)。Next: /gsd-complete-milestone v1.0
+Resume file: None
