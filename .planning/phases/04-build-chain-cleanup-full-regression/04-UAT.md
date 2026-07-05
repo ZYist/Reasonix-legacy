@@ -61,3 +61,4 @@ blocked: 0
   classification: "pre-existing / out-of-phase-scope / feature-not-a-bug"
   recommended_routing: "acknowledged-deferred to fix cycle or a future channel-streaming phase (mirrors D-01 bucket-3 pattern), NOT a Phase-04 gap-closure plan"
   debug_session: ""
+  resolution: "accepted-and-deferred per maintainer decision (2026-07-05). Recorded in 04-VERIFICATION.md §deferred (acknowledged-deferred). Phase 04 advances to complete — this gap is out-of-phase-scope and does not block milestone M1."

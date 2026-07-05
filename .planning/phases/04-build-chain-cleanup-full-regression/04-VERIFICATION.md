@@ -1,16 +1,17 @@
 ---
 phase: 04-build-chain-cleanup-full-regression
 verified: 2026-07-05T01:50:00Z
-status: human_needed
+status: passed
 score: 10/10 must-haves verified
 behavior_unverified: 0
 overrides_applied: 0
 re_verification:
-  previous_status: none
-  previous_score: N/A
+  previous_status: human_needed
+  previous_score: 10/10
   gaps_closed: []
   gaps_remaining: []
   regressions: []
+  human_uat: "UAT 2/3 pass (live read_file turn -> 0.55.0; CLAUDE.md coherence skim); 1/3 acknowledged-deferred (weixin internal feedback — pre-existing shared HeadlessHost rendering gap, out-of-phase-scope; full diagnosis in 04-UAT.md §Gaps). All 3 human-verification items resolved; phase advances to complete."
 deferred:
   - truth: "tests/ssh-remote.test.ts red (RFC dry-run, 'SSH tunnel' feature unimplemented)"
     addressed_in: "fix cycle (out-of-milestone)"
@@ -24,6 +25,9 @@ deferred:
   - truth: "tests/hydrate-cards.test.ts:135 Biome warning (suppressions/unused)"
     addressed_in: "fix cycle (out-of-milestone)"
     evidence: "STATE.md §Deferred Items (03 carry-forward); pre-existing, unrelated to phase-04 work"
+  - truth: "WeChat bot does not surface internal feedback (thinking process, intermediate tool output) to the chat conversation the way qq appears to"
+    addressed_in: "fix cycle / future channel-streaming phase (out-of-milestone)"
+    evidence: "UAT diagnosis (04-UAT.md §Gaps): NOT a weixin-specific bug — a SHARED HeadlessHost rendering gap. HeadlessHost.runTurn (src/cli/headless/host.ts:128-162) wires only onAssistantText + onError, NOT the available onEvent callback (src/cli/headless/turn-driver.ts:54,81) — reasoning/tool/telemetry events discarded for ALL channels. qqCommand (src/cli/commands/qq.ts) ≅ weixinCommand (src/cli/commands/weixin.ts) — structurally identical, both send only final assistantText to the channel. Perceived qq/weixin asymmetry is observational (qq watched in terminal stdout/stderr vs weixin watched in the WeChat app). Phase 04 made zero commits to src/cli/headless/*, src/cli/commands/{qq,weixin,telegram}.ts, src/weixin/*, src/qq/* (git diff --name-only 9d7b706c HEAD = only src/cli/commands/update.ts + src/version.ts). Feature gap (stream thinking/tool output to chat conversations via the unwired onEvent hook), not a regression. Mirrors D-01 evidence-defer precedent."
 human_verification:
   - test: "Live Tier-3 chat/code/run turn with DEEPSEEK_API_KEY + interactive TTY"
     expected: "Single tool round-trip completes (read_file -> version or similar read-only path); cache-first loop + tool dispatch + telemetry proven end-to-end at UAT depth"
