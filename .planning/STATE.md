@@ -1,13 +1,13 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.0
-milestone_name: milestone
-current_phase: 04
-status: completed
-stopped_at: Phase 04 complete — milestone M1 100% (4/4 phases, 8/8 plans). UAT 2/3 pass (live read_file→0.55.0, CLAUDE.md coherence); 1/3 (weixin internal feedback) acknowledged-deferred as pre-existing shared HeadlessHost rendering gap. Ready for /gsd-complete-milestone v1.0
-last_updated: "2026-07-05T07:43:42.115Z"
+milestone_name: Pure CLI
+current_phase: 0
+status: Awaiting next milestone
+stopped_at: "Phase 04 complete — milestone M1 100% ready to close. UAT: live read_file turn ✓、CLAUDE.md coherence ✓、weixin internal-feedback acknowledged-deferred(pre-existing)。Next: /gsd-complete-milestone v1.0"
+last_updated: "2026-07-05T07:50:34.775Z"
 last_activity: 2026-07-05
-last_activity_desc: Phase 04 complete
+last_activity_desc: Milestone v1.0 completed and archived
 progress:
   total_phases: 4
   completed_phases: 4
@@ -21,19 +21,17 @@ current_phase_name: Build Chain Cleanup & Full Regression
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-07-04)
+See: .planning/PROJECT.md (updated 2026-07-05)
 
 **Core value:** 在终端里跑一个低成本、不中断的 DeepSeek 编程 agent——缓存优先压低成本,工具调用 JSON 自修复保证 loop 不被打断。
-**Current focus:** Milestone M1 complete — ready to archive via `/gsd-complete-milestone v1.0`
+**Current focus:** v1.0 Pure CLI shipped 2026-07-05 (4/4 phases, 10/10 requirements). Next milestone not yet planned — run `/gsd-new-milestone`.
 
 ## Current Position
 
-Phase: 04
-Plans: Phase 01 complete (2/2); Phase 02 complete (3/3 — headless host, reasonix qq, telegram/weixin); Phase 03 complete (1/1 — desktop/sidecar removed + stub + smoke green); Phase 04 complete (2/2 — 04-01 build-chain cleanup, 04-02 full regression SAFE-01/02/03 satisfied)
-Status: Milestone M1 ready to close — all 4 phases / 8 plans complete; 3 pre-existing-red test files formally acknowledged-deferred to fix cycle (not blocking)
-Last activity: 2026-07-05 — Phase 04 complete
-
-Progress: [████████████████████] 100% milestone (4/4 phases, 8/8 plans)
+Phase: Milestone v1.0 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-07-05 — Milestone v1.0 completed and archived
 
 ## Performance Metrics
 
@@ -117,3 +115,7 @@ None yet.
 Last session: 2026-07-05
 Stopped at: Phase 04 complete — milestone M1 100% ready to close. UAT: live read_file turn ✓、CLAUDE.md coherence ✓、weixin internal-feedback acknowledged-deferred(pre-existing)。Next: /gsd-complete-milestone v1.0
 Resume file: None
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone
