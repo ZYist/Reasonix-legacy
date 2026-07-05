@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 04-build-chain-cleanup-full-regression
 source: [04-VERIFICATION.md]
 started: 2026-07-05
@@ -45,6 +45,19 @@ blocked: 0
   reason: "User reported: qq pass, weixin 没有内部反馈（比如显示思考过程，输出等），telegram deferred"
   severity: minor
   test: 2
-  artifacts: []  # Filled by diagnosis — candidate: src/weixin/bot.ts (Phase 2 code, NOT touched by Phase 04)
-  missing: []    # Filled by diagnosis
-  note: "qq live turn passed (proves HeadlessHost + gateway + CacheFirstLoop wiring for >=1 channel); telegram deferred (no TELEGRAM_BOT_TOKEN, Phase 2 precedent). weixin responds but lacks internal-feedback display. Phase 04 made zero commits to src/weixin/ — likely pre-existing, diagnosis to confirm whether it is a weixin-specific gap or a shared-headless rendering gap."
+  root_cause: "NOT a weixin-specific bug — a SHARED headless-host rendering gap, pre-existing (Phase 2 architecture). HeadlessHost.runTurn (src/cli/headless/host.ts:128-162) wires only onAssistantText + onError from runHeadlessTurn; it does NOT subscribe to the available onEvent callback (src/cli/headless/turn-driver.ts:54,81), so CacheFirstLoop's reasoning/tool-dispatch/telemetry events are discarded for EVERY channel. qqCommand (src/cli/commands/qq.ts) and weixinCommand (src/cli/commands/weixin.ts) are structurally identical — both send only the final assistantText to the chat conversation. The perceived qq-has-it / weixin-doesn't asymmetry is observational (qq watched in terminal stdout/stderr vs weixin watched in the WeChat app, which only receives the final reply), not structural. Surfacing thinking/tool output to chat conversations is a NEW FEATURE (progressive streaming via the currently-unwired onEvent hook), applicable to all 3 channels — not a Phase-04 regression."
+  artifacts:
+    - path: "src/cli/headless/host.ts"
+      issue: "runTurn (lines 128-162) subscribes only onAssistantText + onError; the loop's onEvent stream (turn-driver.ts:54,81) is unused — reasoning/tool/telemetry events discarded for all channels"
+    - path: "src/cli/headless/turn-driver.ts"
+      issue: "exposes onEvent callback but HeadlessHost never wires it"
+    - path: "src/cli/commands/qq.ts"
+      issue: "sends only final assistantText to channel (same as weixin) — confirms no qq/weixin code-level asymmetry"
+    - path: "src/cli/commands/weixin.ts"
+      issue: "sends only final assistantText to channel (same as qq)"
+  missing:
+    - "Phase 04 made zero commits to src/cli/headless/*, src/cli/commands/{qq,weixin,telegram}.ts, src/weixin/*, src/qq/* (git diff --name-only 9d7b706c HEAD = only src/cli/commands/update.ts + src/version.ts) — pre-existing Phase-2 architecture, NOT Phase-04 scope"
+    - "If desired as a feature: wire HeadlessHost.runTurn → turn-driver onEvent → channel.sendResponse with progressive 'thinking…' / tool-dispatch notices (all 3 channels, not weixin alone)"
+  classification: "pre-existing / out-of-phase-scope / feature-not-a-bug"
+  recommended_routing: "acknowledged-deferred to fix cycle or a future channel-streaming phase (mirrors D-01 bucket-3 pattern), NOT a Phase-04 gap-closure plan"
+  debug_session: ""
