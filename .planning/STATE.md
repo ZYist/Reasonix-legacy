@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-07-05)
 Phase: Milestone v1.0 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-07-06 — Completed quick task 260706-co7: Redact secrets in bot command error output
+Last activity: 2026-07-06 — Completed quick task 260706-g0p: Wire HeadlessHost onEvent to bot chat + WR-01 fix
 
 ## Performance Metrics
 
@@ -98,6 +98,7 @@ None yet.
 | # | Description | Date | Commit | Status | Directory |
 |---|-------------|------|--------|--------|-----------|
 | 260706-co7 | Redact secrets in bot command error output (issue #1: stderr + chat leak) | 2026-07-06 | b36ba1ac | Verified | [260706-co7-redact-secrets-in-bot-command-error-outp](./quick/260706-co7-redact-secrets-in-bot-command-error-outp/) |
+| 260706-g0p | Wire HeadlessHost onEvent to bot chat + WR-01 recoverable-error fix (issues #2, #4-WR-01) | 2026-07-06 | 8d831c7e | Verified | [260706-g0p-wire-headlesshost-onevent-to-surface-rea](./quick/260706-g0p-wire-headlesshost-onevent-to-surface-rea/) |
 
 ## Deferred Items
 
