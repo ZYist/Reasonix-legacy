@@ -11,7 +11,8 @@
 // has TWO entries — the sidecar and this command — guarded against
 // same-account double-drive by QQ_LOCK_FILE (channel.ts:11). Sidecar
 // deletion is deferred to a later milestone.
-import { DEFAULT_MODEL, bridgeEndpointEnv, loadModel } from "../../config.js";
+import { DEFAULT_MODEL, bridgeEndpointEnv, collectBotSecrets, loadModel } from "../../config.js";
+import { redactSecretsInText } from "../../core/event-redaction.js";
 import { loadDotenv } from "../../env.js";
 import { t } from "../../i18n/index.js";
 import { QQChannel } from "../../qq/channel.js";
@@ -39,6 +40,10 @@ export async function qqCommand(opts: QqCommandOptions = {}): Promise<void> {
   // eager DeepSeekClient constructions pick up a configured key.
   loadDotenv();
   bridgeEndpointEnv();
+
+  // Snapshot the channel secrets once (long-lived process, stable config) so
+  // every error/sendFailed write below can scrub them.
+  const botSecrets = collectBotSecrets();
 
   // (2) Workspace: --workspace flag > cwd > crash (resolveDir throws on
   // missing/non-dir — no silent fallback per CLAUDE.md log+crash rule).
@@ -71,7 +76,11 @@ export async function qqCommand(opts: QqCommandOptions = {}): Promise<void> {
       const prompt = defaultBuildPrompt(kind, payload);
       if (prompt) {
         void channel?.sendResponse(prompt).catch((err) => {
-          process.stderr.write(t("commands.qq.sendFailed", { msg: (err as Error).message }));
+          process.stderr.write(
+            t("commands.qq.sendFailed", {
+              msg: redactSecretsInText((err as Error).message, botSecrets),
+            }),
+          );
         });
       }
     },
@@ -105,19 +114,27 @@ export async function qqCommand(opts: QqCommandOptions = {}): Promise<void> {
         .then((assistantText) => {
           if (assistantText) {
             void channel?.sendResponse(assistantText).catch((err) => {
-              process.stderr.write(t("commands.qq.sendFailed", { msg: (err as Error).message }));
+              process.stderr.write(
+                t("commands.qq.sendFailed", {
+                  msg: redactSecretsInText((err as Error).message, botSecrets),
+                }),
+              );
             });
           }
         })
         .catch((err) => {
-          process.stderr.write(t("commands.qq.error", { msg: (err as Error).message }));
+          process.stderr.write(
+            t("commands.qq.error", {
+              msg: redactSecretsInText((err as Error).message, botSecrets),
+            }),
+          );
         })
         .finally(() => {
           turnInFlight = false;
         });
     },
     onError: (msg) => {
-      process.stderr.write(t("commands.qq.error", { msg }));
+      process.stderr.write(t("commands.qq.error", { msg: redactSecretsInText(msg, botSecrets) }));
     },
     onInfo: (msg) => {
       process.stderr.write(`${msg}\n`);

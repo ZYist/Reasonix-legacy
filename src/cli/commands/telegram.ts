@@ -15,7 +15,8 @@
 // Coexistence (D-09): the desktop sidecar (desktopCommand + qqRuntime +
 // src/desktop/*) is byte-for-byte unchanged. Telegram was never wired
 // into the Tauri sidecar, but D-09 is the global no-regression contract.
-import { DEFAULT_MODEL, bridgeEndpointEnv, loadModel } from "../../config.js";
+import { DEFAULT_MODEL, bridgeEndpointEnv, collectBotSecrets, loadModel } from "../../config.js";
+import { redactSecretsInText } from "../../core/event-redaction.js";
 import { loadDotenv } from "../../env.js";
 import { t } from "../../i18n/index.js";
 import { TelegramChannel } from "../../telegram/channel.js";
@@ -42,6 +43,10 @@ export async function telegramCommand(opts: TelegramCommandOptions = {}): Promis
   // eager DeepSeekClient constructions pick up a configured key.
   loadDotenv();
   bridgeEndpointEnv();
+
+  // Snapshot the channel secrets once (long-lived process, stable config) so
+  // every error/sendFailed write below can scrub them.
+  const botSecrets = collectBotSecrets();
 
   // (2) Workspace: --workspace flag > cwd > crash (resolveDir throws on
   // missing/non-dir — no silent fallback per CLAUDE.md log+crash rule).
@@ -74,7 +79,11 @@ export async function telegramCommand(opts: TelegramCommandOptions = {}): Promis
       const prompt = defaultBuildPrompt(kind, payload);
       if (prompt) {
         void channel?.sendResponse(prompt).catch((err) => {
-          process.stderr.write(t("commands.telegram.sendFailed", { msg: (err as Error).message }));
+          process.stderr.write(
+            t("commands.telegram.sendFailed", {
+              msg: redactSecretsInText((err as Error).message, botSecrets),
+            }),
+          );
         });
       }
     },
@@ -107,20 +116,28 @@ export async function telegramCommand(opts: TelegramCommandOptions = {}): Promis
           if (assistantText) {
             void channel?.sendResponse(assistantText).catch((err) => {
               process.stderr.write(
-                t("commands.telegram.sendFailed", { msg: (err as Error).message }),
+                t("commands.telegram.sendFailed", {
+                  msg: redactSecretsInText((err as Error).message, botSecrets),
+                }),
               );
             });
           }
         })
         .catch((err) => {
-          process.stderr.write(t("commands.telegram.error", { msg: (err as Error).message }));
+          process.stderr.write(
+            t("commands.telegram.error", {
+              msg: redactSecretsInText((err as Error).message, botSecrets),
+            }),
+          );
         })
         .finally(() => {
           turnInFlight = false;
         });
     },
     onError: (msg) => {
-      process.stderr.write(t("commands.telegram.error", { msg }));
+      process.stderr.write(
+        t("commands.telegram.error", { msg: redactSecretsInText(msg, botSecrets) }),
+      );
     },
   });
 

@@ -9,6 +9,7 @@
 import assert from "node:assert/strict";
 import { pathToFileURL } from "node:url";
 import { describe, expect, it } from "vitest";
+import { HeadlessHost, formatHeadlessError } from "../src/cli/headless/host.js";
 import {
   type HeadlessHostContext,
   getActiveSessionId,
@@ -165,6 +166,56 @@ async function runAsyncLocalStorageCase(): Promise<void> {
   assert.equal(seenOutside, undefined, "after the loop run the headlessContext must be cleared");
 }
 
+type HeadlessHostCtorArgs = {
+  loop: CacheFirstLoop;
+  eventizer: Eventizer;
+  ctx: HeadlessHostContext;
+  session: string;
+  knownSecrets: readonly string[];
+};
+
+async function runFormatHeadlessErrorScrubCase(): Promise<void> {
+  const telegramUrl =
+    "https://api.telegram.org/bot123456789:AAFfakeTELEGRAMtoken0123456789xyz/sendMessage";
+  const deepseekKey = "sk-FAKEDEEPSEEKKEY0123456789abcdef";
+  const cause = new Error(`send failed: POST ${telegramUrl} using key ${deepseekKey}`);
+  const scrubbed = formatHeadlessError(cause, { code: "net", phase: "send" }, [deepseekKey]);
+  // host.runTurn derives BOTH its stderr write and its chat-bound return from
+  // this one scrubbed string, so covering formatHeadlessError covers both sinks.
+  assert.ok(
+    !scrubbed.includes("123456789:AAFfakeTELEGRAMtoken0123456789xyz"),
+    "formatHeadlessError must strip the Telegram bot-URL token",
+  );
+  assert.ok(!scrubbed.includes(deepseekKey), "formatHeadlessError must strip the known key");
+  assert.ok(scrubbed.includes("[redacted]"), "formatHeadlessError must show the [redacted] marker");
+}
+
+async function runHostRunTurnReturnScrubCase(): Promise<void> {
+  const telegramUrl =
+    "https://api.telegram.org/bot123456789:AAFfakeTELEGRAMtoken0123456789xyz/sendMessage";
+  async function* failing(): AsyncGenerator<LoopEvent, void, unknown> {
+    yield { turn: 1, role: "assistant_delta", content: "x" };
+    throw new Error(`send failed: POST ${telegramUrl}`);
+  }
+  const loop = { step: (_s: string) => failing() } as unknown as CacheFirstLoop;
+  const eventizer = makeStubEventizer([]);
+  // Private ctor is bypassed via a construct-signature cast so a throwing stub
+  // loop can be injected. knownSecrets is [] because the bot-URL token is
+  // caught by the redaction PATTERN, so no real secret is injected.
+  const Ctor = HeadlessHost as unknown as new (
+    opts: HeadlessHostCtorArgs,
+  ) => {
+    runTurn(text: string): Promise<string>;
+  };
+  const host = new Ctor({ loop, eventizer, ctx: baseCtx, session: "sess-scrub", knownSecrets: [] });
+  const returned = await host.runTurn("ping");
+  assert.ok(
+    !returned.includes("123456789:AAFfakeTELEGRAMtoken0123456789xyz"),
+    "HeadlessHost.runTurn return must not carry the plaintext Telegram token",
+  );
+  assert.ok(returned.includes("[redacted]"), "HeadlessHost.runTurn return must show [redacted]");
+}
+
 let testCount = 0;
 let failure: Error | null = null;
 
@@ -179,6 +230,14 @@ async function run(): Promise<void> {
     [
       "headlessContext AsyncLocalStorage is set for the duration of the turn",
       runAsyncLocalStorageCase,
+    ],
+    [
+      "formatHeadlessError scrubs the classified error string (both host sinks)",
+      runFormatHeadlessErrorScrubCase,
+    ],
+    [
+      "HeadlessHost.runTurn scrubs the error it returns to the channel",
+      runHostRunTurnReturnScrubCase,
     ],
   ];
   for (const [name, fn] of cases) {

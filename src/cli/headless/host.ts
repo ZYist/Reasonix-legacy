@@ -16,12 +16,14 @@ import { applyPlanMode, buildCodeToolset } from "../../code/setup.js";
 import {
   DEFAULT_MODEL,
   type ReasoningEffort,
+  collectBotSecrets,
   loadEditMode,
   loadEndpoint,
   loadMaxIterPerTurn,
   loadModel,
   loadReasoningEffort,
 } from "../../config.js";
+import { redactSecretsInText } from "../../core/event-redaction.js";
 import { Eventizer } from "../../core/eventize.js";
 import { t } from "../../i18n/index.js";
 import { CacheFirstLoop, DeepSeekClient, ImmutablePrefix } from "../../index.js";
@@ -61,12 +63,28 @@ export function resolveDir(raw: string | undefined, fallback: string): string {
   return abs;
 }
 
+// Assemble the classified error string (matching the prior inline form) and
+// scrub known secrets before it reaches stderr or the chat-bound return value.
+export function formatHeadlessError(
+  cause: Error,
+  meta: { code?: string; phase?: string },
+  knownSecrets: readonly string[],
+): string {
+  const assembled =
+    meta.code || meta.phase
+      ? `${cause.message} [code=${meta.code ?? "?"} phase=${meta.phase ?? "?"}]`
+      : cause.message;
+  return redactSecretsInText(assembled, knownSecrets);
+}
+
 export class HeadlessHost {
   /** Constructed loop + eventizer + ctx bundle (RuntimeState from desktop.ts:1315). */
   private readonly loop: CacheFirstLoop;
   private readonly eventizer: Eventizer;
   private readonly ctx: HeadlessHostContext;
   private readonly session: string;
+  // Snapshotted once at construction so runTurn never re-reads config per turn.
+  private readonly knownSecrets: readonly string[];
   private aborter: AbortController | null = null;
 
   private constructor(opts: {
@@ -74,11 +92,13 @@ export class HeadlessHost {
     eventizer: Eventizer;
     ctx: HeadlessHostContext;
     session: string;
+    knownSecrets: readonly string[];
   }) {
     this.loop = opts.loop;
     this.eventizer = opts.eventizer;
     this.ctx = opts.ctx;
     this.session = opts.session;
+    this.knownSecrets = opts.knownSecrets;
   }
 
   // Build a HeadlessHost by replicating the desktop buildRuntimeFor recipe
@@ -117,7 +137,7 @@ export class HeadlessHost {
       prefixHash: prefix.fingerprint,
       reasoningEffort,
     };
-    return new HeadlessHost({ loop, eventizer, ctx, session });
+    return new HeadlessHost({ loop, eventizer, ctx, session, knownSecrets: collectBotSecrets() });
   }
 
   // Drive a single conversation turn end-to-end. Returns the captured
@@ -127,6 +147,7 @@ export class HeadlessHost {
   // detached-bot operator tailing the log can diagnose it).
   async runTurn(text: string): Promise<string> {
     this.aborter = new AbortController();
+    const knownSecrets = this.knownSecrets;
     let lastAssistantText = "";
     let outcome: "end_turn" | "aborted" | "error" = "end_turn";
     let errMessage = "";
@@ -146,10 +167,7 @@ export class HeadlessHost {
           lastAssistantText = content;
         },
         onError: (cause, meta) => {
-          errMessage =
-            meta.code || meta.phase
-              ? `${cause.message} [code=${meta.code ?? "?"} phase=${meta.phase ?? "?"}]`
-              : cause.message;
+          errMessage = formatHeadlessError(cause, meta, knownSecrets);
           process.stderr.write(`${errMessage}\n`);
         },
       });

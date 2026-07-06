@@ -21,10 +21,12 @@
 import {
   DEFAULT_MODEL,
   bridgeEndpointEnv,
+  collectBotSecrets,
   loadModel,
   loadWeixinConfig,
   saveWeixinConfig,
 } from "../../config.js";
+import { redactSecretsInText } from "../../core/event-redaction.js";
 import { loadDotenv } from "../../env.js";
 import { t } from "../../i18n/index.js";
 import { runWeixinQrLogin } from "../../weixin/bot.js";
@@ -87,6 +89,10 @@ export async function weixinCommand(opts: WeixinCommandOptions = {}): Promise<vo
     });
   }
 
+  // Snapshot the channel secrets AFTER the QR-login persist so a freshly
+  // scanned Weixin token is included in the redaction set for this run.
+  const botSecrets = collectBotSecrets();
+
   // channel is referenced by closures before construction completes.
   let channel: WeixinChannel | null = null;
   let turnInFlight = false;
@@ -100,7 +106,11 @@ export async function weixinCommand(opts: WeixinCommandOptions = {}): Promise<vo
       const prompt = defaultBuildPrompt(kind, payload);
       if (prompt) {
         void channel?.sendResponse(prompt).catch((err) => {
-          process.stderr.write(t("commands.weixin.sendFailed", { msg: (err as Error).message }));
+          process.stderr.write(
+            t("commands.weixin.sendFailed", {
+              msg: redactSecretsInText((err as Error).message, botSecrets),
+            }),
+          );
         });
       }
     },
@@ -133,20 +143,28 @@ export async function weixinCommand(opts: WeixinCommandOptions = {}): Promise<vo
           if (assistantText) {
             void channel?.sendResponse(assistantText).catch((err) => {
               process.stderr.write(
-                t("commands.weixin.sendFailed", { msg: (err as Error).message }),
+                t("commands.weixin.sendFailed", {
+                  msg: redactSecretsInText((err as Error).message, botSecrets),
+                }),
               );
             });
           }
         })
         .catch((err) => {
-          process.stderr.write(t("commands.weixin.error", { msg: (err as Error).message }));
+          process.stderr.write(
+            t("commands.weixin.error", {
+              msg: redactSecretsInText((err as Error).message, botSecrets),
+            }),
+          );
         })
         .finally(() => {
           turnInFlight = false;
         });
     },
     onError: (msg) => {
-      process.stderr.write(t("commands.weixin.error", { msg }));
+      process.stderr.write(
+        t("commands.weixin.error", { msg: redactSecretsInText(msg, botSecrets) }),
+      );
     },
     onInfo: (msg) => {
       process.stderr.write(`${msg}\n`);
