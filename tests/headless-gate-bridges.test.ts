@@ -13,8 +13,8 @@ import { describe, expect, it } from "vitest";
 import {
   defaultBuildPrompt,
   installHeadlessGateBridges,
-  parseRunPermissionChoice,
 } from "../src/cli/headless/gate-bridges.js";
+import { parseRunPermissionChoice } from "../src/cli/headless/gate-parsers.js";
 import { headlessContext } from "../src/cli/headless/turn-driver.js";
 import { saveEditMode } from "../src/config.js";
 import { pauseGate } from "../src/core/pause-gate.js";

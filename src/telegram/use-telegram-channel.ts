@@ -1,4 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
+import {
+  parseCheckpointChoice,
+  parseIndexedChoice,
+  parsePlanChoice,
+  parseRevisionChoice,
+  parseRunPermissionChoice,
+  stripFollowupPrefix,
+} from "../cli/headless/gate-parsers.js";
 import type { PlanConfirmChoice } from "../cli/ui/PlanConfirm.js";
 import type { ReviseChoice } from "../cli/ui/PlanReviseConfirm.js";
 import type { ThemeChoice } from "../cli/ui/ThemePicker.js";
@@ -111,11 +119,6 @@ interface RemoteSlashHandlingArgs {
   restoreCodeOnlyMessage: string;
 }
 
-function parseIndexedChoice(text: string): number {
-  const rawIndex = text.match(/^(\d+)/)?.[1];
-  return rawIndex ? Number.parseInt(rawIndex, 10) - 1 : -1;
-}
-
 function isCancelText(text: string): boolean {
   const lower = text.toLowerCase();
   return lower === "q" || lower.includes("cancel") || lower.includes("quit");
@@ -124,47 +127,6 @@ function isCancelText(text: string): boolean {
 function isNewText(text: string): boolean {
   const lower = text.toLowerCase();
   return lower === "n" || lower.includes("new");
-}
-
-function parseRunPermissionChoice(text: string): "run_once" | "always_allow" | "deny" {
-  const lower = text.toLowerCase().trim();
-  if (/\b(don't|do not|no|nope|cancel|deny|stop|never)\b/.test(lower)) return "deny";
-  const idx = parseIndexedChoice(text);
-  if (idx === 0) return "run_once";
-  if (idx === 1) return "always_allow";
-  if (/\b(run|yes|ok|allow|approve)\b/.test(lower)) return "run_once";
-  if (/\balways\b/.test(lower)) return "always_allow";
-  return "deny";
-}
-
-function parsePlanChoice(text: string): "approve" | "refine" | "cancel" {
-  const lower = text.toLowerCase();
-  if (lower.includes("1") || lower.includes("approve")) return "approve";
-  if (lower.includes("2") || lower.includes("refine")) return "refine";
-  return "cancel";
-}
-
-function parseCheckpointChoice(text: string): "continue" | "revise" | "stop" {
-  const lower = text.toLowerCase();
-  if (lower.includes("1") || lower.includes("continue")) return "continue";
-  if (lower.includes("2") || lower.includes("revise")) return "revise";
-  return "stop";
-}
-
-function parseRevisionChoice(text: string): ReviseChoice | "cancel" {
-  const lower = text.toLowerCase();
-  if (lower.includes("1") || lower.includes("accept")) return "accept";
-  if (lower.includes("2") || lower.includes("reject")) return "reject";
-  return "cancel";
-}
-
-function stripFollowupPrefix(text: string): string {
-  return text
-    .replace(
-      /^(?:\d+\s*|approve\s*|refine\s*|cancel\s*|continue\s*|revise\s*|stop\s*|accept\s*|reject\s*|run\s*|always\s*|deny\s*)/iu,
-      "",
-    )
-    .trim();
 }
 
 function telegramCallbackData(confirmationId: string, choice: string): string {
@@ -500,7 +462,6 @@ export function useTelegramChannel({
 
   const consumeSlashReply = useCallback(
     (text: string): boolean => {
-      const lowerText = text.toLowerCase();
       const pickedIndex = parseIndexedChoice(text);
       switch (slashInteractionRef.current.kind) {
         case "sessions_picker": {

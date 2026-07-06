@@ -19,14 +19,16 @@ import { pauseGate } from "../../core/pause-gate.js";
 import { autoResolveVerdict } from "../../core/pause-policy.js";
 import { t } from "../../i18n/index.js";
 import type { ChoiceOption } from "../../tools/choice.js";
+import {
+  type ReviseChoice,
+  parseCheckpointChoice,
+  parseIndexedChoice,
+  parsePlanChoice,
+  parseRevisionChoice,
+  parseRunPermissionChoice,
+  stripFollowupPrefix,
+} from "./gate-parsers.js";
 import { getActiveSessionId } from "./host.js";
-
-// Mirrors ReviseChoice from src/cli/ui/PlanReviseConfirm.tsx but inlined here
-// to avoid pulling a .tsx (React) file into this transport-agnostic module.
-// The 02-02 refactor can reconcile homes if a shared gate-parsers module is
-// extracted; for 02-01 the value union is what matters and it must stay stable
-// with the canonical "accept" | "reject".
-export type ReviseChoice = "accept" | "reject";
 
 // pauseGate.resolve verdict for run_command / path_access. Re-exported here so
 // the bridge references the canonical alias rather than redefining the union.
@@ -96,63 +98,6 @@ interface PendingInteraction {
   gateId: number;
   kind: string;
   payload: Record<string, unknown>;
-}
-
-// parse*Choice helpers — verbatim copies of use-qq-channel.ts:124-174.
-// The originals live in a React-importing module (use-qq-channel.ts:1
-// `import ... from "react"`); importing them from here would pull React into
-// the headless graph and break `node --import tsx tests/...`. The plan
-// (02-01 Task 2 action) explicitly sanctions copying the helpers ("the
-// executor copies them, leaves the old ones in place for now; the 02-02
-// refactor decides final home"). They are pure string→verdict functions with
-// zero React deps. Sync with use-qq-channel.ts if the parser logic ever
-// changes — 02-02 will extract a shared `gate-parsers.ts`.
-function parseIndexedChoice(text: string): number {
-  const rawIndex = text.match(/^(\d+)/)?.[1];
-  return rawIndex ? Number.parseInt(rawIndex, 10) - 1 : -1;
-}
-
-export function parseRunPermissionChoice(text: string): "run_once" | "always_allow" | "deny" {
-  const lower = text.toLowerCase().trim();
-  // Refusals short-circuit first: "don't run it" contains "run" but is a deny.
-  // Word boundaries stop substring false-matches ("rerun" → deny, not run_once).
-  if (/\b(don't|do not|no|nope|cancel|deny|stop|never)\b/.test(lower)) return "deny";
-  const idx = parseIndexedChoice(text);
-  if (idx === 0) return "run_once";
-  if (idx === 1) return "always_allow";
-  if (/\b(run|yes|ok|allow|approve)\b/.test(lower)) return "run_once";
-  if (/\balways\b/.test(lower)) return "always_allow";
-  return "deny";
-}
-
-function parsePlanChoice(text: string): "approve" | "refine" | "cancel" {
-  const lower = text.toLowerCase();
-  if (lower.includes("1") || lower.includes("approve")) return "approve";
-  if (lower.includes("2") || lower.includes("refine")) return "refine";
-  return "cancel";
-}
-
-function parseCheckpointChoice(text: string): "continue" | "revise" | "stop" {
-  const lower = text.toLowerCase();
-  if (lower.includes("1") || lower.includes("continue")) return "continue";
-  if (lower.includes("2") || lower.includes("revise")) return "revise";
-  return "stop";
-}
-
-function parseRevisionChoice(text: string): ReviseChoice | "cancel" {
-  const lower = text.toLowerCase();
-  if (lower.includes("1") || lower.includes("accept")) return "accept";
-  if (lower.includes("2") || lower.includes("reject")) return "reject";
-  return "cancel";
-}
-
-function stripFollowupPrefix(text: string): string {
-  return text
-    .replace(
-      /^(?:\d+\s*|approve\s*|refine\s*|cancel\s*|continue\s*|revise\s*|stop\s*|accept\s*|reject\s*|run\s*|always\s*|deny\s*)/iu,
-      "",
-    )
-    .trim();
 }
 
 // Default prompt-text builder — i18n-localized form of desktop.ts:1939-1985
