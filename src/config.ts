@@ -1819,3 +1819,21 @@ export function saveWeixinConfig(
   };
   writeConfig(rootCfg, path);
 }
+
+// Gather the live channel secret VALUES (DeepSeek key, Telegram/QQ/Weixin
+// credentials) for value-level redaction. Drops empty or sub-8-char values and
+// de-duplicates so the pure redactor never has to import config.
+export function collectBotSecrets(path: string = defaultConfigPath()): string[] {
+  const weixin = loadWeixinConfig(path);
+  const candidates = [
+    loadApiKey(path),
+    loadTelegramConfig(path).botToken,
+    loadQQConfig(path).appSecret,
+    weixin.token,
+    weixin.accountId,
+  ];
+  const secrets = candidates.filter(
+    (value): value is string => typeof value === "string" && value.length >= 8,
+  );
+  return [...new Set(secrets)];
+}
