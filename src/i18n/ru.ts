@@ -607,6 +607,10 @@ export const ru: TranslationSchema = {
       abortedSentinel: "(прервано)",
       errorFallback: "(сбой хода — см. ошибку выше)",
     },
+    notice: {
+      thinking: "💭 Думаю…",
+      tool: "🔧 {tool}",
+    },
     gate: {
       runCommandPrompt:
         "Требуется подтверждение\n\nКоманда: `{command}`\n\nОтвет:\n1. Выполнить один раз\n2. Всегда разрешать\n3. Отклонить",

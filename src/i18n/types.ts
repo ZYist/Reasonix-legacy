@@ -1026,6 +1026,10 @@ export interface TranslationSchema {
       abortedSentinel: string;
       errorFallback: string;
     };
+    notice: {
+      thinking: string;
+      tool: string;
+    };
     gate: {
       runCommandPrompt: string;
       pathAccessPrompt: string;

@@ -2168,6 +2168,10 @@ export const JA: TranslationSchema = {
       abortedSentinel: "(中断しました)",
       errorFallback: "(ターン失敗 — 上記のエラーを参照)",
     },
+    notice: {
+      thinking: "💭 考え中…",
+      tool: "🔧 {tool}",
+    },
     gate: {
       runCommandPrompt:
         "確認が必要です\n\nコマンド: `{command}`\n\n返信:\n1. 1回だけ実行\n2. 常に許可\n3. 拒否",

@@ -1990,6 +1990,10 @@ export const zhCN: TranslationSchema = {
       abortedSentinel: "(已中止)",
       errorFallback: "(本轮失败 — 请查看上方错误)",
     },
+    notice: {
+      thinking: "💭 思考中…",
+      tool: "🔧 {tool}",
+    },
     gate: {
       runCommandPrompt:
         "需要确认\n\n命令：`{command}`\n\n回复：\n1. 仅本次执行\n2. 始终允许\n3. 拒绝",

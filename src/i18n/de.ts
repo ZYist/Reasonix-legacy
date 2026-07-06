@@ -2068,6 +2068,10 @@ export const de: TranslationSchema = {
       abortedSentinel: "(abgebrochen)",
       errorFallback: "(Turn fehlgeschlagen — siehe Fehler oben)",
     },
+    notice: {
+      thinking: "💭 Denke nach…",
+      tool: "🔧 {tool}",
+    },
     gate: {
       runCommandPrompt:
         "Bestätigung erforderlich\n\nBefehl: `{command}`\n\nAntworte mit:\n1. Einmal ausführen\n2. Immer erlauben\n3. Ablehnen",

@@ -2106,6 +2106,10 @@ export const EN: TranslationSchema = {
       abortedSentinel: "(aborted)",
       errorFallback: "(turn failed — see error above)",
     },
+    notice: {
+      thinking: "💭 thinking…",
+      tool: "🔧 {tool}",
+    },
     gate: {
       runCommandPrompt:
         "Need confirmation\n\nCommand: `{command}`\n\nReply with:\n1. Run once\n2. Always allow\n3. Deny",
