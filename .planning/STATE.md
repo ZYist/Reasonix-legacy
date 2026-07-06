@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-07-05)
 Phase: Milestone v1.0 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-07-05 — Milestone v1.0 completed and archived
+Last activity: 2026-07-06 — Completed quick task 260706-co7: Redact secrets in bot command error output
 
 ## Performance Metrics
 
@@ -92,6 +92,12 @@ None yet.
 - 关键约束(贯穿所有 phase):`scripts/copy-tree-sitter-grammars.mjs` + `src/code-query/` 必须保留,任何 phase 的删除清单不得包含它们(服务 CLI 代码符号搜索)。
 - 关键依赖(已就绪):Phase 3 删 desktop sidecar 的前置——Phase 2 把 QQ/Telegram/微信解耦到 HeadlessHost——已完成(2026-07-04)。sidecar 现可安全移除(Phase 3)。
 - 不回归红线:核心 loop / 工具 / 记忆 / MCP / AcP 零回归;每个 phase 保持纯 CLI 可用(MVP 模式垂直切片)。
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Status | Directory |
+|---|-------------|------|--------|--------|-----------|
+| 260706-co7 | Redact secrets in bot command error output (issue #1: stderr + chat leak) | 2026-07-06 | b36ba1ac | Verified | [260706-co7-redact-secrets-in-bot-command-error-outp](./quick/260706-co7-redact-secrets-in-bot-command-error-outp/) |
 
 ## Deferred Items
 
