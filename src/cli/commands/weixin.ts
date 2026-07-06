@@ -31,7 +31,7 @@ import { loadDotenv } from "../../env.js";
 import { t } from "../../i18n/index.js";
 import { runWeixinQrLogin } from "../../weixin/bot.js";
 import { WeixinChannel } from "../../weixin/channel.js";
-import { defaultBuildPrompt, installHeadlessGateBridges } from "../headless/gate-bridges.js";
+import { installHeadlessGateBridges } from "../headless/gate-bridges.js";
 import { HeadlessHost, resolveDir } from "../headless/host.js";
 import { SurfaceNotifier } from "../headless/surface-notifier.js";
 
@@ -40,8 +40,6 @@ export interface WeixinCommandOptions {
   model?: string;
   /** Workspace root for filesystem tools. Defaults to cwd. */
   workspace?: string;
-  /** Reasoning effort tag (persisted upstream in cli/index.ts). */
-  effort?: string;
   /** Soft USD spend cap. */
   budgetUsd?: number;
 }
@@ -100,13 +98,11 @@ export async function weixinCommand(opts: WeixinCommandOptions = {}): Promise<vo
   let cleaningUp = false;
 
   // (6) Gate bridge — pauseGate.on subscription. The bridge resolves
-  // pauseGate directly (owns gateId); observer callbacks are no-ops
-  // (resolution path owned by dispatchReply — Rule 1 fix in 02-02).
+  // pauseGate directly (owns gateId), so no observer callbacks are wired here.
   const bridge = installHeadlessGateBridges({
-    sendPrompt: (kind, payload) => {
-      const prompt = defaultBuildPrompt(kind, payload);
-      if (prompt) {
-        void channel?.sendResponse(prompt).catch((err) => {
+    sendPrompt: (promptText) => {
+      if (promptText) {
+        void channel?.sendResponse(promptText).catch((err) => {
           process.stderr.write(
             t("commands.weixin.sendFailed", {
               msg: redactSecretsInText((err as Error).message, botSecrets),
@@ -114,16 +110,6 @@ export async function weixinCommand(opts: WeixinCommandOptions = {}): Promise<vo
           );
         });
       }
-    },
-    gateCallbacks: {
-      onShellConfirm: () => undefined,
-      onPathConfirm: () => undefined,
-      onPlanCancel: () => undefined,
-      onPlanFeedback: () => undefined,
-      onCheckpointConfirm: () => undefined,
-      onCheckpointRevise: () => undefined,
-      onPlanRevision: () => undefined,
-      onChoiceResolve: () => undefined,
     },
   });
 

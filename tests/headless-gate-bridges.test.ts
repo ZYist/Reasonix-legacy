@@ -118,12 +118,12 @@ async function runInteractiveReplyResolveCase(): Promise<void> {
   // bridge MUST surface). Assert sendPrompt called with the prompt text, then
   // consumeReply("1") triggers gateCallbacks.onShellConfirm("run_once").
   let sendPromptCalls = 0;
-  let lastPromptKind = "";
+  let lastPrompt = "";
   let onShellConfirmChoice: string | null = null;
   const { consumeReply, unsubscribe } = installHeadlessGateBridges({
-    sendPrompt: (kind, _payload) => {
+    sendPrompt: (promptText) => {
       sendPromptCalls++;
-      lastPromptKind = kind;
+      lastPrompt = promptText;
     },
     gateCallbacks: {
       onShellConfirm: (choice) => {
@@ -152,7 +152,7 @@ async function runInteractiveReplyResolveCase(): Promise<void> {
         // the await lets the microtask queue drain) fires before asserts.
         await Promise.resolve();
         assert.equal(sendPromptCalls, 1, "run_command in review mode must call sendPrompt once");
-        assert.equal(lastPromptKind, "run_command");
+        assert.ok(lastPrompt.includes("echo hi"), "sendPrompt receives the built prompt text");
         // Reply "1" → onShellConfirm("run_once")
         const consumed = consumeReply("1");
         assert.equal(

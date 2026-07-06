@@ -20,7 +20,7 @@ import { redactSecretsInText } from "../../core/event-redaction.js";
 import { loadDotenv } from "../../env.js";
 import { t } from "../../i18n/index.js";
 import { TelegramChannel } from "../../telegram/channel.js";
-import { defaultBuildPrompt, installHeadlessGateBridges } from "../headless/gate-bridges.js";
+import { installHeadlessGateBridges } from "../headless/gate-bridges.js";
 import { HeadlessHost, resolveDir } from "../headless/host.js";
 import { SurfaceNotifier } from "../headless/surface-notifier.js";
 
@@ -29,8 +29,6 @@ export interface TelegramCommandOptions {
   model?: string;
   /** Workspace root for filesystem tools. Defaults to cwd. */
   workspace?: string;
-  /** Reasoning effort tag (persisted upstream in cli/index.ts). */
-  effort?: string;
   /** Soft USD spend cap. */
   budgetUsd?: number;
 }
@@ -72,14 +70,12 @@ export async function telegramCommand(opts: TelegramCommandOptions = {}): Promis
   let cleaningUp = false;
 
   // (5) Gate bridge — pauseGate.on subscription that prompts the channel
-  // and dispatches replies. The bridge resolves pauseGate directly (it
-  // owns the gateId); the observer callbacks here are no-ops because the
-  // resolution path is fully owned by dispatchReply (Rule 1 fix in 02-02).
+  // and dispatches replies. The bridge resolves pauseGate directly (it owns
+  // the gateId), so no observer callbacks are wired here.
   const bridge = installHeadlessGateBridges({
-    sendPrompt: (kind, payload) => {
-      const prompt = defaultBuildPrompt(kind, payload);
-      if (prompt) {
-        void channel?.sendResponse(prompt).catch((err) => {
+    sendPrompt: (promptText) => {
+      if (promptText) {
+        void channel?.sendResponse(promptText).catch((err) => {
           process.stderr.write(
             t("commands.telegram.sendFailed", {
               msg: redactSecretsInText((err as Error).message, botSecrets),
@@ -87,16 +83,6 @@ export async function telegramCommand(opts: TelegramCommandOptions = {}): Promis
           );
         });
       }
-    },
-    gateCallbacks: {
-      onShellConfirm: () => undefined,
-      onPathConfirm: () => undefined,
-      onPlanCancel: () => undefined,
-      onPlanFeedback: () => undefined,
-      onCheckpointConfirm: () => undefined,
-      onCheckpointRevise: () => undefined,
-      onPlanRevision: () => undefined,
-      onChoiceResolve: () => undefined,
     },
   });
 

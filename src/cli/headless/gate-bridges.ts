@@ -66,10 +66,13 @@ export interface GateCallbacks {
 // channel command routes inbound messages through it. The only shape that
 // doesn't require the channel to already have a dispatch implementation.
 export interface HeadlessGateBridgeOptions {
-  /** Push the choice prompt text to the channel (qq.sendResponse etc.). */
-  sendPrompt(kind: string, payload: Record<string, unknown>): void;
-  /** Per-kind verdict closures (the object-injection substitute for TUI *Ref). */
-  gateCallbacks: GateCallbacks;
+  /** Push the already-built prompt text to the channel (qq.sendResponse etc.).
+   *  The bridge builds the text once via buildPrompt/defaultBuildPrompt. */
+  sendPrompt(promptText: string): void;
+  /** Per-kind verdict closures (the object-injection substitute for TUI *Ref).
+   *  Optional — the headless commands resolve fully via dispatchReply and pass
+   *  no callbacks; the TUI caller wires the full set. */
+  gateCallbacks?: Partial<GateCallbacks>;
   /** Per-channel prompt-text builder. Defaults to `defaultBuildPrompt` (the
    *  i18n-localized form of desktop.ts:1939-1985). Telegram/QQ/Weixin can
    *  override to add channel-specific formatting (e.g. button hints). */
@@ -227,7 +230,7 @@ function confirmationVerdict(
 function dispatchReply(
   pending: PendingInteraction,
   text: string,
-  gateCallbacks: GateCallbacks,
+  gateCallbacks?: Partial<GateCallbacks>,
 ): boolean {
   const gateId = pending.gateId;
   const followup = stripFollowupPrefix(text);
@@ -241,13 +244,13 @@ function dispatchReply(
       // string — a latent type bug we don't perpetuate here).
       const choice = parseRunPermissionChoice(text);
       pauseGate.resolve(gateId, confirmationVerdict(choice));
-      gateCallbacks.onShellConfirm(choice);
+      gateCallbacks?.onShellConfirm?.(choice);
       return true;
     }
     case "path_access": {
       const choice = parseRunPermissionChoice(text);
       pauseGate.resolve(gateId, confirmationVerdict(choice));
-      gateCallbacks.onPathConfirm(choice);
+      gateCallbacks?.onPathConfirm?.(choice);
       return true;
     }
     case "plan_proposed": {
@@ -255,11 +258,11 @@ function dispatchReply(
       const choice = parsePlanChoice(text);
       if (choice === "cancel") {
         pauseGate.cancel(gateId);
-        void gateCallbacks.onPlanCancel();
+        void gateCallbacks?.onPlanCancel?.();
       } else {
         const mode = choice === "approve" ? "approve" : "refine";
         pauseGate.resolve(gateId, { type: mode, feedback: followup });
-        void gateCallbacks.onPlanFeedback(followup, {
+        void gateCallbacks?.onPlanFeedback?.(followup, {
           plan: payload.plan ?? "",
           mode,
         });
@@ -273,15 +276,14 @@ function dispatchReply(
         pauseGate.resolve(gateId, {
           type: "revise",
           feedback: followup,
-          checkpoint: { stepId: payload.stepId ?? "", title: payload.title },
         });
-        gateCallbacks.onCheckpointRevise(followup, {
+        gateCallbacks?.onCheckpointRevise?.(followup, {
           stepId: payload.stepId ?? "",
           title: payload.title,
         });
       } else {
         pauseGate.resolve(gateId, { type: choice });
-        gateCallbacks.onCheckpointConfirm(choice);
+        gateCallbacks?.onCheckpointConfirm?.(choice);
       }
       return true;
     }
@@ -294,7 +296,7 @@ function dispatchReply(
             ? { type: "rejected" as const }
             : { type: "cancelled" as const };
       pauseGate.resolve(gateId, verdict);
-      gateCallbacks.onPlanRevision(parsed);
+      gateCallbacks?.onPlanRevision?.(parsed);
       return true;
     }
     case "choice": {
@@ -306,14 +308,14 @@ function dispatchReply(
         const selected = options[pickedIndex];
         if (selected) {
           pauseGate.resolve(gateId, { type: "pick", optionId: selected.id });
-          gateCallbacks.onChoiceResolve({ type: "pick", optionId: selected.id });
+          gateCallbacks?.onChoiceResolve?.({ type: "pick", optionId: selected.id });
         }
         return true;
       }
       for (const option of options) {
         if (text.toLowerCase().includes(option.title.toLowerCase())) {
           pauseGate.resolve(gateId, { type: "pick", optionId: option.id });
-          gateCallbacks.onChoiceResolve({ type: "pick", optionId: option.id });
+          gateCallbacks?.onChoiceResolve?.({ type: "pick", optionId: option.id });
           return true;
         }
       }
@@ -321,7 +323,7 @@ function dispatchReply(
         ? { type: "text", text }
         : { type: "cancel" };
       pauseGate.resolve(gateId, resolution);
-      gateCallbacks.onChoiceResolve(resolution);
+      gateCallbacks?.onChoiceResolve?.(resolution);
       return true;
     }
     default:
@@ -371,10 +373,7 @@ export function installHeadlessGateBridges(
       kind: req.kind,
       payload: (req.payload as Record<string, unknown>) ?? {},
     };
-    opts.sendPrompt(req.kind, req.payload as Record<string, unknown>);
-    // The prompt itself is built but only surfaced via sendPrompt — keep the
-    // build call result alive for tests that want to inspect it.
-    void prompt;
+    opts.sendPrompt(prompt);
   });
 
   const consumeReply = (text: string): boolean => {
