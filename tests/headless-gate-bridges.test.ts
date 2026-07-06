@@ -223,6 +223,41 @@ async function runTamperingMitigationCase(): Promise<void> {
   }
 }
 
+async function runConcurrentPendingsCase(): Promise<void> {
+  // WR-03 regression: two run_command asks fire in one turn (review mode, so
+  // neither auto-resolves). The bridge must queue them FIFO — the pre-fix
+  // single-slot `pending` clobbered the first, so ask1 would never resolve
+  // (this test would hang) and the second consumeReply would return false.
+  const { consumeReply, unsubscribe } = installHeadlessGateBridges({
+    sendPrompt: () => undefined,
+  });
+  try {
+    await headlessContext.run("sess-concurrent", async () => {
+      await withTempHome("review", async () => {
+        const ask1: Promise<unknown> = pauseGate.ask({
+          kind: "run_command",
+          payload: { command: "echo one" },
+        });
+        const ask2: Promise<unknown> = pauseGate.ask({
+          kind: "run_command",
+          payload: { command: "echo two" },
+        });
+        await Promise.resolve();
+        assert.equal(consumeReply("1"), true, "first reply resolves the oldest gate");
+        assert.equal(consumeReply("1"), true, "second reply resolves the next gate");
+        assert.deepEqual(
+          await ask1,
+          { type: "run_once" },
+          "ask1 (oldest) must resolve, not orphan",
+        );
+        assert.deepEqual(await ask2, { type: "run_once" }, "ask2 must resolve too");
+      });
+    });
+  } finally {
+    unsubscribe();
+  }
+}
+
 async function runDefaultBuildPromptCase(): Promise<void> {
   // defaultBuildPrompt localizes the desktop.ts:1939-1985 strings via the
   // headless.gate.* keys already in all 5 locale files. Sanity-check the EN
@@ -316,6 +351,10 @@ async function run(): Promise<void> {
     [
       "T-02-02 tampering mitigation: unmatched reply defaults to deny, never auto-allow",
       runTamperingMitigationCase,
+    ],
+    [
+      "WR-03 concurrent pendings: two parallel run_command asks both resolve FIFO",
+      runConcurrentPendingsCase,
     ],
     [
       "WR-02 run-permission parser: deny-intent replies fail closed, never approve",

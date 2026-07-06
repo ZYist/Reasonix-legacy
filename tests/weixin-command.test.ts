@@ -255,4 +255,47 @@ describe("reasonix weixin — BOT-02 host+channel assembly", () => {
     expect(fakeHost?.shutdown).toHaveBeenCalled();
     expect(exitSpy).toHaveBeenCalledWith(0);
   });
+
+  it("installs SIGINT cleanup BEFORE the QR window — Ctrl-C shuts the host down (WR-04)", async () => {
+    // Force the QR path and make it hang so the command is suspended inside the
+    // multi-minute QR window when SIGINT arrives. Pre-fix the signal handlers
+    // were installed only AFTER runWeixinQrLogin, so a Ctrl-C here left the
+    // host running — host.shutdown was never called during the QR window.
+    loadWeixinConfigMock.mockReturnValue({
+      token: undefined,
+      accountId: undefined,
+      enabled: false,
+    });
+    let releaseQr: (value: unknown) => void = () => undefined;
+    const hangingQr = new Promise((resolve) => {
+      releaseQr = resolve;
+    });
+    runWeixinQrLoginMock.mockReturnValue(hangingQr as ReturnType<typeof runWeixinQrLoginMock>);
+
+    const promise = weixinCommand({ workspace: tmpWorkspace });
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    // Still inside the QR window: QR started, channel.start not reached.
+    expect(runWeixinQrLoginMock).toHaveBeenCalledTimes(1);
+    expect(channelStartMock).not.toHaveBeenCalled();
+
+    // Ctrl-C during the QR window must run the cleanup installed before it.
+    process.emit("SIGINT", "SIGINT");
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const fakeHost = await hostCreateMock.mock.results[0]?.value;
+    expect(fakeHost?.shutdown).toHaveBeenCalled();
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    // channel.start is never reached inside the QR window.
+    expect(channelStartMock).not.toHaveBeenCalled();
+
+    // Unblock the suspended command so its promise settles (it then hits the
+    // undefined-creds path and rejects — caught here, not this test's concern).
+    releaseQr(undefined);
+    await promise.catch(() => undefined);
+  });
 });

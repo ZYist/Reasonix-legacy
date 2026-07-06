@@ -31,7 +31,10 @@ import { loadDotenv } from "../../env.js";
 import { t } from "../../i18n/index.js";
 import { runWeixinQrLogin } from "../../weixin/bot.js";
 import { WeixinChannel } from "../../weixin/channel.js";
-import { installHeadlessGateBridges } from "../headless/gate-bridges.js";
+import {
+  type InstalledHeadlessGateBridge,
+  installHeadlessGateBridges,
+} from "../headless/gate-bridges.js";
 import { HeadlessHost, resolveDir } from "../headless/host.js";
 import { SurfaceNotifier } from "../headless/surface-notifier.js";
 
@@ -46,8 +49,8 @@ export interface WeixinCommandOptions {
 
 // Mount the Weixin channel onto a HeadlessHost and run until SIGINT/SIGTERM.
 // Lifecycle: loadDotenv → bridgeEndpointEnv → resolveDir → HeadlessHost.create
-// → (QR login if creds missing) → installHeadlessGateBridges → new
-// WeixinChannel → signal handlers → channel.start.
+// → signal handlers → (QR login if creds missing) → installHeadlessGateBridges
+// → new WeixinChannel → channel.start.
 export async function weixinCommand(opts: WeixinCommandOptions = {}): Promise<void> {
   // (1) Boot — mirror code.tsx:48-87 env discipline.
   loadDotenv();
@@ -67,7 +70,34 @@ export async function weixinCommand(opts: WeixinCommandOptions = {}): Promise<vo
     budgetUsd: opts.budgetUsd,
   });
 
-  // (5) PINNED QR-login-before-start path: WeixinChannel.start() requires
+  // Mutable bindings declared up front so the cleanup closure + signal handlers
+  // (installed BEFORE the QR window) can reference the not-yet-built
+  // channel/bridge via optional chaining.
+  let channel: WeixinChannel | null = null;
+  let bridge: InstalledHeadlessGateBridge | null = null;
+  let turnInFlight = false;
+  let cleaningUp = false;
+
+  // (5) T-02-14 mitigation: install SIGINT/SIGTERM cleanup BEFORE the QR-login
+  // window so Ctrl-C during the multi-minute scan tears the host down cleanly
+  // even before the channel/bridge exist (null-safe teardown).
+  const cleanup = async (): Promise<void> => {
+    if (cleaningUp) return;
+    cleaningUp = true;
+    bridge?.unsubscribe();
+    try {
+      await channel?.stop();
+    } catch {
+      // best-effort teardown
+    } finally {
+      host.shutdown();
+      process.exit(0);
+    }
+  };
+  process.on("SIGINT", () => void cleanup());
+  process.on("SIGTERM", () => void cleanup());
+
+  // (6) PINNED QR-login-before-start path: WeixinChannel.start() requires
   // token+accountId already configured (throws otherwise). When the saved
   // config lacks either, run runWeixinQrLogin (bot.ts) to obtain
   // {token, accountId, baseUrl, userId} and persist them via
@@ -92,14 +122,9 @@ export async function weixinCommand(opts: WeixinCommandOptions = {}): Promise<vo
   // scanned Weixin token is included in the redaction set for this run.
   const botSecrets = collectBotSecrets();
 
-  // channel is referenced by closures before construction completes.
-  let channel: WeixinChannel | null = null;
-  let turnInFlight = false;
-  let cleaningUp = false;
-
-  // (6) Gate bridge — pauseGate.on subscription. The bridge resolves
+  // (7) Gate bridge — pauseGate.on subscription. The bridge resolves
   // pauseGate directly (owns gateId), so no observer callbacks are wired here.
-  const bridge = installHeadlessGateBridges({
+  bridge = installHeadlessGateBridges({
     sendPrompt: (promptText) => {
       if (promptText) {
         void channel?.sendResponse(promptText).catch((err) => {
@@ -113,12 +138,12 @@ export async function weixinCommand(opts: WeixinCommandOptions = {}): Promise<vo
     },
   });
 
-  // (7) WeixinChannel — ctor accepts {onSubmitMessage, onError, onInfo}
+  // (8) WeixinChannel — ctor accepts {onSubmitMessage, onError, onInfo}
   // (matches QQChannel, diverges from TelegramChannel). onInfo surfaces
   // runtime channel messages (e.g. online banner) to stderr.
   channel = new WeixinChannel({
     onSubmitMessage: (text) => {
-      if (bridge.consumeReply(text)) return;
+      if (bridge?.consumeReply(text)) return;
       if (turnInFlight) {
         void channel?.sendResponse(t("commands.weixin.busy")).catch(() => undefined);
         return;
@@ -171,25 +196,6 @@ export async function weixinCommand(opts: WeixinCommandOptions = {}): Promise<vo
       process.stderr.write(`${msg}\n`);
     },
   });
-
-  // (8) T-02-14 mitigation: install SIGINT/SIGTERM handlers BEFORE
-  // channel.start so Ctrl-C always tears the channel down + releases the
-  // Weixin PID lock even if start hangs. Idempotent guard.
-  const cleanup = async (): Promise<void> => {
-    if (cleaningUp) return;
-    cleaningUp = true;
-    bridge.unsubscribe();
-    try {
-      await channel?.stop();
-    } catch {
-      // best-effort teardown
-    } finally {
-      host.shutdown();
-      process.exit(0);
-    }
-  };
-  process.on("SIGINT", () => void cleanup());
-  process.on("SIGTERM", () => void cleanup());
 
   // (9) channel.start acquires the Weixin PID lock, re-loads the (now
   // persisted) config, constructs WeixinBot, and connects. The bot

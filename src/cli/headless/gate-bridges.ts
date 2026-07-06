@@ -284,11 +284,12 @@ function dispatchReply(
 export function installHeadlessGateBridges(
   opts: HeadlessGateBridgeOptions,
 ): InstalledHeadlessGateBridge {
-  // Pending interaction, scoped to the active session id via headlessContext.
-  // host.ts sets headlessContext in runTurn so a pause request that fires
-  // mid-turn is bound to the session we're driving. Outside a turn, the bridge
-  // cancels the request (no channel to surface it to) — same behavior as ACP.
-  let pending: PendingInteraction | null = null;
+  // FIFO queue of pending interactions, scoped to the active session id via
+  // headlessContext. host.ts sets headlessContext in runTurn so a pause request
+  // that fires mid-turn is bound to the session we're driving. Outside a turn,
+  // the bridge cancels the request (no channel) — same behavior as ACP. A queue
+  // (not a single slot) so parallel pausing tools don't clobber each other.
+  const pendingQueue: PendingInteraction[] = [];
 
   const unsubscribe = pauseGate.on((req) => {
     // (1) Shared auto-resolve policy — must run BEFORE we surface to the
@@ -307,24 +308,23 @@ export function installHeadlessGateBridges(
       pauseGate.cancel(req.id);
       return;
     }
-    // (3) Build the prompt text + push to the channel; stash the pending
-    // interaction so the next consumeReply can dispatch by kind.
+    // (3) Build the prompt text + push to the channel; queue the pending
+    // interaction so consumeReply can dispatch it FIFO by kind.
     const prompt = (opts.buildPrompt ?? defaultBuildPrompt)(
       req.kind,
       req.payload as Record<string, unknown>,
     );
-    pending = {
+    pendingQueue.push({
       gateId: req.id,
       kind: req.kind,
       payload: (req.payload as Record<string, unknown>) ?? {},
-    };
+    });
     opts.sendPrompt(prompt);
   });
 
   const consumeReply = (text: string): boolean => {
-    if (!pending) return false;
-    const interaction = pending;
-    pending = null;
+    const interaction = pendingQueue.shift();
+    if (!interaction) return false;
     return dispatchReply(interaction, text, opts.gateCallbacks);
   };
 
