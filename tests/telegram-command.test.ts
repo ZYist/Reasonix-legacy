@@ -165,7 +165,10 @@ describe("reasonix telegram — BOT-02 host+channel assembly", () => {
     await Promise.resolve();
 
     const fakeHost = await hostCreateMock.mock.results[0]?.value;
-    expect(fakeHost?.runTurn).toHaveBeenCalledWith("hi");
+    expect(fakeHost?.runTurn).toHaveBeenCalledWith(
+      "hi",
+      expect.objectContaining({ onEvent: expect.any(Function) }),
+    );
     expect(channelSendResponseMock).toHaveBeenCalledWith("echo: hi");
 
     process.emit("SIGINT", "SIGINT");

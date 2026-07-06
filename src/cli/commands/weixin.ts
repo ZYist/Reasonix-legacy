@@ -33,6 +33,7 @@ import { runWeixinQrLogin } from "../../weixin/bot.js";
 import { WeixinChannel } from "../../weixin/channel.js";
 import { defaultBuildPrompt, installHeadlessGateBridges } from "../headless/gate-bridges.js";
 import { HeadlessHost, resolveDir } from "../headless/host.js";
+import { SurfaceNotifier } from "../headless/surface-notifier.js";
 
 export interface WeixinCommandOptions {
   /** Override the default model id. */
@@ -137,8 +138,22 @@ export async function weixinCommand(opts: WeixinCommandOptions = {}): Promise<vo
         return;
       }
       turnInFlight = true;
+      // weixin = active send-by-userId gateway with no per-inbound budget -> LIVE
+      // notices; this is the internal-feedback surface for the weixin chat session.
+      const notifier = new SurfaceNotifier({
+        mode: "live",
+        emit: (message) => {
+          void channel?.sendResponse(message).catch((err) => {
+            process.stderr.write(
+              t("commands.weixin.sendFailed", {
+                msg: redactSecretsInText((err as Error).message, botSecrets),
+              }),
+            );
+          });
+        },
+      });
       void host
-        .runTurn(text)
+        .runTurn(text, { onEvent: (kev) => notifier.note(kev) })
         .then((assistantText) => {
           if (assistantText) {
             void channel?.sendResponse(assistantText).catch((err) => {

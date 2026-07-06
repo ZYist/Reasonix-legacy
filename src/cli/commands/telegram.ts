@@ -22,6 +22,7 @@ import { t } from "../../i18n/index.js";
 import { TelegramChannel } from "../../telegram/channel.js";
 import { defaultBuildPrompt, installHeadlessGateBridges } from "../headless/gate-bridges.js";
 import { HeadlessHost, resolveDir } from "../headless/host.js";
+import { SurfaceNotifier } from "../headless/surface-notifier.js";
 
 export interface TelegramCommandOptions {
   /** Override the default model id. */
@@ -110,8 +111,22 @@ export async function telegramCommand(opts: TelegramCommandOptions = {}): Promis
         return;
       }
       turnInFlight = true;
+      // telegram = active push by chatId with no per-inbound budget -> LIVE notices,
+      // emitted the moment each kernel event fires (thinking once + one per tool).
+      const notifier = new SurfaceNotifier({
+        mode: "live",
+        emit: (message) => {
+          void channel?.sendResponse(message).catch((err) => {
+            process.stderr.write(
+              t("commands.telegram.sendFailed", {
+                msg: redactSecretsInText((err as Error).message, botSecrets),
+              }),
+            );
+          });
+        },
+      });
       void host
-        .runTurn(text)
+        .runTurn(text, { onEvent: (kev) => notifier.note(kev) })
         .then((assistantText) => {
           if (assistantText) {
             void channel?.sendResponse(assistantText).catch((err) => {

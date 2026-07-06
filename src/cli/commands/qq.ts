@@ -18,6 +18,7 @@ import { t } from "../../i18n/index.js";
 import { QQChannel } from "../../qq/channel.js";
 import { defaultBuildPrompt, installHeadlessGateBridges } from "../headless/gate-bridges.js";
 import { HeadlessHost, resolveDir } from "../headless/host.js";
+import { SurfaceNotifier } from "../headless/surface-notifier.js";
 
 export interface QqCommandOptions {
   /** Override the default model id. */
@@ -109,11 +110,18 @@ export async function qqCommand(opts: QqCommandOptions = {}): Promise<void> {
         return;
       }
       turnInFlight = true;
+      // qq = bounded C2C msgSeq reply budget keyed to the inbound message -> FOLD the
+      // notices into the one reply so the final answer is never starved of msgSeq.
+      const notifier = new SurfaceNotifier({ mode: "fold", emit: () => undefined });
       void host
-        .runTurn(text)
+        .runTurn(text, { onEvent: (kev) => notifier.note(kev) })
         .then((assistantText) => {
-          if (assistantText) {
-            void channel?.sendResponse(assistantText).catch((err) => {
+          // Empty answer -> reply collapses to "" and the guard suppresses it: the
+          // notices adorn a real answer, they never stand alone as a reply.
+          const summary = notifier.summary();
+          const reply = summary && assistantText ? `${summary}\n\n${assistantText}` : assistantText;
+          if (reply) {
+            void channel?.sendResponse(reply).catch((err) => {
               process.stderr.write(
                 t("commands.qq.sendFailed", {
                   msg: redactSecretsInText((err as Error).message, botSecrets),
