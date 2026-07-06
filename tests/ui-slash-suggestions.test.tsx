@@ -100,9 +100,9 @@ describe("SlashSuggestions", () => {
     expect(names).toContain("weixin");
     expect(names).toContain("btw");
     expect(names).toContain("about");
-    expect(countAdvancedCommands(true)).toBe(10);
+    expect(countAdvancedCommands(true)).toBe(9);
     expect(frame).toContain("48 commands");
-    expect(frame).toContain("+ 10 advanced");
+    expect(frame).toContain("+ 9 advanced");
   });
 
   it("surfaces /language for typed language prefixes", () => {

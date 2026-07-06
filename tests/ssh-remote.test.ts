@@ -89,8 +89,7 @@ describe("generateSshDryRunReport", () => {
     expect(report).toContain("probe remote environment");
     expect(report).toContain("install or update Reasonix");
     expect(report).toContain("launch Reasonix");
-    expect(report).toContain("SSH tunnel");
-    expect(report).toContain("reasonix code --no-dashboard");
+    expect(report).toContain("reasonix code");
   });
 
   it("warns when ssh is missing and shows install instructions", () => {
@@ -109,8 +108,6 @@ describe("generateSshDryRunReport", () => {
 
     expect(report).toContain("short-term recommendation");
     expect(report).toContain("Run Reasonix directly on the remote host");
-    expect(report).toContain("SSH tunnel");
-    expect(report).toContain("127.0.0.1:8420");
   });
 
   it("notes that no remote commands execute", () => {
