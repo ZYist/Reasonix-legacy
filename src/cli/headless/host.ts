@@ -25,6 +25,7 @@ import {
 } from "../../config.js";
 import { redactSecretsInText } from "../../core/event-redaction.js";
 import { Eventizer } from "../../core/eventize.js";
+import type { Event } from "../../core/events.js";
 import { t } from "../../i18n/index.js";
 import { CacheFirstLoop, DeepSeekClient, ImmutablePrefix } from "../../index.js";
 import { errorMeta } from "../../loop/errors.js";
@@ -145,12 +146,13 @@ export class HeadlessHost {
   // errorMeta-classified error message captured via runHeadlessTurn's onError
   // (surfaces to the caller via sendResponse, and is mirrored to stderr so a
   // detached-bot operator tailing the log can diagnose it).
-  async runTurn(text: string): Promise<string> {
+  async runTurn(text: string, hooks?: { onEvent?: (kev: Event) => void }): Promise<string> {
     this.aborter = new AbortController();
     const knownSecrets = this.knownSecrets;
     let lastAssistantText = "";
     let outcome: "end_turn" | "aborted" | "error" = "end_turn";
     let errMessage = "";
+    let recoverableErrMessage = "";
     // runHeadlessTurn classifies a thrown loop error via errorMeta and reports
     // it through onError — it never rethrows — so the cause is captured here
     // rather than dropped to the generic fallback. Detached bots have no TUI
@@ -163,8 +165,12 @@ export class HeadlessHost {
         signal: this.aborter.signal,
         text,
         sessionId: this.session,
+        onEvent: hooks?.onEvent,
         onAssistantText: (content) => {
           lastAssistantText = content;
+        },
+        onRecoverableError: (message) => {
+          recoverableErrMessage = message;
         },
         onError: (cause, meta) => {
           errMessage = formatHeadlessError(cause, meta, knownSecrets);
@@ -176,6 +182,13 @@ export class HeadlessHost {
     }
     if (outcome === "aborted") return t("headless.host.abortedSentinel");
     if (outcome === "error") return errMessage || t("headless.host.errorFallback");
+    // A recoverable error that left no assistant_final surfaces its scrubbed
+    // message rather than returning "" (silence) — preserves the prior fallback.
+    if (!lastAssistantText && recoverableErrMessage) {
+      return (
+        redactSecretsInText(recoverableErrMessage, knownSecrets) || t("headless.host.errorFallback")
+      );
+    }
     return lastAssistantText;
   }
 

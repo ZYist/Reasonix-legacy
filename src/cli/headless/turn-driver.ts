@@ -8,6 +8,7 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 import type { ReasoningEffort } from "../../config.js";
 import type { Eventizer } from "../../core/eventize.js";
+import type { Event } from "../../core/events.js";
 import type { CacheFirstLoop } from "../../loop.js";
 import { errorMeta } from "../../loop/errors.js";
 import type { LoopEvent } from "../../loop/types.js";
@@ -51,7 +52,11 @@ export interface RunHeadlessTurnOptions {
   /** Called for every kernel event projected from a raw LoopEvent. The bridge
    *  uses this to forward cache diagnostics / tool telemetry to the channel,
    *  if it cares; the host itself just needs telemetry to keep flowing. */
-  onEvent?: (kev: { type: string }) => void;
+  onEvent?: (kev: Event) => void;
+  /** Surfaces a RECOVERABLE kernel error's message WITHOUT terminating the turn.
+   *  The host uses it to avoid returning empty when a recoverable error left no
+   *  assistant_final — silence violates CLAUDE.md "log + crash > silent wrong output". */
+  onRecoverableError?: (message: string) => void;
   /** Classification error path — surfaces the thrown cause + errorMeta to the
    *  caller (the channel / command layer writes it back via sendResponse).
    *  Log+crash > silent wrong output per CLAUDE.md; we do NOT console.log+swallow. */
@@ -79,7 +84,12 @@ export async function runHeadlessTurn(opts: RunHeadlessTurnOptions): Promise<Tur
         }
         for (const kev of eventizer.consume(ev, ctx)) {
           opts.onEvent?.(kev);
-          if ((kev as { type?: string }).type === "error") outcome = "error";
+          if (kev.type === "error") {
+            // Recoverable errors (force-summary blip) surface a message but keep
+            // the turn "end_turn"; only non-recoverable errors terminate it.
+            if (kev.recoverable) opts.onRecoverableError?.(kev.message);
+            else outcome = "error";
+          }
         }
         if (signal.aborted) {
           outcome = "aborted";

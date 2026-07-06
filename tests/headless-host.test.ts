@@ -16,7 +16,7 @@ import {
   runHeadlessTurn,
 } from "../src/cli/headless/turn-driver.js";
 import type { ReasoningEffort } from "../src/config.js";
-import type { Eventizer } from "../src/core/eventize.js";
+import { Eventizer } from "../src/core/eventize.js";
 import { setLanguageRuntime } from "../src/i18n/index.js";
 import type { CacheFirstLoop } from "../src/loop.js";
 import type { LoopEvent } from "../src/loop/types.js";
@@ -216,6 +216,127 @@ async function runHostRunTurnReturnScrubCase(): Promise<void> {
   assert.ok(returned.includes("[redacted]"), "HeadlessHost.runTurn return must show [redacted]");
 }
 
+// REAL force-summary shape (force-summary.ts:71-83): status → error(recoverable)
+// → done, with NO assistant_final. A naive `!recoverable` guard would collapse
+// this into silence; the fix routes the message to onRecoverableError instead.
+function forceSummaryEvents(): LoopEvent[] {
+  return [
+    { turn: 1, role: "status", content: "summarizing…" },
+    {
+      turn: 1,
+      role: "error",
+      content: "",
+      error: "context guard summary failed: upstream 503",
+      errorDetail: {
+        name: "ForceSummaryFailed",
+        message: "context guard summary failed: upstream 503",
+        retryable: true,
+        recoverable: true,
+      },
+    },
+    { turn: 1, role: "done", content: "" },
+  ];
+}
+
+async function runRecoverableErrorKeepsEndTurnCase(): Promise<void> {
+  const loop = makeStubLoop(forceSummaryEvents());
+  let captured = "";
+  let recoverableMsg = "";
+  const outcome = await runHeadlessTurn({
+    loop,
+    ctx: baseCtx,
+    eventizer: new Eventizer(),
+    signal: new AbortController().signal,
+    text: "ping",
+    onAssistantText: (content) => {
+      captured = content;
+    },
+    onRecoverableError: (message) => {
+      recoverableMsg = message;
+    },
+  });
+  assert.equal(outcome, "end_turn", "a recoverable error must NOT flip the turn to error");
+  assert.equal(captured, "", "no assistant_final followed the recoverable error");
+  assert.ok(
+    recoverableMsg.includes("context guard summary failed"),
+    "onRecoverableError must receive the recoverable error message",
+  );
+}
+
+async function runTerminalErrorTerminatesCase(): Promise<void> {
+  const events: LoopEvent[] = [
+    { turn: 1, role: "assistant_delta", content: "x" },
+    {
+      turn: 1,
+      role: "error",
+      content: "",
+      error: "fatal boom",
+      errorDetail: { name: "Fatal", message: "fatal boom", retryable: false, recoverable: false },
+    },
+  ];
+  const outcome = await runHeadlessTurn({
+    loop: makeStubLoop(events),
+    ctx: baseCtx,
+    eventizer: new Eventizer(),
+    signal: new AbortController().signal,
+    text: "ping",
+    onAssistantText: () => undefined,
+  });
+  assert.equal(outcome, "error", "a non-recoverable error must terminate the turn");
+}
+
+async function runHostForwardsOnEventCase(): Promise<void> {
+  const events: LoopEvent[] = [
+    { turn: 1, role: "assistant_delta", content: "x" },
+    { turn: 1, role: "tool_start", content: "", toolName: "read_file", toolArgs: "{}" },
+    { turn: 1, role: "tool", content: "ok", toolName: "read_file" },
+    { turn: 1, role: "assistant_final", content: "hi" },
+    { turn: 1, role: "done", content: "" },
+  ];
+  const Ctor = HeadlessHost as unknown as new (
+    opts: HeadlessHostCtorArgs,
+  ) => {
+    runTurn(text: string, hooks?: { onEvent?: (kev: { type: string }) => void }): Promise<string>;
+  };
+  const host = new Ctor({
+    loop: makeStubLoop(events),
+    eventizer: new Eventizer(),
+    ctx: baseCtx,
+    session: "sess-onevent",
+    knownSecrets: [],
+  });
+  const received: string[] = [];
+  await host.runTurn("ping", {
+    onEvent: (kev) => {
+      received.push(kev.type);
+    },
+  });
+  assert.ok(received.includes("model.turn.started"), "onEvent must see model.turn.started");
+  assert.ok(received.includes("tool.intent"), "onEvent must see tool.intent");
+  assert.ok(received.includes("model.final"), "onEvent must see model.final");
+}
+
+async function runHostSurfacesRecoverableErrorCase(): Promise<void> {
+  const Ctor = HeadlessHost as unknown as new (
+    opts: HeadlessHostCtorArgs,
+  ) => {
+    runTurn(text: string): Promise<string>;
+  };
+  const host = new Ctor({
+    loop: makeStubLoop(forceSummaryEvents()),
+    eventizer: new Eventizer(),
+    ctx: baseCtx,
+    session: "sess-recover",
+    knownSecrets: [],
+  });
+  const returned = await host.runTurn("ping");
+  assert.ok(returned.trim() !== "", "recoverable force-summary failure must not return silence");
+  assert.ok(
+    returned.includes("context guard summary failed"),
+    "host.runTurn must surface the recoverable error message, not the empty string",
+  );
+}
+
 let testCount = 0;
 let failure: Error | null = null;
 
@@ -238,6 +359,19 @@ async function run(): Promise<void> {
     [
       "HeadlessHost.runTurn scrubs the error it returns to the channel",
       runHostRunTurnReturnScrubCase,
+    ],
+    [
+      "recoverable error keeps end_turn and routes its message to onRecoverableError",
+      runRecoverableErrorKeepsEndTurnCase,
+    ],
+    ["non-recoverable error terminates the turn", runTerminalErrorTerminatesCase],
+    [
+      "host.runTurn forwards onEvent kernel events (turn.started/tool.intent/final)",
+      runHostForwardsOnEventCase,
+    ],
+    [
+      "host.runTurn surfaces a recoverable error message instead of the empty string",
+      runHostSurfacesRecoverableErrorCase,
     ],
   ];
   for (const [name, fn] of cases) {
