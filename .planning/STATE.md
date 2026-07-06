@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-07-05)
 Phase: Milestone v1.0 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-07-06 — Completed quick task 260706-g0p: Wire HeadlessHost onEvent to bot chat + WR-01 fix
+Last activity: 2026-07-06 — Converged pre-existing red tests (issue #3); npm run verify green
 
 ## Performance Metrics
 
@@ -99,6 +99,7 @@ None yet.
 |---|-------------|------|--------|--------|-----------|
 | 260706-co7 | Redact secrets in bot command error output (issue #1: stderr + chat leak) | 2026-07-06 | b36ba1ac | Verified | [260706-co7-redact-secrets-in-bot-command-error-outp](./quick/260706-co7-redact-secrets-in-bot-command-error-outp/) |
 | 260706-g0p | Wire HeadlessHost onEvent to bot chat + WR-01 recoverable-error fix (issues #2, #4-WR-01) | 2026-07-06 | 8d831c7e | Verified | [260706-g0p-wire-headlesshost-onevent-to-surface-rea](./quick/260706-g0p-wire-headlesshost-onevent-to-surface-rea/) |
+| issue-#3 | Converge pre-existing red tests to Pure-CLI reality + drop dead biome-ignore (npm run verify green) | 2026-07-06 | 991a7370 | Verified | — (gsd-fast) |
 
 ## Deferred Items
 
