@@ -18,16 +18,8 @@
 // matches QQChannel.
 //
 // Coexistence (D-09): desktop sidecar byte-for-byte unchanged.
-import {
-  DEFAULT_MODEL,
-  bridgeEndpointEnv,
-  collectBotSecrets,
-  loadModel,
-  loadWeixinConfig,
-  saveWeixinConfig,
-} from "../../config.js";
+import { collectBotSecrets, loadWeixinConfig, saveWeixinConfig } from "../../config.js";
 import { redactSecretsInText } from "../../core/event-redaction.js";
-import { loadDotenv } from "../../env.js";
 import { t } from "../../i18n/index.js";
 import { runWeixinQrLogin } from "../../weixin/bot.js";
 import { WeixinChannel } from "../../weixin/channel.js";
@@ -35,7 +27,7 @@ import {
   type InstalledHeadlessGateBridge,
   installHeadlessGateBridges,
 } from "../headless/gate-bridges.js";
-import { HeadlessHost, resolveDir } from "../headless/host.js";
+import { bootHeadlessHost } from "../headless/host.js";
 import { SurfaceNotifier } from "../headless/surface-notifier.js";
 
 export interface WeixinCommandOptions {
@@ -52,23 +44,8 @@ export interface WeixinCommandOptions {
 // → signal handlers → (QR login if creds missing) → installHeadlessGateBridges
 // → new WeixinChannel → channel.start.
 export async function weixinCommand(opts: WeixinCommandOptions = {}): Promise<void> {
-  // (1) Boot — mirror code.tsx:48-87 env discipline.
-  loadDotenv();
-  bridgeEndpointEnv();
-
-  // (2) Workspace: --workspace flag > cwd > crash (resolveDir throws on
-  // missing/non-dir — no silent fallback).
-  const rootDir = resolveDir(opts.workspace, process.cwd());
-
-  // (3) Model resolution.
-  const model = opts.model?.trim() || loadModel() || DEFAULT_MODEL;
-
-  // (4) HeadlessHost (02-01) — replicates buildRuntimeFor.
-  const host = await HeadlessHost.create({
-    rootDir,
-    model,
-    budgetUsd: opts.budgetUsd,
-  });
+  // Boot the shared headless preamble (env discipline + workspace + model).
+  const host = await bootHeadlessHost(opts);
 
   // Mutable bindings declared up front so the cleanup closure + signal handlers
   // (installed BEFORE the QR window) can reference the not-yet-built

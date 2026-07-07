@@ -35,6 +35,9 @@ vi.mock("../src/cli/headless/host.js", () => ({
     create: hostCreateMock,
   },
   resolveDir: hostResolveDirMock,
+  bootHeadlessHost: vi.fn((opts: { workspace?: string }) =>
+    hostCreateMock({ rootDir: hostResolveDirMock(opts.workspace, process.cwd()) }),
+  ),
 }));
 
 // Stub installHeadlessGateBridges — returns a consumeReply that always

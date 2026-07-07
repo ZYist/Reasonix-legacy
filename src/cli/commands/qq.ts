@@ -11,13 +11,12 @@
 // has TWO entries — the sidecar and this command — guarded against
 // same-account double-drive by QQ_LOCK_FILE (channel.ts:11). Sidecar
 // deletion is deferred to a later milestone.
-import { DEFAULT_MODEL, bridgeEndpointEnv, collectBotSecrets, loadModel } from "../../config.js";
+import { collectBotSecrets } from "../../config.js";
 import { redactSecretsInText } from "../../core/event-redaction.js";
-import { loadDotenv } from "../../env.js";
 import { t } from "../../i18n/index.js";
 import { QQChannel } from "../../qq/channel.js";
 import { installHeadlessGateBridges } from "../headless/gate-bridges.js";
-import { HeadlessHost, resolveDir } from "../headless/host.js";
+import { bootHeadlessHost } from "../headless/host.js";
 import { SurfaceNotifier } from "../headless/surface-notifier.js";
 
 export interface QqCommandOptions {
@@ -35,29 +34,12 @@ export interface QqCommandOptions {
 // Signal handlers own teardown: channel.stop releases QQ_LOCK_FILE,
 // host.shutdown aborts in-flight turns, bridge.unsubscribe frees the listener.
 export async function qqCommand(opts: QqCommandOptions = {}): Promise<void> {
-  // (1) Boot — mirror code.tsx:48-87 env discipline so buildCodeToolset's
-  // eager DeepSeekClient constructions pick up a configured key.
-  loadDotenv();
-  bridgeEndpointEnv();
+  // Boot the shared headless preamble (env discipline + workspace + model).
+  const host = await bootHeadlessHost(opts);
 
   // Snapshot the channel secrets once (long-lived process, stable config) so
   // every error/sendFailed write below can scrub them.
   const botSecrets = collectBotSecrets();
-
-  // (2) Workspace: --workspace flag > cwd > crash (resolveDir throws on
-  // missing/non-dir — no silent fallback per CLAUDE.md log+crash rule).
-  const rootDir = resolveDir(opts.workspace, process.cwd());
-
-  // (3) Model resolution — mirror acp.ts resolveDefaults minimal path.
-  const model = opts.model?.trim() || loadModel() || DEFAULT_MODEL;
-
-  // (4) HeadlessHost (02-01) — replicates buildRuntimeFor: buildCodeToolset
-  // → applyPlanMode → DeepSeekClient → ImmutablePrefix → CacheFirstLoop.
-  const host = await HeadlessHost.create({
-    rootDir,
-    model,
-    budgetUsd: opts.budgetUsd,
-  });
 
   // channel is referenced by closures before construction completes; the
   // `let` binding lets the gate-bridge sendPrompt + onSubmitMessage read

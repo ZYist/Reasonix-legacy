@@ -16,6 +16,7 @@ import { applyPlanMode, buildCodeToolset } from "../../code/setup.js";
 import {
   DEFAULT_MODEL,
   type ReasoningEffort,
+  bridgeEndpointEnv,
   collectBotSecrets,
   loadEditMode,
   loadEndpoint,
@@ -26,6 +27,7 @@ import {
 import { redactSecretsInText } from "../../core/event-redaction.js";
 import { Eventizer } from "../../core/eventize.js";
 import type { Event } from "../../core/events.js";
+import { loadDotenv } from "../../env.js";
 import { t } from "../../i18n/index.js";
 import { CacheFirstLoop, DeepSeekClient, ImmutablePrefix } from "../../index.js";
 import { errorMeta } from "../../loop/errors.js";
@@ -197,4 +199,19 @@ export class HeadlessHost {
     this.aborter?.abort();
     this.aborter = null;
   }
+}
+
+// Shared boot preamble for the bot channel commands: env discipline, workspace
+// resolution, model, then HeadlessHost construction. Channel-specific assembly
+// (QR login, gate bridge, signal handlers) stays in each command.
+export async function bootHeadlessHost(opts: {
+  model?: string;
+  workspace?: string;
+  budgetUsd?: number;
+}): Promise<HeadlessHost> {
+  loadDotenv();
+  bridgeEndpointEnv();
+  const rootDir = resolveDir(opts.workspace, process.cwd());
+  const model = opts.model?.trim() || loadModel() || DEFAULT_MODEL;
+  return HeadlessHost.create({ rootDir, model, budgetUsd: opts.budgetUsd });
 }
