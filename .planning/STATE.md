@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-07-05)
 Phase: Milestone v1.0 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-07-07 — Completed quick task 260706-ne6: Phase-2 code-review cleanup (issue #4)
+Last activity: 2026-07-07 — Extracted shared bootHeadlessHost preamble (issue #5)
 
 ## Performance Metrics
 
@@ -101,6 +101,7 @@ None yet.
 | 260706-g0p | Wire HeadlessHost onEvent to bot chat + WR-01 recoverable-error fix (issues #2, #4-WR-01) | 2026-07-06 | 8d831c7e | Verified | [260706-g0p-wire-headlesshost-onevent-to-surface-rea](./quick/260706-g0p-wire-headlesshost-onevent-to-surface-rea/) |
 | issue-#3 | Converge pre-existing red tests to Pure-CLI reality + drop dead biome-ignore (npm run verify green) | 2026-07-06 | 991a7370 | Verified | — (gsd-fast) |
 | 260706-ne6 | Phase-2 code-review cleanup: IN-01..06 + WR-03 (gate FIFO queue) + WR-04 (weixin QR SIGINT) (issue #4) | 2026-07-07 | 679a3d6d | Verified | [260706-ne6-phase-2-code-review-cleanup-dead-effort-](./quick/260706-ne6-phase-2-code-review-cleanup-dead-effort-/) |
+| issue-#5 | Extract shared bootHeadlessHost preamble (minimal boot dedup, channel divergences kept explicit) | 2026-07-07 | a78e4693 | Verified | — (gsd-fast) |
 
 ## Deferred Items
 
