@@ -1,11 +1,13 @@
 import { spawn } from "node:child_process";
 import {
+  DISPLAY_VERSION,
   type InstallSource,
   VERSION,
   compareVersions,
   detectInstallSource,
   detectNpmInstallPrefix,
   getLatestVersion,
+  toDisplayVersion,
 } from "../../version.js";
 
 export type UpdateAction =
@@ -137,14 +139,14 @@ export async function updateCommand(opts: UpdateCommandOptions = {}): Promise<vo
   const detectPrefix = opts.detectPrefix ?? (() => detectNpmInstallPrefix());
   const doSpawn = opts.spawnInstall ?? defaultSpawn;
 
-  write(`current: reasonix ${VERSION}\n`);
+  write(`current: reasonix ${DISPLAY_VERSION}\n`);
   const latest = await fetchLatest();
   if (!latest) {
     write("could not reach registry.npmjs.org — check your network.\n");
     exit(1);
     return;
   }
-  write(`latest:  reasonix ${latest}\n`);
+  write(`latest:  reasonix ${toDisplayVersion(latest)}\n`);
 
   const installSource = detectSource();
   const npmPrefix = installSource === "npm" ? detectPrefix() : null;

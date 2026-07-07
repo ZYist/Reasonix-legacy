@@ -41,6 +41,17 @@ function readPackageVersion(): string {
 
 export const VERSION: string = readPackageVersion();
 
+/** Display prefix for the legacy fork — user-facing version renders as `legacy-X.Y.Z`. */
+const DISPLAY_PREFIX = "legacy";
+
+/** `1.1.0` → `legacy-1.1.0`. Never feed the result into compareVersions (it needs bare semver). */
+export function toDisplayVersion(semver: string): string {
+  return `${DISPLAY_PREFIX}-${semver}`;
+}
+
+/** User-facing version (statusline / --version / /about / /update). Derived from VERSION so a package.json bump propagates everywhere. */
+export const DISPLAY_VERSION: string = toDisplayVersion(VERSION);
+
 interface VersionCacheEntry {
   version: string;
   /** Epoch millis the entry was written. Drives TTL comparisons. */

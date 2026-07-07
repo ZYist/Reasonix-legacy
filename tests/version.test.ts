@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
+  DISPLAY_VERSION,
   LATEST_CACHE_TTL_MS,
   VERSION,
   compareVersions,
@@ -12,6 +13,7 @@ import {
   detectNpmInstallPrefix,
   getLatestVersion,
   isNpxInstall,
+  toDisplayVersion,
 } from "../src/version.js";
 
 describe("VERSION", () => {
@@ -19,6 +21,25 @@ describe("VERSION", () => {
     const pkgPath = join(process.cwd(), "package.json");
     const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
     expect(VERSION).toBe(pkg.version);
+  });
+});
+
+describe("DISPLAY_VERSION", () => {
+  it("prefixes the raw VERSION with the legacy fork tag", () => {
+    expect(DISPLAY_VERSION).toBe(`legacy-${VERSION}`);
+  });
+
+  it("renders the shipped package version as legacy-X.Y.Z", () => {
+    const pkgPath = join(process.cwd(), "package.json");
+    const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
+    expect(DISPLAY_VERSION).toBe(`legacy-${pkg.version}`);
+  });
+});
+
+describe("toDisplayVersion", () => {
+  it("prefixes any semver with legacy-", () => {
+    expect(toDisplayVersion("1.2.3")).toBe("legacy-1.2.3");
+    expect(toDisplayVersion("0.4.22-rc.1")).toBe("legacy-0.4.22-rc.1");
   });
 });
 

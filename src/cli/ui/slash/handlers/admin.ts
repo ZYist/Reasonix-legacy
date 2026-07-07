@@ -8,10 +8,12 @@ import {
 import { t } from "@/i18n/index.js";
 import { aggregateUsage, defaultUsageLogPath, readUsageLog } from "@/telemetry/usage.js";
 import {
+  DISPLAY_VERSION,
   VERSION,
   compareVersions,
   detectInstallSource,
   detectNpmInstallPrefix,
+  toDisplayVersion,
 } from "@/version.js";
 import { runDoctorChecks } from "../../../commands/doctor.js";
 import { renderDashboard } from "../../../commands/stats.js";
@@ -91,7 +93,7 @@ const hooks: SlashHandler = (args, loop, ctx) => {
 
 const update: SlashHandler = (_args, _loop, ctx) => {
   const latest = ctx.latestVersion ?? null;
-  const lines: string[] = [t("handlers.admin.updateCurrent", { version: VERSION })];
+  const lines: string[] = [t("handlers.admin.updateCurrent", { version: DISPLAY_VERSION })];
   if (latest === null) {
     ctx.refreshLatestVersion?.();
     lines.push(
@@ -102,7 +104,7 @@ const update: SlashHandler = (_args, _loop, ctx) => {
     );
     return { info: lines.join("\n") };
   }
-  lines.push(t("handlers.admin.updateLatest", { version: latest }));
+  lines.push(t("handlers.admin.updateLatest", { version: toDisplayVersion(latest) }));
   if (compareVersions(VERSION, latest) >= 0) {
     lines.push("", t("handlers.admin.updateUpToDate"));
     return { info: lines.join("\n") };

@@ -1,6 +1,6 @@
 {
   "name": "reasonix-legacy",
-  "version": "0.55.0",
+  "version": "1.1.0",
   "description": "DeepSeek-native coding agent: cache-first loop, flash-first cost control, tool-call repair.",
   "type": "module",
   "bin": {

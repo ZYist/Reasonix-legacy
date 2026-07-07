@@ -21,7 +21,7 @@ import { listSessions } from "../../memory/session.js";
 import { detectProxyUrl, matchesNoProxy, resolveNoProxy } from "../../net/proxy.js";
 import { isCacheDiagnosticEntry } from "../../telemetry/cache-diagnostics.js";
 import { resolveDataPath } from "../../tokenizer.js";
-import { VERSION } from "../../version.js";
+import { DISPLAY_VERSION } from "../../version.js";
 
 export type DoctorLevel = "ok" | "warn" | "fail";
 
@@ -676,7 +676,7 @@ export async function doctorCommand(opts: DoctorOptions = {}): Promise<void> {
 
   if (!json) {
     console.log(
-      `${color(`reasonix ${VERSION}  ·  ${cacheOnly ? "doctor --cache" : "doctor"}`, "1")}  (cwd: ${projectRoot})`,
+      `${color(`reasonix ${DISPLAY_VERSION}  ·  ${cacheOnly ? "doctor --cache" : "doctor"}`, "1")}  (cwd: ${projectRoot})`,
     );
     console.log(`  home: ${homedir()}`);
     console.log("");
@@ -694,7 +694,7 @@ export async function doctorCommand(opts: DoctorOptions = {}): Promise<void> {
   const fail = checks.filter((c) => c.level === "fail").length;
 
   if (json) {
-    console.log(formatDoctorJson(checks, VERSION));
+    console.log(formatDoctorJson(checks, DISPLAY_VERSION));
     if (fail > 0) process.exit(1);
     return;
   }

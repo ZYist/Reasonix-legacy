@@ -1,6 +1,6 @@
 import { wrapToCells } from "@/cli/ui/text-width.js";
 import { t, tObj } from "@/i18n/index.js";
-import { VERSION } from "@/version.js";
+import { DISPLAY_VERSION } from "@/version.js";
 import { formatDuration, formatLoopStatus, parseLoopCommand } from "../../loop.js";
 import { SLASH_COMMANDS, SLASH_GROUP_ORDER, orderSlashCommandsByGroup } from "../commands.js";
 import type { SlashHandler } from "../dispatch.js";
@@ -153,7 +153,7 @@ const keys: SlashHandler = (_args, _loop, ctx) => {
 
 const about: SlashHandler = () => {
   const lines = [
-    t("handlers.basic.aboutHeader", { version: VERSION }),
+    t("handlers.basic.aboutHeader", { version: DISPLAY_VERSION }),
     "",
     `  ${t("handlers.basic.aboutWebsiteLabel")}  ${ABOUT_WEBSITE}`,
     `  ${t("handlers.basic.aboutRepoLabel")}   ${ABOUT_REPO}`,

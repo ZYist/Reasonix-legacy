@@ -13,11 +13,11 @@ import "./strip-bel.js";
 import { Command } from "commander";
 import { isReasoningEffort, loadProxyConfig, readConfig, saveReasoningEffort } from "../config.js";
 import { t } from "../i18n/index.js";
-import { VERSION } from "../index.js";
 import { listSessions } from "../memory/session.js";
 import { applyMemoryStack } from "../memory/user.js";
 import { installProxyIfConfigured } from "../net/proxy.js";
 import { escalationContract } from "../prompt-fragments.js";
+import { DISPLAY_VERSION } from "../version.js";
 import { startCpuProfile, stopAndSaveCpuProfile } from "./cpu-prof.js";
 import { resolveBareCommandMode, resolveContinueFlag, resolveDefaults } from "./resolve.js";
 import { markPhase } from "./startup-profile.js";
@@ -95,7 +95,7 @@ const program = new Command();
 program
   .name("reasonix")
   .description(t("cli.description"))
-  .version(VERSION)
+  .version(DISPLAY_VERSION)
   .option("-c, --continue", t("cli.continue"))
   .option("--no-mouse", t("ui.noMouseHint"))
   .option("--no-proxy", t("ui.noProxyHint"));

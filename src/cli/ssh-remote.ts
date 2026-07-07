@@ -2,7 +2,7 @@
 
 import { execFileSync, execSync } from "node:child_process";
 import { platform } from "node:os";
-import { VERSION } from "../version.js";
+import { DISPLAY_VERSION } from "../version.js";
 
 export interface SshUri {
   user: string;
@@ -67,7 +67,7 @@ function shellQuote(value: string): string {
 export function generateSshDryRunReport(uri: SshUri, ssh: SshProbe | null): string {
   const sq = shellQuote;
   const sections = [
-    `reasonix ${VERSION}  ·  SSH remote workspace RFC dry-run`,
+    `reasonix ${DISPLAY_VERSION}  ·  SSH remote workspace RFC dry-run`,
     "issue: https://github.com/esengine/DeepSeek-Reasonix/issues/2140",
     "",
     `target:  ${sq(`ssh://${uri.user}@${uri.host}:${uri.port}${uri.path}`)}`,

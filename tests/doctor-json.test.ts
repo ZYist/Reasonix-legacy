@@ -11,7 +11,7 @@ import {
   runCacheDoctorChecks,
   runDoctorChecks,
 } from "../src/cli/commands/doctor.js";
-import { VERSION } from "../src/version.js";
+import { DISPLAY_VERSION, VERSION } from "../src/version.js";
 
 describe("formatDoctorJson", () => {
   it("emits version, summary, and {id,status,message} per check", () => {
@@ -84,7 +84,7 @@ describe("doctorCommand --json (integration)", () => {
     const out = String(logSpy.mock.calls[0]![0]);
     const parsed = JSON.parse(out);
 
-    expect(parsed.version).toBe(VERSION);
+    expect(parsed.version).toBe(DISPLAY_VERSION);
     expect(parsed.summary).toMatchObject({
       ok: expect.any(Number),
       warn: expect.any(Number),

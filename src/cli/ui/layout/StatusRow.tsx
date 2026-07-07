@@ -3,7 +3,7 @@ import { Box, type Color, Text, useStdout } from "ink";
 import React from "react";
 import { t } from "../../../i18n/index.js";
 import { resolveContextTokens } from "../../../telemetry/stats.js";
-import { VERSION } from "../../../version.js";
+import { DISPLAY_VERSION } from "../../../version.js";
 import { formatTokens } from "../primitives.js";
 import { Countdown } from "../primitives/Countdown.js";
 import { useAgentState } from "../state/provider.js";
@@ -149,7 +149,7 @@ export function StatusRow({
       <Box flexDirection="row" flexShrink={0}>
         {statusBar.showVersion && cols >= VERSION_MIN_COLS && (
           <Pill>
-            <Text color={FG.faint}>{`v${VERSION}`}</Text>
+            <Text color={FG.faint}>{DISPLAY_VERSION}</Text>
           </Pill>
         )}
         {statusBar.showFeedbackHint && cols >= FEEDBACK_HINT_MIN_COLS && (
