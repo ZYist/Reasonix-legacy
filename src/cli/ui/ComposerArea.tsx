@@ -114,7 +114,9 @@ export const ComposerArea: React.FC<ComposerAreaProps> = React.memo(
       <Box
         flexDirection="column"
         flexShrink={0}
+        flexGrow={0}
         flexWrap="nowrap"
+        width="100%"
         backgroundColor={SURFACE.bgInput}
       >
         <Box flexDirection="column" flexShrink={0} flexWrap="nowrap">
