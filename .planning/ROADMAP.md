@@ -26,7 +26,7 @@ v1.1 在不改变核心 agent 行为的前提下，先固化四项必须由人�
 ### 🚧 v1.1 Risk Foundations & Maintenance Simplification
 
 - [x] **Phase 5: Governance Decisions** - 人工确定版本、仓库、开发分支与 coverage 四项权威政策 (completed 2026-07-13)
-- [ ] **Phase 6: Repository Truth Alignment** - 让当前用户文档、规划事实和测试依赖与 live repository 一致
+- [x] **Phase 6: Repository Truth Alignment** - 让当前用户文档、规划事实和测试依赖与 live repository 一致 (completed 2026-07-13)
 - [ ] **Phase 7: Bilingual i18n Boundary** - 将运行时语言收缩为可迁移、可回退且 key 对齐的英文与简体中文
 - [ ] **Phase 8: Critical Path Characterization** - 用离线行为测试保护 TUI、关键 CLI 命令和 Telegram/Weixin 生命周期
 - [ ] **Phase 9: CI and Flaky Visibility** - 让活跃开发路径获得完整 CI 门禁并显式报告 retry 后通过
@@ -61,7 +61,11 @@ v1.1 在不改变核心 agent 行为的前提下，先固化四项必须由人�
   3. 维护者运行当前测试时，不再需要已删除的 Tauri、desktop 或 Web dashboard modules、mocks 或 aliases。
   4. 维护者仍可查阅完整历史 CHANGELOG、归档里程碑和合法的 `reasonix stats` terminal dashboard 叙述。
 
-**Plans**: TBD
+**Plans**: 3/3 plans complete
+
+- [x] 06-01-PLAN.md
+- [x] 06-02-PLAN.md
+- [x] 06-03-PLAN.md
 
 ### Phase 7: Bilingual i18n Boundary
 
@@ -124,7 +128,7 @@ v1.1 在不改变核心 agent 行为的前提下，先固化四项必须由人�
 | 3. Desktop GUI Removal | v1.0 | 1/1 | Complete | 2026-07-04 |
 | 4. Build Chain Cleanup & Full Regression | v1.0 | 2/2 | Complete | 2026-07-05 |
 | 5. Governance Decisions | v1.1 | 1/1 | Complete   | 2026-07-13 |
-| 6. Repository Truth Alignment | v1.1 | 0/TBD | Not started | - |
+| 6. Repository Truth Alignment | v1.1 | 3/3 | Complete   | 2026-07-13 |
 | 7. Bilingual i18n Boundary | v1.1 | 0/TBD | Not started | - |
 | 8. Critical Path Characterization | v1.1 | 0/TBD | Not started | - |
 | 9. CI and Flaky Visibility | v1.1 | 0/TBD | Not started | - |
