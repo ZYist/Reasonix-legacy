@@ -84,6 +84,10 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 | phase 依赖序 1→2→3→4 | 先剥耦合最低的面板,再解耦机器人(难点),删 GUI 前宿主就位,最后清构建+回归 | ✓ v1.0 — 4 phase 全绿,每个 phase 交付"系统仍可用"垂直切片 |
 | HeadlessHost 新建模块而非就地重构 desktop.ts | desktop.ts 3555 行混合 RPC/Tab/TUI,就地重构触碰不可回归面 | ✓ v1.0 — 复刻 buildRuntimeFor recipe,sidecar 字节级未动直到 Phase 3 才删 |
 | 三 channel 薄入口不抽 BaseChannelAdapter | qq/telegram/weixin ~150 行平行,但分歧(Telegram 无 onInfo、Weixin QR-login-before-start)是协议层差异 | ⚠️ Revisit — Phase 4 构建清理未抽,future fix cycle 可评估去重 |
+| HG-01：package semver 与 GSD milestone 对齐 | 避免 fork 的公开版本与规划版本再次漂移 | ✓ v1.1 — `package.json` 为对外权威；当前 `1.1.0` ↔ milestone `v1.1`；首次 Pure CLI release 为 `1.1.0`；历史 1.17.x tags 仅属 upstream lineage |
+| HG-02：当前维护身份属于 ZYist fork | 当前操作入口必须与历史来源清楚分离 | ✓ v1.1 — 当前链接与写操作仅指向 `ZYist/Reasonix-legacy`；upstream 只读 attribution，禁止 push/tag/release |
+| HG-03：`dev` push 运行完整 CI | 活跃开发路径需要直接反馈，同时不虚构 GitHub 外部保护设置 | ✓ v1.1 — `dev` push 跑 CI；进 `main` 推荐 PR；branch protection 仅作为经验证的 operator action |
+| HG-04：采用风险导向 coverage policy | 单一全局百分比无法代表 TUI、command 与 channel 生命周期风险 | ✓ v1.1 — 67.39% 仅作 fresh-baseline 前的非回归参考；纯模块高覆盖；关键路径按离线行为场景验收；详见 `docs/governance.md` |
 
 ## Evolution
 
