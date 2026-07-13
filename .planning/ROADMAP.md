@@ -29,7 +29,7 @@ v1.1 在不改变核心 agent 行为的前提下，先固化四项必须由人�
 - [x] **Phase 6: Repository Truth Alignment** - 让当前用户文档、规划事实和测试依赖与 live repository 一致 (completed 2026-07-13)
 - [x] **Phase 7: Bilingual i18n Boundary** - 将运行时语言收缩为可迁移、可回退且 key 对齐的英文与简体中文 (completed 2026-07-13)
 - [x] **Phase 8: Critical Path Characterization** - 用离线行为测试保护 TUI、关键 CLI 命令和 Telegram/Weixin 生命周期 (completed 2026-07-13)
-- [ ] **Phase 9: CI and Flaky Visibility** - 让活跃开发路径获得完整 CI 门禁并显式报告 retry 后通过
+- [x] **Phase 9: CI and Flaky Visibility** - 让活跃开发路径获得完整 CI 门禁并显式报告 retry 后通过 (completed 2026-07-13)
 
 ## Phase Details
 
@@ -118,9 +118,9 @@ v1.1 在不改变核心 agent 行为的前提下，先固化四项必须由人�
   2. 维护者可在 CI job 结果或 summary 中区分首轮通过与“首轮失败、重试通过”，原始失败退出语义不会被 reporter 吞掉。
   3. 维护者仍能看到 tokenizer、jobs 和其他必要慢测试执行；任何排除或专门 retry 都附有可查证的原因。
 
-**Plans**: 0/1 plans executed
+**Plans**: 1/1 plans complete
 
-- [ ] 09-01-PLAN.md
+- [x] 09-01-PLAN.md
 
 ## Dependency Order and Planning Guardrails
 
@@ -141,7 +141,7 @@ v1.1 在不改变核心 agent 行为的前提下，先固化四项必须由人�
 | 6. Repository Truth Alignment | v1.1 | 3/3 | Complete   | 2026-07-13 |
 | 7. Bilingual i18n Boundary | v1.1 | 1/1 | Complete   | 2026-07-13 |
 | 8. Critical Path Characterization | v1.1 | 3/3 | Complete   | 2026-07-13 |
-| 9. CI and Flaky Visibility | v1.1 | 0/1 | Planned    |  |
+| 9. CI and Flaky Visibility | v1.1 | 1/1 | Complete   | 2026-07-13 |
 
 ---
 *Roadmap created: 2026-07-02 · v1.0 shipped: 2026-07-05 · v1.1 roadmap created: 2026-07-13*
