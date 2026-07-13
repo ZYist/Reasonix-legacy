@@ -10,6 +10,15 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 
 在终端里跑一个**低成本、不中断**的 DeepSeek 编程 agent——缓存优先把 token 成本压到最低,工具调用 JSON 自修复保证 loop 不被坏输出打断。这是面板/UI 都可以失败、唯独不能失败的那一件事。
 
+## Current Milestone: v1.1 Risk Foundations & Maintenance Simplification
+
+**Goal:** 在不改变核心 agent 行为的前提下，统一项目事实源、将运行时 i18n 收缩为中英文、补齐关键用户路径保护并提高 CI 风险可见性，为后续热点模块拆分建立安全基础。
+
+**Target features:**
+- 记录版本、公开仓库、开发分支和 coverage policy 四个人工决策，并对齐当前文档与 live source。
+- 仅保留 `en` 与 `zh-CN` 两个规范 locale，提供别名归一化、旧配置迁移、fallback、key parity 和资源清理。
+- 为 TUI、CLI command wiring、Telegram/Weixin 生命周期补充离线特征测试，并按决策落实 CI 与 flaky 可见性。
+
 ## Requirements
 
 ### Validated
@@ -32,9 +41,12 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 
 ### Active
 
-<!-- 下一个里程碑(v1.1)尚未定义。运行 /gsd-new-milestone 启动 questioning → research → requirements → roadmap。 -->
+<!-- v1.1 需求将在 REQUIREMENTS.md 中分配稳定 REQ-ID；此处先记录已确认的里程碑方向。 -->
 
-(待 v1.1 里程碑定义)
+- [ ] **治理决策与身份对齐** — 明确版本权威、公开仓库、分支 CI 与关键路径 coverage policy，并修正当前文档/规划事实源
+- [ ] **双语 i18n 收缩** — 仅维护英文与简体中文，兼容旧 locale 配置并保证 key parity
+- [ ] **关键路径回归保护** — 覆盖 TUI、CLI command wiring、Telegram/Weixin 生命周期的离线用户可观察契约
+- [ ] **CI 与 flaky 可见性** — 保护活跃开发路径并显式暴露首轮失败、重试通过
 
 ### Out of Scope
 
@@ -42,6 +54,8 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 - Tauri 桌面 GUI(`desktop/`) — 用户不再维护,聚焦 CLI;v1.0 已物理移除
 - 重写聊天机器人 channel 协议 — `src/qq|telegram|weixin` 已是独立模块,只换宿主不改协议
 - 新增 CLI 功能 — 精简优先于新增
+- v1.1 内实际拆分 `App.tsx`、`config.ts`、`loop.ts` 或大型 tools — 先完成特征测试与风险基础设施，作为 v1.2 候选范围
+- 自动发布、移动/重写 tags 或替用户修改 GitHub branch protection — 需要独立人工操作与明确授权
 
 ## Context
 
@@ -89,4 +103,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-05 after v1.0 Pure CLI milestone*
+*Last updated: 2026-07-13 after starting v1.1 Risk Foundations & Maintenance Simplification*

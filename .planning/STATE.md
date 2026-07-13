@@ -1,20 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: Pure CLI
-current_phase: 0
-status: Awaiting next milestone
-stopped_at: "Phase 04 complete — milestone M1 100% ready to close. UAT: live read_file turn ✓、CLAUDE.md coherence ✓、weixin internal-feedback acknowledged-deferred(pre-existing)。Next: /gsd-complete-milestone v1.0"
-last_updated: "2026-07-13T02:17:32.827Z"
+milestone: v1.1
+milestone_name: Risk Foundations & Maintenance Simplification
+status: planning
+last_updated: "2026-07-13T02:46:41.282Z"
 last_activity: 2026-07-13
-last_activity_desc: "Completed quick task 260713-eam: high-risk AI remediation guide"
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 8
-  completed_plans: 8
-  percent: 100
-current_phase_name: Build Chain Cleanup & Full Regression
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -28,10 +24,10 @@ See: .planning/PROJECT.md (updated 2026-07-05)
 
 ## Current Position
 
-Phase: Milestone v1.0 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-07-13 — Added high-risk AI remediation guide (quick 260713-eam)
+Status: Defining requirements
+Last activity: 2026-07-13 — Milestone v1.1 started
 
 ## Performance Metrics
 
