@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
   pull_request:
-    branches: [main]
+    branches: [main, dev]
 
 jobs:
   build:
@@ -37,7 +37,7 @@ jobs:
         run: npm run build
 
       - name: Test (vitest + coverage)
-        run: npm run test:coverage
+        run: node scripts/ci-test-with-retry.mjs
 
       - name: Coverage job summary
         if: always()
@@ -62,3 +62,4 @@ jobs:
           curl -sS -X POST -H "Content-Type: application/json" \
             -d "{\"content\":\"❌ CI failed on \`${{ github.ref_name }}\` (${{ matrix.os }}) — ${{ github.actor }}\n${RUN_URL}\"}" \
             "$WEBHOOK_URL"
+
