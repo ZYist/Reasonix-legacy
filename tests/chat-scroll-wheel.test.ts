@@ -42,6 +42,31 @@ describe("chat history scroll store", () => {
     }
   });
 
+  it("auto-follows new output only while pinned and resumes following after End", () => {
+    vi.useFakeTimers();
+    const store = createChatScrollStore();
+    try {
+      store.setMaxScroll(10);
+      expect(store.getState()).toMatchObject({ scrollRows: 10, pinned: true });
+
+      store.setMaxScroll(14);
+      expect(store.getState()).toMatchObject({ scrollRows: 14, pinned: true });
+
+      store.scrollPageUp();
+      expect(store.getState()).toMatchObject({ scrollRows: 9, pinned: false });
+
+      store.setMaxScroll(18);
+      expect(store.getState()).toMatchObject({ scrollRows: 9, pinned: false, maxScroll: 18 });
+
+      store.jumpToBottom();
+      expect(store.getState()).toMatchObject({ scrollRows: 18, pinned: true });
+
+      store.setMaxScroll(21);
+      expect(store.getState()).toMatchObject({ scrollRows: 21, pinned: true });
+    } finally {
+      vi.useRealTimers();
+    }
+  });
   it("clamps configured wheel rows to a conservative range", () => {
     const tooLarge = createChatScrollStore({ wheelRows: 99 });
     tooLarge.setMaxScroll(20);

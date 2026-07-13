@@ -25,6 +25,28 @@ describe("handleTurnInterrupt", () => {
     expect(quitProcess).not.toHaveBeenCalled();
   });
 
+  it("aborts an active turn on Esc and leaves the process running", () => {
+    const resetPendingModals = vi.fn();
+    const stopLoop = vi.fn();
+    const abort = vi.fn();
+    const quitProcess = vi.fn();
+
+    const outcome = handleTurnInterrupt("escape", {
+      turnActiveRef: { current: true },
+      abortedThisTurn: { current: false },
+      resetPendingModals,
+      isLoopActive: () => false,
+      stopLoop,
+      loop: { abort },
+      quitProcess,
+    });
+
+    expect(outcome).toBe("aborted");
+    expect(resetPendingModals).toHaveBeenCalledTimes(1);
+    expect(stopLoop).not.toHaveBeenCalled();
+    expect(abort).toHaveBeenCalledTimes(1);
+    expect(quitProcess).not.toHaveBeenCalled();
+  });
   it("quits on Ctrl+C when no model turn is active", () => {
     const resetPendingModals = vi.fn();
     const abort = vi.fn();
