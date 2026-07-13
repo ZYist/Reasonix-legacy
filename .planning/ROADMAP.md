@@ -27,7 +27,7 @@ v1.1 在不改变核心 agent 行为的前提下，先固化四项必须由人�
 
 - [x] **Phase 5: Governance Decisions** - 人工确定版本、仓库、开发分支与 coverage 四项权威政策 (completed 2026-07-13)
 - [x] **Phase 6: Repository Truth Alignment** - 让当前用户文档、规划事实和测试依赖与 live repository 一致 (completed 2026-07-13)
-- [ ] **Phase 7: Bilingual i18n Boundary** - 将运行时语言收缩为可迁移、可回退且 key 对齐的英文与简体中文
+- [x] **Phase 7: Bilingual i18n Boundary** - 将运行时语言收缩为可迁移、可回退且 key 对齐的英文与简体中文 (completed 2026-07-13)
 - [ ] **Phase 8: Critical Path Characterization** - 用离线行为测试保护 TUI、关键 CLI 命令和 Telegram/Weixin 生命周期
 - [ ] **Phase 9: CI and Flaky Visibility** - 让活跃开发路径获得完整 CI 门禁并显式报告 retry 后通过
 
@@ -80,7 +80,10 @@ v1.1 在不改变核心 agent 行为的前提下，先固化四项必须由人�
   4. 维护者修改任一语言文案时，自动 key parity 检查和类型检查会阻止缺失或多余 key。
   5. 用户在当前 README、tests、fixtures 和发布资源中只遇到英文或中文，而历史 CHANGELOG 中的语言记录不被改写。
 
-**Plans**: TBD
+**Plans**: 1/1 plans complete
+
+- [x] 07-01-PLAN.md
+
 **UI hint**: yes
 
 ### Phase 8: Critical Path Characterization
@@ -129,7 +132,7 @@ v1.1 在不改变核心 agent 行为的前提下，先固化四项必须由人�
 | 4. Build Chain Cleanup & Full Regression | v1.0 | 2/2 | Complete | 2026-07-05 |
 | 5. Governance Decisions | v1.1 | 1/1 | Complete   | 2026-07-13 |
 | 6. Repository Truth Alignment | v1.1 | 3/3 | Complete   | 2026-07-13 |
-| 7. Bilingual i18n Boundary | v1.1 | 0/TBD | Not started | - |
+| 7. Bilingual i18n Boundary | v1.1 | 1/1 | Complete   | 2026-07-13 |
 | 8. Critical Path Characterization | v1.1 | 0/TBD | Not started | - |
 | 9. CI and Flaky Visibility | v1.1 | 0/TBD | Not started | - |
 
