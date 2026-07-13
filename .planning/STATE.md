@@ -1,10 +1,14 @@
 ---
-gsd_state_version: '1.0'
+gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Risk Foundations & Maintenance Simplification
+current_phase: 5
+current_phase_name: Governance Decisions; v1.1 phase 1 of 5
 status: planning
-last_updated: '2026-07-13'
+stopped_at: Phase 5 context gathered
+last_updated: "2026-07-13T06:47:20.732Z"
 last_activity: 2026-07-13
+last_activity_desc: v1.1 roadmap created with 21/21 requirements mapped
 progress:
   total_phases: 5
   completed_phases: 0
@@ -34,6 +38,7 @@ Progress: [░░░░░░░░░░] 0%
 ## Performance Metrics
 
 **Velocity:**
+
 - Total plans completed: 8 (v1.0)
 - Average duration: ~24 min/plan
 - Total execution time: ~2.9 hours
@@ -49,6 +54,7 @@ Progress: [░░░░░░░░░░] 0%
 | 5-9. v1.1 | 0/TBD | - | - |
 
 **Recent Trend:**
+
 - Last 5 completed plans: ~21, ~16, 18, 7, 16 min
 - Trend: Stable; v1.1 plan counts pending phase planning
 
@@ -57,6 +63,7 @@ Progress: [░░░░░░░░░░] 0%
 ### Decisions
 
 Decisions are logged in PROJECT.md Key Decisions table. Required before dependent work:
+
 - Phase 5 / HG-01: version authority and first Pure CLI release — pending explicit human choice
 - Phase 5 / HG-02: current fork repository identity vs upstream attribution — pending explicit human choice
 - Phase 5 / HG-03: `dev` push CI vs protected-PR-only policy — pending explicit human choice
@@ -83,6 +90,6 @@ None recorded for this milestone.
 
 ## Session Continuity
 
-Last session: 2026-07-13
-Stopped at: v1.1 roadmap written; Phase 5 is ready for human-gate discussion and planning
-Resume file: None
+Last session: 2026-07-13T06:47:20.718Z
+Stopped at: Phase 5 context gathered
+Resume file: .planning/phases/05-governance-decisions/05-CONTEXT.md
