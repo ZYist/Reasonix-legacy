@@ -1,5 +1,7 @@
 # Changelog
 
+> **Current fork policy (2026-07-13):** `ZYist/Reasonix-legacy` uses package version `1.1.0` and is maintained as CLI/TUI-only. Entries below preserve historical upstream and fork history; their older version numbers and links are not current operational identity. See [`docs/governance.md`](docs/governance.md).
+
 All notable changes to Reasonix. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
