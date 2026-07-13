@@ -67,33 +67,33 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| GOV-01 | TBD | Pending |
-| GOV-02 | TBD | Pending |
-| GOV-03 | TBD | Pending |
-| GOV-04 | TBD | Pending |
-| TRUTH-01 | TBD | Pending |
-| TRUTH-02 | TBD | Pending |
-| TRUTH-03 | TBD | Pending |
-| TRUTH-04 | TBD | Pending |
-| I18N-01 | TBD | Pending |
-| I18N-02 | TBD | Pending |
-| I18N-03 | TBD | Pending |
-| I18N-04 | TBD | Pending |
-| I18N-05 | TBD | Pending |
-| TEST-01 | TBD | Pending |
-| TEST-02 | TBD | Pending |
-| TEST-03 | TBD | Pending |
-| TEST-04 | TBD | Pending |
-| TEST-05 | TBD | Pending |
-| CI-01 | TBD | Pending |
-| CI-02 | TBD | Pending |
-| CI-03 | TBD | Pending |
+| GOV-01 | Phase 5 | Pending |
+| GOV-02 | Phase 5 | Pending |
+| GOV-03 | Phase 5 | Pending |
+| GOV-04 | Phase 5 | Pending |
+| TRUTH-01 | Phase 6 | Pending |
+| TRUTH-02 | Phase 6 | Pending |
+| TRUTH-03 | Phase 6 | Pending |
+| TRUTH-04 | Phase 6 | Pending |
+| I18N-01 | Phase 7 | Pending |
+| I18N-02 | Phase 7 | Pending |
+| I18N-03 | Phase 7 | Pending |
+| I18N-04 | Phase 7 | Pending |
+| I18N-05 | Phase 7 | Pending |
+| TEST-01 | Phase 8 | Pending |
+| TEST-02 | Phase 8 | Pending |
+| TEST-03 | Phase 8 | Pending |
+| TEST-04 | Phase 8 | Pending |
+| TEST-05 | Phase 8 | Pending |
+| CI-01 | Phase 9 | Pending |
+| CI-02 | Phase 9 | Pending |
+| CI-03 | Phase 9 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 21 total
-- Mapped to phases: 0
-- Unmapped: 21 ⚠️
+- Mapped to phases: 21
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-07-13*
-*Last updated: 2026-07-13 after milestone scope confirmation*
+*Last updated: 2026-07-13 after roadmap creation*
