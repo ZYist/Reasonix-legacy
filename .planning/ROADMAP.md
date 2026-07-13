@@ -99,7 +99,12 @@ v1.1 在不改变核心 agent 行为的前提下，先固化四项必须由人�
   4. 维护者可以通过测试观察 Telegram 与 Weixin 的启动、事件转发、recoverable/fatal error、关闭和中断清理生命周期。
   5. 默认测试不需要真实网络、bot 凭据或交互式 TTY；剩余 live UAT 明确记录为人工验证而非自动覆盖。
 
-**Plans**: TBD
+**Plans**: 0/3 plans executed
+
+- [ ] 08-01-PLAN.md
+- [ ] 08-02-PLAN.md
+- [ ] 08-03-PLAN.md
+
 **UI hint**: yes
 
 ### Phase 9: CI and Flaky Visibility
@@ -133,7 +138,7 @@ v1.1 在不改变核心 agent 行为的前提下，先固化四项必须由人�
 | 5. Governance Decisions | v1.1 | 1/1 | Complete   | 2026-07-13 |
 | 6. Repository Truth Alignment | v1.1 | 3/3 | Complete   | 2026-07-13 |
 | 7. Bilingual i18n Boundary | v1.1 | 1/1 | Complete   | 2026-07-13 |
-| 8. Critical Path Characterization | v1.1 | 0/TBD | Not started | - |
+| 8. Critical Path Characterization | v1.1 | 0/3 | Planned    |  |
 | 9. CI and Flaky Visibility | v1.1 | 0/TBD | Not started | - |
 
 ---
