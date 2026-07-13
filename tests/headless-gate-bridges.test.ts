@@ -21,7 +21,7 @@ import { pauseGate } from "../src/core/pause-gate.js";
 import { autoResolveVerdict } from "../src/core/pause-policy.js";
 import { setLanguageRuntime } from "../src/i18n/index.js";
 
-setLanguageRuntime("EN");
+setLanguageRuntime("en");
 
 // Tests target the deepest default-config path the bridge hits. Mutating the
 // real `~/.reasonix/config.json` would be hostile to whoever runs the suite

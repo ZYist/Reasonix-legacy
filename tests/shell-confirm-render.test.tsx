@@ -28,8 +28,8 @@ function makeShellPrompt(command: string): import("@reasonix/core-utils").Approv
 }
 
 describe("ShellConfirm — renders with ApprovalPrompt", () => {
-  beforeEach(() => setLanguageRuntime("EN"));
-  afterEach(() => setLanguageRuntime("EN"));
+  beforeEach(() => setLanguageRuntime("en"));
+  afterEach(() => setLanguageRuntime("en"));
 
   it("renders the action options and footer", () => {
     const { lastFrame, unmount } = render(

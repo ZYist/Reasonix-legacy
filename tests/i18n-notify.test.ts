@@ -9,7 +9,7 @@ import {
 
 describe("i18n language change notifications", () => {
   afterEach(() => {
-    setLanguageRuntime("EN");
+    setLanguageRuntime("en");
   });
 
   it("fires listener when notifyLanguageChange is called", () => {
@@ -54,14 +54,14 @@ describe("i18n language change notifications", () => {
   it("t() returns new language strings after setLanguageRuntime + notify", () => {
     setLanguageRuntime("zh-CN");
     expect(t("slash.language.success")).toBe("语言已切换为简体中文。");
-    setLanguageRuntime("EN");
+    setLanguageRuntime("en");
     expect(t("slash.language.success")).toBe("Language switched to English.");
   });
 
   it("getLanguage reflects the current language", () => {
-    expect(getLanguage()).toBe("EN");
+    expect(getLanguage()).toBe("en");
     setLanguageRuntime("zh-CN");
     expect(getLanguage()).toBe("zh-CN");
-    setLanguageRuntime("EN");
+    setLanguageRuntime("en");
   });
 });

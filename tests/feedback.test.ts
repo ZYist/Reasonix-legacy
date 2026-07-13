@@ -88,7 +88,7 @@ describe("buildFeedbackDiagnostic", () => {
       platform: "linux",
       osRelease: "6.6.0",
       nodeVersion: "v22.10.0",
-      locale: "EN",
+      locale: "en",
       model: "deepseek-v4-flash",
     });
     expect(out).toContain("**Reasonix**: legacy-0.34.1");

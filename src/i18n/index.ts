@@ -1,27 +1,30 @@
 import { loadLanguage, saveLanguage } from "../config.js";
 import { EN } from "./EN.js";
-import { JA } from "./JA.js";
-import { de } from "./de.js";
-import { ru } from "./ru.js";
 import type { LanguageCode, TranslationSchema } from "./types.js";
 import { zhCN } from "./zh-CN.js";
 
-const translations: Record<LanguageCode, TranslationSchema> = {
-  EN,
+const translations = {
+  en: EN,
   "zh-CN": zhCN,
-  de,
-  ru,
-  ja: JA,
-};
+} satisfies Record<LanguageCode, TranslationSchema>;
 
-/** Map a system locale (e.g. "zh-CN", "en-US") to a supported LanguageCode, or null. */
-export function detectSystemLanguage(locale: string = systemLocale()): LanguageCode | null {
-  if (locale.startsWith("zh")) return "zh-CN";
-  if (locale.startsWith("en")) return "EN";
-  if (locale.startsWith("de")) return "de";
-  if (locale.startsWith("ru")) return "ru";
-  if (locale.startsWith("ja")) return "ja";
+export function canonicalLanguage(locale: string | null | undefined): LanguageCode | null {
+  const value = locale?.trim().replaceAll("_", "-").toLowerCase();
+  if (!value) return null;
+  if (value === "en" || value.startsWith("en-")) return "en";
+  if (value === "zh" || value.startsWith("zh-")) return "zh-CN";
   return null;
+}
+
+export function detectSystemLanguage(locale: string = systemLocale()): LanguageCode {
+  return canonicalLanguage(locale) ?? "en";
+}
+
+export function resolveConfiguredLanguage(
+  configured: string | null | undefined,
+  systemLanguage: string,
+): LanguageCode {
+  return canonicalLanguage(configured) ?? detectSystemLanguage(systemLanguage);
 }
 
 function systemLocale(): string {
@@ -33,11 +36,12 @@ function systemLocale(): string {
   );
 }
 
-let currentLang: LanguageCode = loadLanguage() ?? detectSystemLanguage() ?? "EN";
+const persistedLanguage = loadLanguage() as string | undefined;
+let currentLang: LanguageCode = resolveConfiguredLanguage(persistedLanguage, systemLocale());
+if (persistedLanguage && persistedLanguage !== currentLang) saveLanguage(currentLang);
 
 type Listener = () => void;
 const listeners: Listener[] = [];
-
 export function onLanguageChange(cb: Listener): () => void {
   listeners.push(cb);
   return () => {
@@ -45,43 +49,32 @@ export function onLanguageChange(cb: Listener): () => void {
     if (i >= 0) listeners.splice(i, 1);
   };
 }
-
 export function notifyLanguageChange(): void {
   for (const cb of listeners) cb();
 }
-
 export function setLanguage(lang: LanguageCode): void {
-  if (translations[lang]) {
-    currentLang = lang;
-    saveLanguage(lang);
-  }
+  currentLang = lang;
+  saveLanguage(lang);
 }
-
-/** Set language for the current process only (no disk write). Used by tests. */
 export function setLanguageRuntime(lang: LanguageCode): void {
-  if (translations[lang]) {
-    currentLang = lang;
-  }
+  currentLang = lang;
 }
-
 export function getLanguage(): LanguageCode {
   return currentLang;
 }
-
 export function getSupportedLanguages(): LanguageCode[] {
-  return Object.keys(translations) as LanguageCode[];
+  return ["en", "zh-CN"];
 }
 
-/** Returns a structured (non-string) translation entry — for tables / row objects passed to TipCard etc. */
 export function tObj<T>(path: string): T {
   const parts = path.split(".");
-  let val: unknown = translations[currentLang] || translations.EN;
+  let val: unknown = translations[currentLang];
   for (const part of parts) {
     val = (val as Record<string, unknown> | undefined)?.[part];
     if (val === undefined) break;
   }
-  if (val === undefined && currentLang !== "EN") {
-    val = translations.EN;
+  if (val === undefined && currentLang !== "en") {
+    val = translations.en;
     for (const part of parts) {
       val = (val as Record<string, unknown> | undefined)?.[part];
       if (val === undefined) break;
@@ -89,37 +82,23 @@ export function tObj<T>(path: string): T {
   }
   return val as T;
 }
-
-/** Simple t() — nested keys (e.g. "common.error") + param replacement (e.g. "{code}"). */
 export function t(path: string, params?: Record<string, string | number>): string {
   const parts = path.split(".");
-  let val: any = translations[currentLang] || translations.EN;
-
+  let val: unknown = translations[currentLang];
   for (const part of parts) {
-    val = val?.[part];
+    val = (val as Record<string, unknown> | undefined)?.[part];
     if (val === undefined) break;
   }
-
-  // Fallback to English if not found in current language
-  if (val === undefined && currentLang !== "EN") {
-    val = translations.EN;
+  if (val === undefined && currentLang !== "en") {
+    val = translations.en;
     for (const part of parts) {
-      val = val?.[part];
+      val = (val as Record<string, unknown> | undefined)?.[part];
       if (val === undefined) break;
     }
   }
-
-  if (typeof val !== "string") {
-    return path;
-  }
-
-  if (params) {
-    let result = val;
-    for (const [k, v] of Object.entries(params)) {
-      result = result.replaceAll(`{${k}}`, String(v));
-    }
-    return result;
-  }
-
-  return val;
+  if (typeof val !== "string") return path;
+  if (!params) return val;
+  let result = val;
+  for (const [k, v] of Object.entries(params)) result = result.replaceAll(`{${k}}`, String(v));
+  return result;
 }

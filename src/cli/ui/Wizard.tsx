@@ -67,11 +67,8 @@ interface WizardData {
 const CATALOG_BY_NAME = new Map(MCP_CATALOG.map((e) => [e.name, e]));
 
 const LANGUAGE_LABELS: Record<LanguageCode, string> = {
-  EN: "English",
+  en: "English",
   "zh-CN": "简体中文",
-  de: "Deutsch",
-  ru: "Русский",
-  ja: "日本語",
 };
 
 export function Wizard({

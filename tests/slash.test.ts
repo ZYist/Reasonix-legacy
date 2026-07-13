@@ -1653,7 +1653,7 @@ describe("handleSlash", () => {
 
   describe("/language", () => {
     afterEach(() => {
-      setLanguageRuntime("EN");
+      setLanguageRuntime("en");
     });
 
     it("opens arg picker when no argument given", () => {
@@ -1669,22 +1669,22 @@ describe("handleSlash", () => {
 
     it("switches back to English", () => {
       setLanguageRuntime("zh-CN");
-      const r = handleSlash("language", ["EN"], makeLoop());
-      expect(getLanguage()).toBe("EN");
+      const r = handleSlash("language", ["en"], makeLoop());
+      expect(getLanguage()).toBe("en");
       expect(r.info).toBe("Language switched to English.");
     });
 
-    it("switches to German", () => {
-      const r = handleSlash("language", ["de"], makeLoop());
-      expect(getLanguage()).toBe("de");
-      expect(r.info).toBe("Sprache auf Deutsch umgestellt.");
+    it("normalizes an English locale alias", () => {
+      const r = handleSlash("language", ["en-GB"], makeLoop());
+      expect(getLanguage()).toBe("en");
+      expect(r.info).toBe("Language switched to English.");
     });
 
     it("returns error for unsupported language", () => {
       const r = handleSlash("language", ["fr"], makeLoop());
       expect(r.info).toMatch(/Unsupported/);
       expect(r.info).toMatch(/fr/);
-      expect(getLanguage()).toBe("EN");
+      expect(getLanguage()).toBe("en");
     });
 
     it("/lang is an alias for /language", () => {

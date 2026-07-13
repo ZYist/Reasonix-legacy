@@ -10,12 +10,9 @@ import {
   themeTokens,
 } from "../src/cli/ui/theme/tokens.js";
 import { EN } from "../src/i18n/EN.js";
-import { JA } from "../src/i18n/JA.js";
-import { de } from "../src/i18n/de.js";
-import { ru } from "../src/i18n/ru.js";
 import { zhCN } from "../src/i18n/zh-CN.js";
 
-const CLI_LOCALES = [EN, zhCN, JA, de, ru];
+const CLI_LOCALES = [EN, zhCN];
 
 describe("theme tokens", () => {
   it("resolves missing, auto, and invalid names to the default theme", () => {

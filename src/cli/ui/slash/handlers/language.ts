@@ -1,4 +1,10 @@
-import { getSupportedLanguages, notifyLanguageChange, setLanguage, t } from "@/i18n/index.js";
+import {
+  canonicalLanguage,
+  getSupportedLanguages,
+  notifyLanguageChange,
+  setLanguage,
+  t,
+} from "@/i18n/index.js";
 import type { LanguageCode } from "@/i18n/types.js";
 import type { SlashHandler } from "../dispatch.js";
 
@@ -10,7 +16,8 @@ export const handlers: Record<string, SlashHandler> = {
     }
 
     const supported = getSupportedLanguages();
-    if (!supported.includes(lang as LanguageCode)) {
+    const canonical = canonicalLanguage(lang);
+    if (!canonical) {
       return {
         info: t("slash.language.unsupported", {
           code: lang,
@@ -19,9 +26,9 @@ export const handlers: Record<string, SlashHandler> = {
       };
     }
 
-    setLanguage(lang as LanguageCode);
+    setLanguage(canonical);
     notifyLanguageChange();
-    ctx.dispatch?.({ type: "language.change", lang });
+    ctx.dispatch?.({ type: "language.change", lang: canonical });
 
     return { info: t("slash.language.success") };
   },

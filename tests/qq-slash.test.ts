@@ -19,12 +19,12 @@ describe("/qq slash handler", () => {
 
   beforeEach(() => {
     posts.length = 0;
-    setLanguageRuntime("EN");
+    setLanguageRuntime("en");
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
-    setLanguageRuntime("EN");
+    setLanguageRuntime("en");
   });
 
   it("routes /qq connect through the qq host surface", async () => {

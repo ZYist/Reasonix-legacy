@@ -21,7 +21,7 @@ import { setLanguageRuntime } from "../src/i18n/index.js";
 import type { CacheFirstLoop } from "../src/loop.js";
 import type { LoopEvent } from "../src/loop/types.js";
 
-setLanguageRuntime("EN");
+setLanguageRuntime("en");
 
 type Kev = { type: string };
 

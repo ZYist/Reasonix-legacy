@@ -6,12 +6,12 @@ import { render } from "./helpers/ink-test.js";
 
 describe("composer hint bar — issue #564", () => {
   afterEach(() => {
-    setLanguageRuntime("EN");
+    setLanguageRuntime("en");
   });
 
   describe("i18n keys", () => {
     it("exposes composer.hintClear in EN", () => {
-      setLanguageRuntime("EN");
+      setLanguageRuntime("en");
       expect(t("composer.hintClear")).toBe("clear");
     });
 
@@ -21,7 +21,7 @@ describe("composer hint bar — issue #564", () => {
     });
 
     it("exposes composer.stashNothing in EN", () => {
-      setLanguageRuntime("EN");
+      setLanguageRuntime("en");
       expect(t("composer.stashNothing")).toBe("Nothing to stash");
     });
 
@@ -31,7 +31,7 @@ describe("composer hint bar — issue #564", () => {
     });
 
     it("never leaks the literal key 'composer.hint' (was rendered raw before fix)", () => {
-      setLanguageRuntime("EN");
+      setLanguageRuntime("en");
       // t() falls through to returning the path when a key is missing —
       // the proposed always-visible row must be assembled from real keys.
       expect(t("composer.hintSend")).not.toBe("composer.hintSend");
@@ -46,7 +46,7 @@ describe("composer hint bar — issue #564", () => {
 
   describe("HintRow rendering", () => {
     it("surfaces ^U clear on the always-visible hint row in EN", () => {
-      setLanguageRuntime("EN");
+      setLanguageRuntime("en");
       const { lastFrame, unmount } = render(<HintRow />);
       const out = lastFrame() ?? "";
       unmount();
@@ -55,7 +55,7 @@ describe("composer hint bar — issue #564", () => {
     });
 
     it("renders the proposed terse hint set in EN", () => {
-      setLanguageRuntime("EN");
+      setLanguageRuntime("en");
       const { lastFrame, unmount } = render(<HintRow />);
       const out = lastFrame() ?? "";
       unmount();

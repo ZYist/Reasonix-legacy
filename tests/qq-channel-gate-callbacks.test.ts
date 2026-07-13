@@ -117,14 +117,14 @@ describe("QQ channel — GateCallbacks object injection (D-05/D-06)", () => {
   }
 
   beforeEach(() => {
-    setLanguageRuntime("EN");
+    setLanguageRuntime("en");
     startMock.mockClear();
     stopMock.mockClear();
     sendResponseMock.mockClear();
   });
 
   afterEach(() => {
-    setLanguageRuntime("EN");
+    setLanguageRuntime("en");
     vi.clearAllMocks();
   });
 

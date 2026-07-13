@@ -9,7 +9,7 @@ afterAll(() => {
 
 describe("startup.codeRooted", () => {
   it("renders the EN banner with comma + space between rootDir and session", () => {
-    setLanguageRuntime("EN");
+    setLanguageRuntime("en");
     const out = t("startup.codeRooted", {
       rootDir: "/project",
       session: "abc",
@@ -22,7 +22,7 @@ describe("startup.codeRooted", () => {
   });
 
   it("omits the semantic suffix when no semantic engine is on", () => {
-    setLanguageRuntime("EN");
+    setLanguageRuntime("en");
     const out = t("startup.codeRooted", {
       rootDir: "/project",
       session: t("startup.ephemeral"),

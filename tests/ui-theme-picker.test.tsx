@@ -72,7 +72,7 @@ async function flush(): Promise<void> {
 }
 
 describe("ThemePicker", () => {
-  afterEach(() => setLanguageRuntime("EN"));
+  afterEach(() => setLanguageRuntime("en"));
 
   it("lists auto and all registered themes", () => {
     const text = renderPicker({ currentPreference: "auto", activeTheme: "graphite" });

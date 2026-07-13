@@ -43,11 +43,11 @@ describe("Wizard.buildSpec → parseMcpSpec round-trip", () => {
 
 describe("Wizard — shell-exec discoverability (issue #866)", () => {
   afterEach(() => {
-    setLanguageRuntime("EN");
+    setLanguageRuntime("en");
   });
 
   it("EN saved-step hint surfaces the per-call shell-exec gate", () => {
-    setLanguageRuntime("EN");
+    setLanguageRuntime("en");
     const hint = t("wizard.savedShellHint");
     expect(hint).toMatch(/shell/i);
     expect(hint.toLowerCase()).toContain("allow always");
@@ -63,7 +63,7 @@ describe("Wizard — shell-exec discoverability (issue #866)", () => {
 
 describe("Wizard — first-launch language picker", () => {
   afterEach(() => {
-    setLanguageRuntime("EN");
+    setLanguageRuntime("en");
   });
 
   it("shows the language step first, with both supported languages", () => {

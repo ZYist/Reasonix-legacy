@@ -1,6 +1,6 @@
 import type { TranslationSchema } from "./types.js";
 
-export const EN: TranslationSchema = {
+export const EN = {
   common: {
     error: "Error",
     warning: "Warning",
@@ -2151,4 +2151,4 @@ export const EN: TranslationSchema = {
         "`reasonix desktop` has been retired. To drive bots from the terminal, use `reasonix qq`, `reasonix telegram`, or `reasonix weixin` instead.",
     },
   },
-};
+} satisfies TranslationSchema;

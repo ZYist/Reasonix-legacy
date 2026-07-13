@@ -83,11 +83,11 @@ describe("QQ first-connect onboarding", () => {
     startMock.mockClear();
     stopMock.mockClear();
     refreshAccessConfigMock.mockClear();
-    setLanguageRuntime("EN");
+    setLanguageRuntime("en");
   });
 
   afterEach(() => {
-    setLanguageRuntime("EN");
+    setLanguageRuntime("en");
     vi.clearAllMocks();
   });
 

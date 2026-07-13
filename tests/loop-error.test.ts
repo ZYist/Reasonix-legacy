@@ -189,7 +189,7 @@ describe("healLoadedMessagesByTokens", () => {
 
 describe("formatLoopError — zh-CN runtime switch", () => {
   afterEach(() => {
-    setLanguageRuntime("EN");
+    setLanguageRuntime("en");
   });
 
   it("503 outage notice translates when language is zh-CN", () => {

@@ -137,7 +137,7 @@ async function captureStartupState(opts?: {
   initializeError?: Error;
   bridgeError?: Error;
   mcp?: string[];
-  lang?: "EN" | "zh-CN";
+  lang?: "en" | "zh-CN";
   noMouse?: boolean;
 }) {
   vi.resetModules();
@@ -203,7 +203,7 @@ async function captureStartupState(opts?: {
     import("../src/tools.js"),
     import("../src/i18n/index.js"),
   ]);
-  setLanguageRuntime(opts?.lang ?? "EN");
+  setLanguageRuntime(opts?.lang ?? "en");
 
   await chatCommand({
     model: "deepseek-chat",

@@ -1,6 +1,6 @@
 import type { TranslationSchema } from "./types.js";
 
-export const zhCN: TranslationSchema = {
+export const zhCN = {
   common: {
     error: "错误",
     warning: "警告",
@@ -2033,4 +2033,4 @@ export const zhCN: TranslationSchema = {
         "`reasonix desktop` 已下线。若要在终端驱动机器人,请改用 `reasonix qq`、`reasonix telegram` 或 `reasonix weixin`。",
     },
   },
-};
+} satisfies TranslationSchema;
