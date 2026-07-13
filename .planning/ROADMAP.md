@@ -28,7 +28,7 @@ v1.1 在不改变核心 agent 行为的前提下，先固化四项必须由人�
 - [x] **Phase 5: Governance Decisions** - 人工确定版本、仓库、开发分支与 coverage 四项权威政策 (completed 2026-07-13)
 - [x] **Phase 6: Repository Truth Alignment** - 让当前用户文档、规划事实和测试依赖与 live repository 一致 (completed 2026-07-13)
 - [x] **Phase 7: Bilingual i18n Boundary** - 将运行时语言收缩为可迁移、可回退且 key 对齐的英文与简体中文 (completed 2026-07-13)
-- [ ] **Phase 8: Critical Path Characterization** - 用离线行为测试保护 TUI、关键 CLI 命令和 Telegram/Weixin 生命周期
+- [x] **Phase 8: Critical Path Characterization** - 用离线行为测试保护 TUI、关键 CLI 命令和 Telegram/Weixin 生命周期 (completed 2026-07-13)
 - [ ] **Phase 9: CI and Flaky Visibility** - 让活跃开发路径获得完整 CI 门禁并显式报告 retry 后通过
 
 ## Phase Details
@@ -99,11 +99,11 @@ v1.1 在不改变核心 agent 行为的前提下，先固化四项必须由人�
   4. 维护者可以通过测试观察 Telegram 与 Weixin 的启动、事件转发、recoverable/fatal error、关闭和中断清理生命周期。
   5. 默认测试不需要真实网络、bot 凭据或交互式 TTY；剩余 live UAT 明确记录为人工验证而非自动覆盖。
 
-**Plans**: 0/3 plans executed
+**Plans**: 3/3 plans complete
 
-- [ ] 08-01-PLAN.md
-- [ ] 08-02-PLAN.md
-- [ ] 08-03-PLAN.md
+- [x] 08-01-PLAN.md
+- [x] 08-02-PLAN.md
+- [x] 08-03-PLAN.md
 
 **UI hint**: yes
 
@@ -138,7 +138,7 @@ v1.1 在不改变核心 agent 行为的前提下，先固化四项必须由人�
 | 5. Governance Decisions | v1.1 | 1/1 | Complete   | 2026-07-13 |
 | 6. Repository Truth Alignment | v1.1 | 3/3 | Complete   | 2026-07-13 |
 | 7. Bilingual i18n Boundary | v1.1 | 1/1 | Complete   | 2026-07-13 |
-| 8. Critical Path Characterization | v1.1 | 0/3 | Planned    |  |
+| 8. Critical Path Characterization | v1.1 | 3/3 | Complete   | 2026-07-13 |
 | 9. CI and Flaky Visibility | v1.1 | 0/TBD | Not started | - |
 
 ---
