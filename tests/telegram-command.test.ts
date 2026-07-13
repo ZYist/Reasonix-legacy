@@ -216,4 +216,26 @@ describe("reasonix telegram — BOT-02 host+channel assembly", () => {
     expect(fakeHost?.shutdown).toHaveBeenCalled();
     expect(exitSpy).toHaveBeenCalledWith(0);
   });
+
+  it("makes interrupt cleanup idempotent and best-effort when transport stop fails", async () => {
+    channelStopMock.mockRejectedValueOnce(new Error("offline stop failure"));
+    const promise = telegramCommand({ workspace: tmpWorkspace });
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    process.emit("SIGTERM", "SIGTERM");
+    process.emit("SIGINT", "SIGINT");
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(bridgeUnsubscribeMock).toHaveBeenCalledTimes(1);
+    expect(channelStopMock).toHaveBeenCalledTimes(1);
+    const fakeHost = await hostCreateMock.mock.results[0]?.value;
+    expect(fakeHost?.shutdown).toHaveBeenCalledTimes(1);
+    expect(exitSpy).toHaveBeenCalledTimes(1);
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    await promise.catch(() => undefined);
+  });
 });
