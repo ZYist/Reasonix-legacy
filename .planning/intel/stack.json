@@ -1,53 +1,46 @@
 {
   "_meta": {
-    "updated_at": "2026-07-02T02:45:32.820Z",
-    "version": 2
+    "updated_at": "2026-07-14T00:00:00.000Z",
+    "version": 3
   },
   "languages": [
     "TypeScript",
-    "JavaScript",
-    "CSS",
-    "Rust",
-    "HTML"
+    "JavaScript"
   ],
   "frameworks": [
     "React 19",
     "Ink (custom fork, TUI)",
     "React-Reconciler",
     "Yoga Layout",
-    "Commander",
-    "Grammy (Telegram bot)",
-    "Vite",
-    "Tauri (desktop)"
+    "Commander 12",
+    "Grammy (Telegram bot)"
   ],
   "tools": [
-    "tsup",
-    "esbuild",
-    "Biome",
-    "Vitest",
-    "Stryker (mutation testing)",
-    "ts-node (tsx)",
-    "Tree-sitter (web-tree-sitter)",
-    "highlight.js",
-    "marked",
-    "uPlot",
+    "tsup 8",
+    "esbuild 0.21",
+    "Biome 1.9",
+    "Vitest 2 (with @vitest/coverage-v8)",
+    "Stryker 9 (mutation testing)",
+    "tsx 4",
+    "Tree-sitter (web-tree-sitter 0.26)",
+    "highlight.js (TUI markdown code highlight)",
+    "marked (TUI markdown render)",
     "simple-git-hooks",
     "Marp (pitch deck)"
   ],
-  "build_system": "npm scripts (tsup for ESM bundle, Vite for dashboard, Tauri for desktop)",
-  "test_framework": "Vitest (with @vitest/coverage-v8), Stryker for mutation tests",
-  "package_manager": "npm (workspaces)",
+  "build_system": "npm scripts (tsup ESM bundles -> dist/)",
+  "test_framework": "Vitest (pool: forks, per-file isolation), Stryker for mutation tests",
+  "package_manager": "npm (workspaces: packages/*)",
   "runtimes": [
-    "Node.js >=22",
-    "Tauri (desktop native shell)"
+    "Node.js >=22"
   ],
   "key_dependencies": {
     "production": [
       "commander (CLI parsing)",
-      "undici (HTTP / fetch)",
+      "undici (HTTP / fetch + global proxy dispatcher)",
       "eventsource-parser (SSE streaming)",
       "zod (schema validation)",
-      "ws (WebSocket)",
+      "ws (WebSocket — QQ/WeChat bot transports)",
       "grammy (Telegram bot framework)",
       "web-tree-sitter (syntax parsing)",
       "node-html-parser, iconv-lite (web/content tools)",
@@ -60,8 +53,8 @@
       "tsup, esbuild, tsx, typescript",
       "vitest, @stryker-mutator/core",
       "tree-sitter-{go,java,javascript,python,rust,typescript}",
-      "jsdom, @testing-library/react, react-test-renderer",
-      "marked, highlight.js, uplot, preact, htm (dashboard)"
+      "jsdom, @testing-library/react, react-test-renderer, ink-testing-library",
+      "marked, highlight.js (TUI markdown rendering)"
     ]
   },
   "content_formats": [
@@ -69,11 +62,14 @@
     "Markdown (README, docs, skills, prompt fragments)",
     "YAML (frontmatter config in skills)",
     "JSON (config, intel, session transcripts)",
-    "CSS (dashboard/app.css)",
-    "Rust (desktop/src-tauri)",
     "EJS-like templates (i18n message strings)",
     "Gzipped data (data/deepseek-tokenizer.json.gz)"
   ],
+  "i18n": {
+    "active_locales": ["en", "zh-CN"],
+    "removed_locales": ["JA", "de", "ru"],
+    "runtime": "src/i18n/index.ts (t() lookup, locale detection, fallback to en)"
+  },
   "monorepo": {
     "root_package": "reasonix-legacy",
     "workspaces": [
@@ -84,8 +80,7 @@
   },
   "entrypoints": {
     "library": "src/index.ts -> dist/index.js",
-    "cli": "src/cli/index.ts -> dist/cli/index.js (bin: reasonix, dsnix)",
-    "dashboard": "dashboard/ (Vite-built, served by HTTP server)",
-    "desktop": "desktop/ (Tauri shell + Vite frontend)"
-  }
+    "cli": "src/cli/index.ts -> dist/cli/index.js (bin: reasonix, dsnix)"
+  },
+  "surface_mode": "pure CLI/TUI (no web dashboard, no desktop/Tauri shell — removed in v1.0)"
 }

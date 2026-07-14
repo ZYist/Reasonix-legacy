@@ -1,51 +1,55 @@
 {
   "_meta": {
-    "updated_at": "2026-07-02T02:45:33.282Z",
-    "version": 2
+    "updated_at": "2026-07-14T00:00:00.000Z",
+    "version": 3
   },
   "entries": {
     "overview": {
-      "pattern": "Cache-first agentic loop with a modular tool registry",
-      "description": "Reasonix-legacy is a DeepSeek-native coding agent. The core abstraction is CacheFirstLoop (src/loop.ts), which drives turns by streaming model completions, dispatching tool calls through a ToolRegistry, healing/scavenging malformed tool output (src/repair), shrinking oversized context (src/loop/shrink.ts), and persisting a transcript. The model is accessed exclusively through DeepSeekClient (src/client.ts), and the loop is decoupled from concrete tool/memory/hook implementations via the src/ports interfaces."
+      "pattern": "Pure-CLI/TUI cache-first agentic loop with a modular tool registry",
+      "description": "Reasonix-legacy is a DeepSeek-native coding agent delivered exclusively as a CLI/TUI (binaries reasonix / dsnix). The web dashboard, HTTP server (src/server/router.ts), and Tauri desktop shell were removed in v1.0 (~16.9k lines). The core abstraction is CacheFirstLoop (src/loop.ts): stream model completions, dispatch tool calls via ToolRegistry, repair malformed output (src/repair), shrink oversized context (src/loop/shrink.ts), fold history (src/context-manager.ts), and persist a transcript. The model is accessed only through DeepSeekClient (src/client.ts); concrete tool/memory/hook implementations are decoupled via the src/ports interfaces."
     },
     "data-flow": {
-      "flow": "CLI argv -> resolveDefaults -> chatCommand/runCommand -> CacheFirstLoop -> DeepSeekClient(stream) -> tool dispatch -> tool results -> context shrink -> next turn -> transcript log",
-      "description": "User input enters via the TUI (chat) or one-shot (run/acp/desktop). The loop accumulates messages in a ContextManager; on each turn it streams a DeepSeek completion, parses tool calls, dispatches them chunked (loop/dispatch.ts), appends results (possibly truncated/saved-to-disk by tools/truncated-result-saver), and continues until the model stops emitting tool calls. A transcript is written incrementally (transcript/log.ts)."
+      "flow": "CLI argv -> resolveDefaults -> chatCommand/runCommand/codeCommand -> CacheFirstLoop -> DeepSeekClient(stream) -> tool dispatch -> tool results -> context shrink/fold -> next turn -> transcript log",
+      "description": "User input enters via the Ink TUI (chat/code), one-shot (run), ACP (editor), or a chat-bot channel (qq/telegram/weixin). The loop accumulates messages in a ContextManager; on each turn it streams a DeepSeek completion, parses tool calls, dispatches them chunked (loop/dispatch.ts), appends results (possibly truncated/saved-to-disk), and continues until the model stops emitting tool calls. A transcript is written incrementally (transcript/log.ts)."
     },
     "ports-and-adapters": {
       "pattern": "Hexagonal (ports & adapters)",
-      "description": "src/ports/ defines abstract interfaces (model-client, tool-host, event-sink, hook-runner, memory-store, checkpoint-store); src/adapters/ provides concrete JSONL implementations. DeepSeekClient and ToolRegistry are the default adapters wired by chatCommand. This lets ACP/desktop/runtime swap implementations without touching the loop."
+      "description": "src/ports/ defines abstract interfaces (model-client, tool-host, event-sink, hook-runner, memory-store, checkpoint-store); src/adapters/ provides concrete JSONL implementations. DeepSeekClient and ToolRegistry are the default adapters wired by the command entry points. ACP and the channel bots swap implementations without touching the loop."
     },
     "tui-runtime": {
       "pattern": "Custom Ink fork (React reconciler -> Yoga -> terminal)",
-      "description": "A forked Ink runtime lives at packages/ink (path-aliased as 'ink' in tsconfig.json). It renders React 19 components via react-reconciler + yoga-layout into a diff-based terminal screen. The chat TUI (src/cli/ui/App.tsx and ~50 supporting components) is the primary UX; the dashboard is a separate Vite-built web app served by an HTTP server."
+      "description": "A forked Ink runtime lives at packages/ink (path-aliased as 'ink' in tsconfig.json). It renders React 19 components via react-reconciler + yoga-layout into a diff-based terminal screen. The chat/code TUI (src/cli/ui/App.tsx and ~50 supporting components) is the primary UX. There is no web UI."
     },
     "conventions": {
-      "naming": "kebab-case filenames, camelCase identifiers, PascalCase types/components. CLI subcommands are verbs (run/chat/commit/stats).",
-      "file-organization": "src/ is grouped by subsystem (loop, tools, mcp, repair, memory, transcript, telemetry, code, code-query, index/semantic, cli, server, acp, qq/telegram/weixin, desktop). Each tool registers itself via a registerXTools() function. Barrel exports in src/index.ts expose the public library API.",
+      "naming": "kebab-case filenames, camelCase identifiers, PascalCase types/components. CLI subcommands are verbs (run/chat/code/commit/stats/sessions).",
+      "file-organization": "src/ is grouped by subsystem (loop, tools, mcp, repair, memory, transcript, telemetry, code, code-query, index/semantic, cli, acp, qq/telegram/weixin, core, ports, adapters, net, i18n, java). Each tool registers itself via a registerXTools() function. Barrel exports in src/index.ts expose the public library API. No src/server or src/desktop directories exist (removed v1.0).",
       "imports": "ESM throughout (type: module). Relative .js specifiers even between .ts files (NodeNext-style). Path aliases: '@/*' -> src/*, 'ink' -> packages/ink/src/index.ts.",
-      "error-style": "Loop errors are classified in src/loop/errors.ts (4xx/5xx/host-reachability); unexpected throws in API handlers map to HTTP 500 with a structured envelope.",
-      "testing": "Vitest unit tests in tests/, mutation testing via Stryker, dashboard tests via jsdom + @testing-library/react + ink-testing-library."
+      "error-style": "Loop errors are classified in src/loop/errors.ts (4xx/5xx/host-reachability); aborts yield a synthetic [aborted by user] message rather than throwing.",
+      "testing": "Vitest unit tests in tests/ (pool: forks, retry: 1 for Windows scheduler tolerance), mutation testing via Stryker, component tests via jsdom + @testing-library/react + ink-testing-library. Public-API surface snapshotted in tests/public-api.test.ts."
     },
     "build": {
-      "pattern": "tsup ESM bundles + Vite dashboard + Tauri desktop",
-      "description": "tsup produces two ESM bundles: a library (src/index.ts -> dist/index.js, with dts) and a CLI (src/cli/index.ts -> dist/cli/index.js, noExternal:[/.*/] with a require-shim banner). The dashboard is built by Vite (npm run build:dashboard). Post-build scripts copy vendor CSS and tree-sitter grammars. The desktop app wraps the dashboard in a Tauri (Rust) shell."
+      "pattern": "tsup ESM bundles -> dist/",
+      "description": "tsup produces two ESM bundles: a library (src/index.ts -> dist/index.js, with dts) and a CLI (src/cli/index.ts -> dist/cli/index.js, noExternal:[/.*/] with a require-shim banner). Post-build scripts write the CLI package marker and copy tree-sitter .wasm grammars into dist. The tokenizer data (data/deepseek-tokenizer.json.gz) is shipped in the npm package. No Vite/Tauri/dashboard build remains."
+    },
+    "i18n": {
+      "pattern": "Bilingual boundary: en + zh-CN only",
+      "description": "i18n runtime (src/i18n/index.ts) loads exactly two locales — en (src/i18n/EN.ts) and zh-CN (src/i18n/zh-CN.ts); getSupportedLanguages() returns ['en','zh-CN']. JA/de/ru locales were removed in Phase 7 of the v1.1 cleanup. t()/tObj() lookups fall back to en. Locale detection honours LC_ALL/LC_MESSAGES/LANG and Intl locale, mapping zh* -> zh-CN."
     },
     "security": {
-      "pattern": "Loopback-bound dashboard with token CSRF; tool allow-lists; redaction",
-      "description": "The dashboard HTTP server defaults to 127.0.0.1 with a per-boot 32-byte token; all mutations require the token header. LAN bind (0.0.0.0) is allowed but warned. Shell tools enforce an allow-list (isAllowed) and require confirmation (ShellConfirm). Event redaction strips secrets before emission (src/core/event-redaction.ts). API keys are read from env/config and never logged."
+      "pattern": "Tool allow-lists + confirmation gates + event redaction",
+      "description": "With the dashboard HTTP server removed, there is no network attack surface left in the core: it is loopback-free and CLI-only. Shell tools enforce an allow-list (isAllowed) and require confirmation via PauseGate. Event redaction strips secrets before emission (src/core/event-redaction.ts). API keys are read from env/config and never logged."
     },
     "repair-pipeline": {
       "pattern": "Tool-call repair + storm-breaking",
-      "description": "Models occasionally emit malformed/truncated tool calls. src/repair implements scavenge (recover tool calls from free text), truncation repair (close truncated JSON), schema flatten/nest (coerce args to the declared JSON schema), and StormBreaker (halt runaway tool-call storms). This is exposed as ToolCallRepair and applied inside the loop's healing step (src/loop/healing.ts)."
+      "description": "Models occasionally emit malformed/truncated tool calls. src/repair implements scavenge (recover tool calls from free text), truncation repair (close truncated JSON), schema flatten/nest (coerce args to the declared JSON schema), and StormBreaker (halt runaway tool-call storms). Exposed as ToolCallRepair and applied inside the loop's healing step (src/loop/healing.ts)."
     },
     "mcp-integration": {
       "pattern": "Pluggable MCP transports bridged into the ToolRegistry",
-      "description": "src/mcp implements a JSON-RPC client over three transports (stdio, sse, streamable-http). bridgeMcpTools() adapts remote MCP tools into local ToolDefinitions with result flattening and per-token truncation (truncateForModelByTokens). An interactive marketplace browser (mcp-browse) and inspector (mcp-inspect) aid discovery."
+      "description": "src/mcp implements a JSON-RPC client over three transports (stdio, sse, streamable-http). bridgeMcpTools() adapts remote MCP tools into local ToolDefinitions with result flattening and per-token truncation (truncateForModelByTokens). An interactive marketplace browser (mcp-browse command/TUI) and inspector (mcp-inspect) aid discovery."
     },
     "memory-tiers": {
       "pattern": "Immutable prefix + append-only log + volatile scratch; project/user/session scopes",
-      "description": "Runtime memory (src/memory/runtime.ts) splits the system prompt into ImmutablePrefix (cache-friendly), AppendOnlyLog, and VolatileScratch. Project memory (PROJECT_MEMORY_FILE), user MemoryStore, and per-session logs (src/memory/session.ts) are layered via applyMemoryStack when the system prompt is rebuilt."
+      "description": "Runtime memory (src/memory/runtime.ts) splits the system prompt into ImmutablePrefix (cache-friendly, locale-independent sortToolSpecs), AppendOnlyLog, and VolatileScratch. Project memory (PROJECT_MEMORY_FILE), user MemoryStore, and per-session logs (src/memory/session.ts) are layered via applyMemoryStack when the system prompt is rebuilt."
     },
     "context-management": {
       "pattern": "Token-aware compaction + reasoning retention",
@@ -53,71 +57,30 @@
     },
     "semantic-index": {
       "pattern": "Optional local vector index over the workspace",
-      "description": "src/index/semantic builds an embedding index (chunker + embedding provider, Ollama supported via ollama-launcher). The semantic tool (tool.ts) and /api/semantic endpoint expose code-aware retrieval. Configured via src/index/config.ts and gated by semanticPreflight."
+      "description": "src/index/semantic builds an embedding index (chunker + embedding provider, Ollama supported via ollama-launcher). The semantic tool (tool.ts) and the `reasonix index` command expose code-aware retrieval. Configured via src/index/config.ts and gated by semanticPreflight."
     },
     "remote-channels": {
-      "pattern": "Optional chat bots (QQ, Telegram, WeChat) wired as channels",
-      "description": "src/qq, src/telegram, src/weixin each implement a Bot (EventEmitter) + channel + access control + use-*Channel hook. They forward messages into the loop and route replies back, allowing the agent to be driven from messaging platforms."
+      "pattern": "CLI-hosted headless chat bots (QQ, Telegram, WeChat)",
+      "description": "After desktop/dashboard removal, the three chat networks are exposed purely as CLI subcommands: `reasonix qq`, `reasonix telegram`, `reasonix weixin`. Each lives under src/<channel>/ (bot.ts EventEmitter + channel.ts + access.ts + use-*-channel.ts hook + strings.ts) and is driven by a thin command at src/cli/commands/<channel>.ts. The retired `reasonix desktop` subcommand is kept only as an error stub redirecting users to these commands. They forward messages into the same CacheFirstLoop and route replies back."
     },
-    "component:DeepSeekClient": {
-      "path": "src/client.ts",
-      "responsibility": "DeepSeek API HTTP client: chat completions (stream + non-stream), usage accounting, model list, balance."
+    "governance": {
+      "pattern": "Repo-truth alignment + critical-path tests + CI",
+      "description": "v1.1 introduced governance hardening: machine intel under .planning/intel/, human-readable docs under .planning/codebase/, critical-path tests, and CI workflow (.github/workflows/ci.yml) pinning node 22 on ubuntu-latest + windows-latest with a cross-platform Vitest retry wrapper (scripts/ci-test-with-retry.mjs) for flaky visibility on active branches."
     },
-    "component:CacheFirstLoop": {
-      "path": "src/loop.ts",
-      "responsibility": "Main agent loop: turn iteration, tool dispatch, healing, shrink, hook events, transcript writes."
-    },
-    "component:ToolRegistry": {
-      "path": "src/tools.ts",
-      "responsibility": "Registers ToolDefinitions; supports interceptors, result augmenters, audit listeners, allow-lists."
-    },
-    "component:ContextManager": {
-      "path": "src/context-manager.ts",
-      "responsibility": "Tracks token usage and folds old messages past threshold."
-    },
-    "component:ToolCallRepair": {
-      "path": "src/repair/index.ts",
-      "responsibility": "Scavenge, truncation repair, schema flatten/nest, storm-breaking."
-    },
-    "component:McpClient": {
-      "path": "src/mcp/client.ts",
-      "responsibility": "MCP JSON-RPC client over stdio/sse/streamable-http."
-    },
-    "component:MemoryStore": {
-      "path": "src/memory/user.ts",
-      "responsibility": "User-scoped persistent memory entries."
-    },
-    "component:TranscriptLog": {
-      "path": "src/transcript/log.ts",
-      "responsibility": "Append-only transcript persistence + replay parsing."
-    },
-    "component:DashboardServer": {
-      "path": "src/server/index.ts",
-      "responsibility": "HTTP dashboard server (loopback default, token auth, optional LAN)."
-    },
-    "component:DashboardRouter": {
-      "path": "src/server/router.ts",
-      "responsibility": "Dispatches /api/* requests to per-endpoint handlers."
-    },
-    "component:InkRuntime": {
-      "path": "packages/ink/src/index.ts",
-      "responsibility": "Forked Ink TUI runtime (React reconciler + Yoga + terminal renderer)."
-    },
-    "component:ChatTUI": {
-      "path": "src/cli/ui/App.tsx",
-      "responsibility": "Interactive chat TUI app (Ink React tree)."
-    },
-    "component:SemanticIndex": {
-      "path": "src/index/semantic/builder.ts",
-      "responsibility": "Builds and queries an embedding index over the workspace."
-    },
-    "component:ACP": {
-      "path": "src/acp/server.ts",
-      "responsibility": "Agent Client Protocol stdio JSON-RPC server."
-    },
-    "component:Hooks": {
-      "path": "src/hooks.ts",
-      "responsibility": "Loads + runs configured shell hooks on tool events."
-    }
+    "component:DeepSeekClient": { "path": "src/client.ts", "responsibility": "DeepSeek API HTTP client: chat completions (stream + non-stream), usage accounting, model list, balance." },
+    "component:CacheFirstLoop": { "path": "src/loop.ts", "responsibility": "Main agent loop: turn iteration, tool dispatch, healing, shrink, hook events, transcript writes." },
+    "component:ToolRegistry": { "path": "src/tools.ts", "responsibility": "Registers ToolDefinitions; supports interceptors, result augmenters, audit listeners, allow-lists, plan-mode gating, rate limiting." },
+    "component:ContextManager": { "path": "src/context-manager.ts", "responsibility": "Tracks token usage and folds old messages past threshold (normal/aggressive/forced-summary)." },
+    "component:ToolCallRepair": { "path": "src/repair/index.ts", "responsibility": "Scavenge, truncation repair, schema flatten/nest, storm-breaking." },
+    "component:McpClient": { "path": "src/mcp/client.ts", "responsibility": "MCP JSON-RPC client over stdio/sse/streamable-http." },
+    "component:MemoryStore": { "path": "src/memory/user.ts", "responsibility": "User-scoped persistent memory entries." },
+    "component:TranscriptLog": { "path": "src/transcript/log.ts", "responsibility": "Append-only transcript persistence + replay parsing." },
+    "component:InkRuntime": { "path": "packages/ink/src/index.ts", "responsibility": "Forked Ink TUI runtime (React reconciler + Yoga + terminal renderer)." },
+    "component:ChatTUI": { "path": "src/cli/ui/App.tsx", "responsibility": "Interactive chat TUI app (Ink React tree)." },
+    "component:SemanticIndex": { "path": "src/index/semantic/builder.ts", "responsibility": "Builds and queries an embedding index over the workspace." },
+    "component:ACP": { "path": "src/acp/server.ts", "responsibility": "Agent Client Protocol stdio JSON-RPC server (editor/IDE integration)." },
+    "component:Hooks": { "path": "src/hooks.ts", "responsibility": "Loads + runs configured shell hooks on tool events." },
+    "component:ChannelBots": { "path": "src/qq|src/telegram|src/weixin", "responsibility": "CLI-hosted headless QQ/Telegram/WeChat bot adapters driving the same CacheFirstLoop." },
+    "component:I18n": { "path": "src/i18n/index.ts", "responsibility": "Bilingual (en/zh-CN) message lookup, locale detection, fallback." }
   }
 }
