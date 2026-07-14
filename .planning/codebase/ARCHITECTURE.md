@@ -1,6 +1,6 @@
 # Architecture — Current Pure CLI Repository
 
-Reasonix-legacy is a DeepSeek-native TypeScript CLI/TUI and library. `src/cli/main.ts` dispatches CLI commands; the Ink TUI and headless channel commands share the cache-first loop in `src/loop.ts`. There is no current Web dashboard, Tauri desktop, or browser server.
+reasonix-legacy is a DeepSeek-native TypeScript CLI/TUI and library. `src/cli/main.ts` dispatches CLI commands; the Ink TUI and headless channel commands share the cache-first loop in `src/loop.ts`. There is no current Web dashboard, Tauri desktop, or browser server.
 
 ## Surfaces
 - Interactive CLI/TUI: `src/cli/`, `src/ui/`

@@ -25,13 +25,13 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/reasonix"><img src="https://img.shields.io/npm/v/reasonix.svg?style=flat-square&color=cb3837&labelColor=161b22&logo=npm&logoColor=white" alt="npm version"/></a>
-  <a href="https://github.com/ZYist/Reasonix-legacy/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/ZYist/Reasonix-legacy/ci.yml?style=flat-square&label=ci&labelColor=161b22&logo=githubactions&logoColor=white" alt="CI"/></a>
+  <a href="https://github.com/ZYist/reasonix-legacy/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/ZYist/reasonix-legacy/ci.yml?style=flat-square&label=ci&labelColor=161b22&logo=githubactions&logoColor=white" alt="CI"/></a>
   <a href="./LICENSE"><img src="https://img.shields.io/npm/l/reasonix.svg?style=flat-square&color=8b949e&labelColor=161b22" alt="license"/></a>
   <a href="https://www.npmjs.com/package/reasonix"><img src="https://img.shields.io/npm/dm/reasonix.svg?style=flat-square&color=3fb950&labelColor=161b22&label=downloads" alt="downloads"/></a>
   <a href="./package.json"><img src="https://img.shields.io/node/v/reasonix.svg?style=flat-square&color=5fa04e&labelColor=161b22&logo=nodedotjs&logoColor=white" alt="node"/></a>
-  <a href="https://github.com/ZYist/Reasonix-legacy/stargazers"><img src="https://img.shields.io/github/stars/ZYist/Reasonix-legacy.svg?style=flat-square&color=dbab09&labelColor=161b22&logo=github&logoColor=white" alt="GitHub stars"/></a>
-  <a href="https://github.com/ZYist/Reasonix-legacy/graphs/contributors"><img src="https://img.shields.io/github/contributors/ZYist/Reasonix-legacy.svg?style=flat-square&color=bc8cff&labelColor=161b22&logo=github&logoColor=white" alt="contributors"/></a>
-  <a href="https://github.com/ZYist/Reasonix-legacy/discussions"><img src="https://img.shields.io/github/discussions/ZYist/Reasonix-legacy.svg?style=flat-square&color=58a6ff&labelColor=161b22&logo=github&logoColor=white" alt="Discussions"/></a>
+  <a href="https://github.com/ZYist/reasonix-legacy/stargazers"><img src="https://img.shields.io/github/stars/ZYist/reasonix-legacy.svg?style=flat-square&color=dbab09&labelColor=161b22&logo=github&logoColor=white" alt="GitHub stars"/></a>
+  <a href="https://github.com/ZYist/reasonix-legacy/graphs/contributors"><img src="https://img.shields.io/github/contributors/ZYist/reasonix-legacy.svg?style=flat-square&color=bc8cff&labelColor=161b22&logo=github&logoColor=white" alt="contributors"/></a>
+  <a href="https://github.com/ZYist/reasonix-legacy/discussions"><img src="https://img.shields.io/github/discussions/ZYist/reasonix-legacy.svg?style=flat-square&color=58a6ff&labelColor=161b22&logo=github&logoColor=white" alt="Discussions"/></a>
   <a href="https://discord.gg/XF78rEME2D"><img src="https://img.shields.io/badge/discord-join-5865F2.svg?style=flat-square&labelColor=161b22&logo=discord&logoColor=white" alt="Discord"/></a>
 </p>
 
@@ -193,20 +193,20 @@ npx reasonix code --dir /path/to/project
 ## 社区
 
 > [!NOTE]
-> **当前维护仓库 — `ZYist/Reasonix-legacy` v1.1.0。** 这是从 [`esengine/DeepSeek-Reasonix`](https://github.com/esengine/DeepSeek-Reasonix) 延续的纯 CLI/TUI TypeScript fork。当前维护、issue、discussion 与 CI 均属于 ZYist fork；upstream 链接仅保留为来源署名。`reasonix` / `dsnix` CLI 名称保持兼容。
+> **当前维护仓库 — `ZYist/reasonix-legacy` v1.1.0。** 这是从 [`esengine/DeepSeek-Reasonix`](https://github.com/esengine/DeepSeek-Reasonix) 延续的纯 CLI/TUI TypeScript fork。当前维护、issue、discussion 与 CI 均属于 ZYist fork；upstream 链接仅保留为来源署名。`reasonix` / `dsnix` CLI 名称保持兼容。
 
-给新手准备的入门 issue —— 每个都带背景说明、代码定位、验收标准、提示 —— 全部挂在 [`good first issue`](https://github.com/ZYist/Reasonix-legacy/labels/good%20first%20issue) 标签下。挑任意一个还没人认领的就行。
+给新手准备的入门 issue —— 每个都带背景说明、代码定位、验收标准、提示 —— 全部挂在 [`good first issue`](https://github.com/ZYist/reasonix-legacy/labels/good%20first%20issue) 标签下。挑任意一个还没人认领的就行。
 
 **正在征集意见的 Discussions：**
 
-- [#20 · CLI / TUI 设计](https://github.com/ZYist/Reasonix-legacy/discussions/20) —— 哪里坏了、哪里少东西、哪里你会怎么改？
-- [#21 · Dashboard 设计](https://github.com/ZYist/Reasonix-legacy/discussions/21) —— 对着[设计稿](./REASONIX.mddesign/agent-dashboard.html)拍砖
-- [#22 · 未来功能愿望单](https://github.com/ZYist/Reasonix-legacy/discussions/22) —— 你希望 Reasonix 长出什么功能？
+- [#20 · CLI / TUI 设计](https://github.com/ZYist/reasonix-legacy/discussions/20) —— 哪里坏了、哪里少东西、哪里你会怎么改？
+- [#21 · Dashboard 设计](https://github.com/ZYist/reasonix-legacy/discussions/21) —— 对着[设计稿](./REASONIX.mddesign/agent-dashboard.html)拍砖
+- [#22 · 未来功能愿望单](https://github.com/ZYist/reasonix-legacy/discussions/22) —— 你希望 Reasonix 长出什么功能？
 
-**正在使用 Reasonix，愿意让更多人了解它？** 欢迎将相关博客、文章、截图、演讲或视频发布到 [**Show and tell**](https://github.com/ZYist/Reasonix-legacy/discussions/categories/show-and-tell)。项目没有营销预算，新用户主要通过社区口碑找到这里。持续参与传播的用户将获得下方这枚徽章，颁发后会展示在贡献者墙旁：
+**正在使用 Reasonix，愿意让更多人了解它？** 欢迎将相关博客、文章、截图、演讲或视频发布到 [**Show and tell**](https://github.com/ZYist/reasonix-legacy/discussions/categories/show-and-tell)。项目没有营销预算，新用户主要通过社区口碑找到这里。持续参与传播的用户将获得下方这枚徽章，颁发后会展示在贡献者墙旁：
 
 <p align="center">
-  <a href="https://github.com/ZYist/Reasonix-legacy/discussions/categories/show-and-tell">
+  <a href="https://github.com/ZYist/reasonix-legacy/discussions/categories/show-and-tell">
     <img src="https://img.shields.io/badge/REASONIX-📣%20ADVOCATE-c4b5fd?style=for-the-badge&labelColor=0d1117" alt="Reasonix Advocate 徽章 —— 授予持续参与传播的用户"/>
   </a>
 </p>

@@ -6,4 +6,4 @@
 - Git and local shell/filesystem tools
 - Optional search/provider credentials defined by live config
 
-GitHub `origin` is `ZYist/Reasonix-legacy`; upstream is attribution/read-only reference. No desktop updater or Web dashboard API exists.
+GitHub `origin` is `ZYist/reasonix-legacy`; upstream is attribution/read-only reference. No desktop updater or Web dashboard API exists.

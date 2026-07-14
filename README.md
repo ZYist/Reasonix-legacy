@@ -3,7 +3,7 @@
 </p>
 
 > [!NOTE]
-> **Maintained fork — `ZYist/Reasonix-legacy` v1.1.0.** This is the CLI/TUI-only TypeScript continuation of [`esengine/DeepSeek-Reasonix`](https://github.com/esengine/DeepSeek-Reasonix). Current maintenance, issues, discussions, and CI live in the ZYist fork; the upstream link is retained for attribution. The `reasonix` / `dsnix` CLI names remain compatible.
+> **Maintained fork — `ZYist/reasonix-legacy` v1.1.0.** This is the CLI/TUI-only TypeScript continuation of [`esengine/DeepSeek-Reasonix`](https://github.com/esengine/DeepSeek-Reasonix). Current maintenance, issues, discussions, and CI live in the ZYist fork; the upstream link is retained for attribution. The `reasonix` / `dsnix` CLI names remain compatible.
 
 
 <p align="center">
@@ -24,13 +24,13 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/reasonix"><img src="https://img.shields.io/npm/v/reasonix.svg?style=flat-square&color=cb3837&labelColor=161b22&logo=npm&logoColor=white" alt="npm version"/></a>
-  <a href="https://github.com/ZYist/Reasonix-legacy/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/ZYist/Reasonix-legacy/ci.yml?style=flat-square&label=ci&labelColor=161b22&logo=githubactions&logoColor=white" alt="CI"/></a>
+  <a href="https://github.com/ZYist/reasonix-legacy/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/ZYist/reasonix-legacy/ci.yml?style=flat-square&label=ci&labelColor=161b22&logo=githubactions&logoColor=white" alt="CI"/></a>
   <a href="./LICENSE"><img src="https://img.shields.io/npm/l/reasonix.svg?style=flat-square&color=8b949e&labelColor=161b22" alt="license"/></a>
   <a href="https://www.npmjs.com/package/reasonix"><img src="https://img.shields.io/npm/dm/reasonix.svg?style=flat-square&color=3fb950&labelColor=161b22&label=downloads" alt="downloads"/></a>
   <a href="./package.json"><img src="https://img.shields.io/node/v/reasonix.svg?style=flat-square&color=5fa04e&labelColor=161b22&logo=nodedotjs&logoColor=white" alt="node"/></a>
-  <a href="https://github.com/ZYist/Reasonix-legacy/stargazers"><img src="https://img.shields.io/github/stars/ZYist/Reasonix-legacy.svg?style=flat-square&color=dbab09&labelColor=161b22&logo=github&logoColor=white" alt="GitHub stars"/></a>
-  <a href="https://github.com/ZYist/Reasonix-legacy/graphs/contributors"><img src="https://img.shields.io/github/contributors/ZYist/Reasonix-legacy.svg?style=flat-square&color=bc8cff&labelColor=161b22&logo=github&logoColor=white" alt="contributors"/></a>
-  <a href="https://github.com/ZYist/Reasonix-legacy/discussions"><img src="https://img.shields.io/github/discussions/ZYist/Reasonix-legacy.svg?style=flat-square&color=58a6ff&labelColor=161b22&logo=github&logoColor=white" alt="Discussions"/></a>
+  <a href="https://github.com/ZYist/reasonix-legacy/stargazers"><img src="https://img.shields.io/github/stars/ZYist/reasonix-legacy.svg?style=flat-square&color=dbab09&labelColor=161b22&logo=github&logoColor=white" alt="GitHub stars"/></a>
+  <a href="https://github.com/ZYist/reasonix-legacy/graphs/contributors"><img src="https://img.shields.io/github/contributors/ZYist/reasonix-legacy.svg?style=flat-square&color=bc8cff&labelColor=161b22&logo=github&logoColor=white" alt="contributors"/></a>
+  <a href="https://github.com/ZYist/reasonix-legacy/discussions"><img src="https://img.shields.io/github/discussions/ZYist/reasonix-legacy.svg?style=flat-square&color=58a6ff&labelColor=161b22&logo=github&logoColor=white" alt="Discussions"/></a>
   <a href="https://discord.gg/XF78rEME2D"><img src="https://img.shields.io/badge/discord-join-5865F2.svg?style=flat-square&labelColor=161b22&logo=discord&logoColor=white" alt="Discord"/></a>
 </p>
 
@@ -230,18 +230,18 @@ For live cache-hit rates, costs, and methodology, see [`benchmarks/`](./benchmar
 > [!NOTE]
 > Reasonix is open source and community-developed. Every avatar in the Acknowledgments wall at the bottom of this file is a real PR that shipped.
 
-Scoped starter tickets — each with background, code pointers, acceptance criteria, and hints — live under the [`good first issue`](https://github.com/ZYist/Reasonix-legacy/labels/good%20first%20issue) label. Pick anything open.
+Scoped starter tickets — each with background, code pointers, acceptance criteria, and hints — live under the [`good first issue`](https://github.com/ZYist/reasonix-legacy/labels/good%20first%20issue) label. Pick anything open.
 
 **Open Discussions — opinions wanted:**
 
-- [#20 · CLI / TUI design](https://github.com/ZYist/Reasonix-legacy/discussions/20) — what's broken, what's missing, what would you change?
-- [#21 · Dashboard design](https://github.com/ZYist/Reasonix-legacy/discussions/21) — react against the [proposed mockup](./REASONIX.mddesign/agent-dashboard.html)
-- [#22 · Future feature wishlist](https://github.com/ZYist/Reasonix-legacy/discussions/22) — what would you build into Reasonix next?
+- [#20 · CLI / TUI design](https://github.com/ZYist/reasonix-legacy/discussions/20) — what's broken, what's missing, what would you change?
+- [#21 · Dashboard design](https://github.com/ZYist/reasonix-legacy/discussions/21) — react against the [proposed mockup](./REASONIX.mddesign/agent-dashboard.html)
+- [#22 · Future feature wishlist](https://github.com/ZYist/reasonix-legacy/discussions/22) — what would you build into Reasonix next?
 
-**Already using Reasonix and willing to help others discover it?** Publish blog posts, articles, screenshots, talks, or videos to [**Show and tell**](https://github.com/ZYist/Reasonix-legacy/discussions/categories/show-and-tell). The project has no marketing budget — community word of mouth is how new users find it. Sustained advocates earn the badge below, displayed next to the contributors wall once awarded:
+**Already using Reasonix and willing to help others discover it?** Publish blog posts, articles, screenshots, talks, or videos to [**Show and tell**](https://github.com/ZYist/reasonix-legacy/discussions/categories/show-and-tell). The project has no marketing budget — community word of mouth is how new users find it. Sustained advocates earn the badge below, displayed next to the contributors wall once awarded:
 
 <p align="center">
-  <a href="https://github.com/ZYist/Reasonix-legacy/discussions/categories/show-and-tell">
+  <a href="https://github.com/ZYist/reasonix-legacy/discussions/categories/show-and-tell">
     <img src="https://img.shields.io/badge/REASONIX-📣%20ADVOCATE-c4b5fd?style=for-the-badge&labelColor=0d1117" alt="Reasonix Advocate badge — earned by sustained advocates"/>
   </a>
 </p>

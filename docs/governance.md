@@ -1,6 +1,6 @@
 # Repository Governance Policy
 
-**Owner:** ZYist / maintainer of `ZYist/Reasonix-legacy`  
+**Owner:** ZYist / maintainer of `ZYist/reasonix-legacy`  
 **Approved:** 2026-07-13  
 **Status:** Active
 
@@ -16,9 +16,9 @@ This document is the durable authority for the four governance decisions made be
 
 ## HG-02 / GOV-02 — Repository identity and remote boundary
 
-- `https://github.com/ZYist/Reasonix-legacy` is the current maintained repository and the destination for current CI, issues, discussions, stars, and other operational links.
+- `https://github.com/ZYist/reasonix-legacy` is the current maintained repository and the destination for current CI, issues, discussions, stars, and other operational links.
 - `https://github.com/esengine/DeepSeek-Reasonix` is the historical upstream source and must be acknowledged clearly as attribution, not presented as the current maintenance entry point.
-- All write operations are limited to local branches and the `ZYist/Reasonix-legacy` fork. The `upstream` remote is read-only reference material: do not push branches or tags to it, create releases there, or modify the original author's assets.
+- All write operations are limited to local branches and the `ZYist/reasonix-legacy` fork. The `upstream` remote is read-only reference material: do not push branches or tags to it, create releases there, or modify the original author's assets.
 
 ## HG-03 / GOV-03 — Development branch and CI
 

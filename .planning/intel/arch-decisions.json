@@ -6,7 +6,7 @@
   "entries": {
     "overview": {
       "pattern": "Pure-CLI/TUI cache-first agentic loop with a modular tool registry",
-      "description": "Reasonix-legacy is a DeepSeek-native coding agent delivered exclusively as a CLI/TUI (binaries reasonix / dsnix). The web dashboard, HTTP server (src/server/router.ts), and Tauri desktop shell were removed in v1.0 (~16.9k lines). The core abstraction is CacheFirstLoop (src/loop.ts): stream model completions, dispatch tool calls via ToolRegistry, repair malformed output (src/repair), shrink oversized context (src/loop/shrink.ts), fold history (src/context-manager.ts), and persist a transcript. The model is accessed only through DeepSeekClient (src/client.ts); concrete tool/memory/hook implementations are decoupled via the src/ports interfaces."
+      "description": "reasonix-legacy is a DeepSeek-native coding agent delivered exclusively as a CLI/TUI (binaries reasonix / dsnix). The web dashboard, HTTP server (src/server/router.ts), and Tauri desktop shell were removed in v1.0 (~16.9k lines). The core abstraction is CacheFirstLoop (src/loop.ts): stream model completions, dispatch tool calls via ToolRegistry, repair malformed output (src/repair), shrink oversized context (src/loop/shrink.ts), fold history (src/context-manager.ts), and persist a transcript. The model is accessed only through DeepSeekClient (src/client.ts); concrete tool/memory/hook implementations are decoupled via the src/ports interfaces."
     },
     "data-flow": {
       "flow": "CLI argv -> resolveDefaults -> chatCommand/runCommand/codeCommand -> CacheFirstLoop -> DeepSeekClient(stream) -> tool dispatch -> tool results -> context shrink/fold -> next turn -> transcript log",

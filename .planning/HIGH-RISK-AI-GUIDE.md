@@ -132,7 +132,7 @@ git grep -n '<关键旧词或路径>' -- <目标文档范围>
 
 ### HG-02：公开仓库身份
 
-人必须确认 README 的 CI/stars/discussions/oosmetrics 链接应继续展示 upstream 资产，还是全部切到 `ZYist/Reasonix-legacy`。可保留 attribution，但“当前维护入口”和“历史来源”必须分开表达。
+人必须确认 README 的 CI/stars/discussions/oosmetrics 链接应继续展示 upstream 资产，还是全部切到 `ZYist/reasonix-legacy`。可保留 attribution，但“当前维护入口”和“历史来源”必须分开表达。
 
 ### HG-03：开发分支策略
 
