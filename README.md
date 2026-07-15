@@ -9,7 +9,7 @@
   <a href="./package.json"><img src="https://img.shields.io/badge/node-%E2%89%A5%2022-5fa04e?style=flat-square&labelColor=161b22&logo=nodedotjs&logoColor=white" alt="node"/></a>
 </p>
 
-**reasonix-legacy** 是 [`esengine/DeepSeek-Reasonix`](https://github.com/esengine/DeepSeek-Reasonix) 的 fork,走**纯 CLI** 方向:在终端里跑一个低成本、不中断的 DeepSeek 编程 agent。Web 面板和桌面 GUI 已移除,聚焦命令行体验,保留 QQ / Telegram / 微信机器人作为远程通道。核心 loop / 工具 / 记忆 / MCP / AcP 与上游零回归。
+**reasonix-legacy** 是 [`esengine/DeepSeek-Reasonix`](https://github.com/esengine/DeepSeek-Reasonix) 的 fork,走**纯 CLI** 方向:在终端里跑一个低成本、不中断的 DeepSeek 编程 agent。Web 面板和桌面 GUI 已移除,聚焦命令行体验,保留 QQ / Telegram / 微信机器人作为远程通道。核心 loop / 工具 / 记忆 / MCP / ACP 与上游零回归。
 
 ## 为什么用它
 
@@ -45,7 +45,8 @@ npm link        # 让 `reasonix` 命令全局可用
 | `reasonix chat` | 纯聊天,无文件 / shell 工具 |
 | `reasonix run "任务"` | 一次性执行,流式输出到 stdout(适合管道) |
 | `reasonix doctor` | 健康检查:Node、API key、MCP |
-| `reasonix qq` / `telegram` / `weixin` | 挂载远程机器人通道 |
+| `reasonix acp` | 通过 stdio 启动 ACP agent(编辑器 / IDE 集成) |
+| `reasonix qq` / `reasonix telegram` / `reasonix weixin` | 挂载远程机器人通道 |
 
 其余子命令(`replay` · `diff` · `events` · `stats` · `index` · `mcp` · `prune-sessions` · `update` 等)见 `reasonix --help`。
 
@@ -54,7 +55,7 @@ npm link        # 让 `reasonix` 命令全局可用
 - **缓存优先 agentic loop** —— `CacheFirstLoop` 冻结前缀 + locale 无关工具排序,最大化 DeepSeek prefix-cache 命中。
 - **工具调用 JSON 自修复** —— `ToolCallRepair` 在请求 400 之前修复 malformed / truncated tool-call JSON。
 - **token 预算纵深防御** —— `ContextManager` 分层阈值折叠历史(正常 / 激进 / 强制摘要),在上下文预算内不中断。
-- **多端单核** —— CLI/TUI 和机器人通道都驱动同一个 `CacheFirstLoop`,核心 loop / 工具 / 记忆 / MCP / AcP 零重实现。
+- **多端单核** —— CLI/TUI 和机器人通道都驱动同一个 `CacheFirstLoop`,核心 loop / 工具 / 记忆 / MCP / ACP 零重实现。
 - **Windows Terminal 标签页标题** —— tab 显示 `reasonix-legacy` 而非 cmd 路径(OSC 0,每 2 秒重发以对抗 ConPTY 把子进程标题同步到 tab)。
 
 ## 配置
