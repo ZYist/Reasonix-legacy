@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { buildFeedbackDiagnostic, buildFeedbackIssueUrl } from "../src/cli/ui/feedback.js";
 
@@ -126,9 +128,7 @@ describe("buildFeedbackIssueUrl", () => {
   it("encodes the diagnostic into the body query param so the issue page opens pre-filled", () => {
     const diagnostic = buildFeedbackDiagnostic(FIXTURE);
     const url = buildFeedbackIssueUrl(diagnostic);
-    expect(url.startsWith("https://github.com/esengine/DeepSeek-Reasonix/issues/new?body=")).toBe(
-      true,
-    );
+    expect(url.startsWith("https://github.com/ZYist/reasonix-legacy/issues/new?body=")).toBe(true);
     const decoded = decodeURIComponent(url.split("?body=")[1] ?? "");
     expect(decoded).toBe(diagnostic);
   });
@@ -137,6 +137,13 @@ describe("buildFeedbackIssueUrl", () => {
     const huge = `${"x".repeat(20000)}`;
     const url = buildFeedbackIssueUrl(huge);
     expect(url.length).toBeLessThan(20000);
-    expect(url).toMatch(/^https:\/\/github\.com\/esengine\/DeepSeek-Reasonix\/issues\/new\?body=/);
+    expect(url).toMatch(/^https:\/\/github\.com\/ZYist\/reasonix-legacy\/issues\/new\?body=/);
+  });
+});
+describe("CPU profile issue guidance", () => {
+  it("points profile uploads at the maintained fork", () => {
+    const source = readFileSync(resolve(process.cwd(), "src/cli/cpu-prof.ts"), "utf8");
+    expect(source).toContain("--repo ZYist/reasonix-legacy");
+    expect(source).not.toContain("--repo esengine/DeepSeek-Reasonix");
   });
 });

@@ -127,11 +127,12 @@ describe("handleSlash", () => {
     expect(info.indexOf("  SETUP")).toBeLessThan(info.indexOf("  CHAT"));
   });
 
-  it("/about prints version, website, repo, and MIT license", () => {
+  it("/about prints version, current docs, repo, and MIT license", () => {
     const r = handleSlash("about", [], makeLoop());
     expect(r.info).toContain(VERSION);
-    expect(r.info).toContain("https://esengine.github.io/DeepSeek-Reasonix/");
-    expect(r.info).toContain("https://github.com/esengine/DeepSeek-Reasonix");
+    expect(r.info).toContain("https://github.com/ZYist/reasonix-legacy/blob/dev/docs/README.md");
+    expect(r.info).toContain("https://github.com/ZYist/reasonix-legacy");
+    expect(r.info).not.toContain("esengine/DeepSeek-Reasonix");
     expect(r.info).toContain("MIT");
     expect(SLASH_COMMANDS.find((s) => s.cmd === "about")?.group).toBe("info");
   });

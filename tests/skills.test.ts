@@ -815,6 +815,13 @@ describe("Built-in skills", () => {
     expect(qq?.scope).toBe("builtin");
     expect(qq?.body).toMatch(/\/qq connect/);
     expect(qq?.body).toMatch(/QQ Channel/);
+    expect(qq?.body).toContain(
+      "https://github.com/ZYist/reasonix-legacy/blob/dev/docs/configuration.md",
+    );
+    expect(qq?.body).toContain(
+      "https://github.com/ZYist/reasonix-legacy/blob/dev/docs/qq-connect.zh-CN.md",
+    );
+    expect(qq?.body).not.toContain("esengine/DeepSeek-Reasonix");
   });
 
   it("user-authored skills override a builtin with the same name", () => {
