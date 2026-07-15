@@ -4,10 +4,10 @@ milestone: v1.1
 milestone_name: Risk Foundations & Maintenance Simplification
 current_phase: 9
 status: completed
-stopped_at: Phase 6 planned
-last_updated: "2026-07-13T07:51:56.078Z"
+stopped_at: Completed quick task 260715-qcs
+last_updated: "2026-07-15T11:43:19Z"
 last_activity: 2026-07-15
-last_activity_desc: Completed quick task 260715-brj: terminal tab title
+last_activity_desc: Completed quick task 260715-qcs: archive upstream docs and rebuild current maintenance docs
 progress:
   total_phases: 5
   completed_phases: 5
@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-07-13)
 Phase: 9 — COMPLETE
 Plan: 1 of ?
 Status: Phase 9 complete
-Last activity: 2026-07-15 — Completed quick task 260715-brj (terminal tab title)
+Last activity: 2026-07-15 — Completed quick task 260715-qcs (archive upstream docs and rebuild current maintenance docs)
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -68,6 +68,9 @@ Decisions are logged in PROJECT.md Key Decisions table. Required before dependen
 - Phase 5 / HG-02: current fork repository identity vs upstream attribution — pending explicit human choice
 - Phase 5 / HG-03: `dev` push CI vs protected-PR-only policy — pending explicit human choice
 - Phase 5 / HG-04: risk-based coverage policy — pending explicit human approval
+- Quick 260715-qcs: obsolete upstream product docs are preserved only in a dated read-only archive; `docs/README.md` is the current documentation hub.
+- Quick 260715-qcs: current documentation claims derive from live package/CLI/config/channel sources and are guarded by `scripts/check-docs.mjs`.
+- Quick 260715-qcs: within current maintenance surfaces, runtime and contributor URLs target `ZYist/reasonix-legacy`; upstream remains explicit attribution or a specific historical issue reference.
 
 ### Pending Todos
 
@@ -85,6 +88,7 @@ None recorded for this milestone.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260715-brj | Set Windows Terminal tab title to reasonix-legacy | 2026-07-15 | (squashed) | [260715-brj-set-windows-terminal-tab-title-to-reason](./quick/260715-brj-set-windows-terminal-tab-title-to-reason/) |
+| 260715-qcs | Archive obsolete upstream docs and rebuild current maintenance docs | 2026-07-15 | b5727fae..90b3d3ad | [260715-qcs-reasonix-reasonix-legacy-dev](./quick/260715-qcs-reasonix-reasonix-legacy-dev/) |
 | 2 | 检查并完善 dev 分支 README 命令说明 | 2026-07-15 | db153d98 | — |
 
 ## Deferred Items
@@ -97,6 +101,6 @@ None recorded for this milestone.
 
 ## Session Continuity
 
-Last session: 2026-07-13T07:01:46.414Z
-Stopped at: Phase 6 planned
-Resume file: .planning/phases/06-repository-truth-alignment/06-01-PLAN.md
+Last session: 2026-07-15T11:43:19Z
+Stopped at: Completed quick task 260715-qcs
+Resume file: None
