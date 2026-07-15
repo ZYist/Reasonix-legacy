@@ -1,21 +1,21 @@
 # Contributing to Reasonix
 
-Thanks for showing up. Reasonix is a small, opinionated codebase
-maintained primarily by [@esengine](https://github.com/esengine);
+Thanks for showing up. reasonix-legacy is a small, opinionated codebase
+maintained in [ZYist/reasonix-legacy](https://github.com/ZYist/reasonix-legacy);
 PRs are welcome, but read this first so the round-trip is short.
 
 ## Setup
 
 ```sh
-git clone https://github.com/esengine/reasonix
-cd reasonix
+git clone https://github.com/ZYist/reasonix-legacy.git
+cd reasonix-legacy
 npm install
 npm run dev          # tsx src/cli/index.ts — live source
 ```
 
 Node ≥ 22. No global install needed during development.
 
-For stack, layout, scripts, see [`REASONIX.md`](./REASONIX.md).
+For project working knowledge, see [`REASONIX.md`](./REASONIX.md). For the maintained documentation map and architecture, see [`docs/README.md`](./docs/README.md) and [`docs/architecture.md`](./docs/architecture.md).
 
 ## Proposing changes
 

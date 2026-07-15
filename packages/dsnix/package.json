@@ -1,7 +1,7 @@
 {
   "name": "dsnix",
-  "version": "0.55.0",
-  "description": "Short alias for reasonix — DeepSeek-native coding agent. Forwards to the reasonix CLI.",
+  "version": "1.2.0",
+  "description": "Package-local dsnix command shim for the reasonix-legacy CLI.",
   "bin": {
     "dsnix": "bin.cjs"
   },
@@ -17,14 +17,14 @@
     "ai",
     "alias"
   ],
-  "homepage": "https://github.com/esengine/DeepSeek-Reasonix",
+  "homepage": "https://github.com/ZYist/reasonix-legacy/blob/dev/docs/README.md",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/esengine/DeepSeek-Reasonix.git",
+    "url": "git+https://github.com/ZYist/reasonix-legacy.git",
     "directory": "packages/dsnix"
   },
   "bugs": {
-    "url": "https://github.com/esengine/DeepSeek-Reasonix/issues"
+    "url": "https://github.com/ZYist/reasonix-legacy/issues"
   },
   "license": "MIT",
   "engines": {

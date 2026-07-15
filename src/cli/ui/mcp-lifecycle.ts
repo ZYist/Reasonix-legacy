@@ -1,4 +1,4 @@
-/** Formats one-liner MCP lifecycle events per `docs/design/agent-tui-terminal.html` §37. */
+/** Formats one-liner MCP lifecycle events per `docs/archive/upstream-reasonix/site/design/agent-tui-terminal.html` §37. */
 
 import { t } from "../../i18n/index.js";
 

@@ -50,6 +50,12 @@ npm link        # 让 `reasonix` 命令全局可用
 
 其余子命令(`replay` · `diff` · `events` · `stats` · `index` · `mcp` · `prune-sessions` · `update` 等)见 `reasonix --help`。
 
+## 当前文档
+
+从 [文档总入口](./docs/README.md) 开始；其中包含源码安装、CLI、配置、架构以及 QQ / Telegram / 微信通道指南。
+
+历史上游产品文档仅作为只读快照保存在 [upstream archive](./docs/archive/upstream-reasonix/ARCHIVE.md)。其中的 GUI、网站、安装和发布说明可能已经失效，不应作为当前操作指南。
+
 ## 核心特性
 
 - **缓存优先 agentic loop** —— `CacheFirstLoop` 冻结前缀 + locale 无关工具排序,最大化 DeepSeek prefix-cache 命中。
@@ -72,10 +78,10 @@ npm link        # 让 `reasonix` 命令全局可用
 
 ## 上游与归属
 
-本项目 fork 自 [`esengine/DeepSeek-Reasonix`](https://github.com/esengine/DeepSeek-Reasonix),感谢上游的开源工作。上游的完整 README 存档于:
+本项目 fork 自 [`esengine/DeepSeek-Reasonix`](https://github.com/esengine/DeepSeek-Reasonix),感谢上游的开源工作。历史内容是带警告的只读快照，索引见 [upstream archive](./docs/archive/upstream-reasonix/ARCHIVE.md):
 
-- [README.upstream.md](./README.upstream.md)(英文)
-- [README.upstream.zh-CN.md](./README.upstream.zh-CN.md)(中文)
+- [英文上游 README](./docs/archive/upstream-reasonix/root/README.en.md)
+- [中文上游 README](./docs/archive/upstream-reasonix/root/README.zh-CN.md)
 
 ## 反馈
 
