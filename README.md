@@ -1,325 +1,86 @@
-<p align="center">
-  <img src="docs/logo.svg" alt="Reasonix" width="640"/>
-</p>
+# reasonix-legacy
 
-> [!NOTE]
-> **Maintained fork — `ZYist/reasonix-legacy` v1.1.0.** This is the CLI/TUI-only TypeScript continuation of [`esengine/DeepSeek-Reasonix`](https://github.com/esengine/DeepSeek-Reasonix). Current maintenance, issues, discussions, and CI live in the ZYist fork; the upstream link is retained for attribution. The `reasonix` / `dsnix` CLI names remain compatible.
-
+> DeepSeek 原生的命令行编程 agent——缓存优先把 token 成本压到最低,工具调用 JSON 自修复保证 loop 不被坏输出打断。
 
 <p align="center">
-  <strong>English</strong>
-  &nbsp;·&nbsp;
-  <a href="./README.zh-CN.md">简体中文</a>
-  &nbsp;·&nbsp;
-  <a href="./REASONIX.md">Website</a>
-  &nbsp;·&nbsp;
-  <a href="./REASONIX.md">Guide</a>
-  &nbsp;·&nbsp;
-  <a href="./docs/ARCHITECTURE.md">Architecture</a>
-  &nbsp;·&nbsp;
-  <a href="./benchmarks/">Benchmarks</a>
-  &nbsp;·&nbsp;
-  <strong><a href="https://discord.gg/XF78rEME2D">Discord</a></strong>
-</p>
-
-<p align="center">
-  <a href="https://www.npmjs.com/package/reasonix"><img src="https://img.shields.io/npm/v/reasonix.svg?style=flat-square&color=cb3837&labelColor=161b22&logo=npm&logoColor=white" alt="npm version"/></a>
+  <a href="https://github.com/ZYist/reasonix-legacy/releases"><img src="https://img.shields.io/github/v/release/ZYist/reasonix-legacy?style=flat-square&color=cb3837&labelColor=161b22&logo=github&logoColor=white" alt="release"/></a>
   <a href="https://github.com/ZYist/reasonix-legacy/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/ZYist/reasonix-legacy/ci.yml?style=flat-square&label=ci&labelColor=161b22&logo=githubactions&logoColor=white" alt="CI"/></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/reasonix.svg?style=flat-square&color=8b949e&labelColor=161b22" alt="license"/></a>
-  <a href="https://www.npmjs.com/package/reasonix"><img src="https://img.shields.io/npm/dm/reasonix.svg?style=flat-square&color=3fb950&labelColor=161b22&label=downloads" alt="downloads"/></a>
-  <a href="./package.json"><img src="https://img.shields.io/node/v/reasonix.svg?style=flat-square&color=5fa04e&labelColor=161b22&logo=nodedotjs&logoColor=white" alt="node"/></a>
-  <a href="https://github.com/ZYist/reasonix-legacy/stargazers"><img src="https://img.shields.io/github/stars/ZYist/reasonix-legacy.svg?style=flat-square&color=dbab09&labelColor=161b22&logo=github&logoColor=white" alt="GitHub stars"/></a>
-  <a href="https://github.com/ZYist/reasonix-legacy/graphs/contributors"><img src="https://img.shields.io/github/contributors/ZYist/reasonix-legacy.svg?style=flat-square&color=bc8cff&labelColor=161b22&logo=github&logoColor=white" alt="contributors"/></a>
-  <a href="https://github.com/ZYist/reasonix-legacy/discussions"><img src="https://img.shields.io/github/discussions/ZYist/reasonix-legacy.svg?style=flat-square&color=58a6ff&labelColor=161b22&logo=github&logoColor=white" alt="Discussions"/></a>
-  <a href="https://discord.gg/XF78rEME2D"><img src="https://img.shields.io/badge/discord-join-5865F2.svg?style=flat-square&labelColor=161b22&logo=discord&logoColor=white" alt="Discord"/></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/github/license/ZYist/reasonix-legacy?style=flat-square&color=8b949e&labelColor=161b22" alt="license"/></a>
+  <a href="./package.json"><img src="https://img.shields.io/badge/node-%E2%89%A5%2022-5fa04e?style=flat-square&labelColor=161b22&logo=nodedotjs&logoColor=white" alt="node"/></a>
 </p>
 
-<p align="center">
-</p>
+**reasonix-legacy** 是 [`esengine/DeepSeek-Reasonix`](https://github.com/esengine/DeepSeek-Reasonix) 的 fork,走**纯 CLI** 方向:在终端里跑一个低成本、不中断的 DeepSeek 编程 agent。Web 面板和桌面 GUI 已移除,聚焦命令行体验,保留 QQ / Telegram / 微信机器人作为远程通道。核心 loop / 工具 / 记忆 / MCP / AcP 与上游零回归。
 
-<br/>
+## 为什么用它
 
-<h3 align="center">A DeepSeek-native AI coding agent for your terminal.</h3>
-<p align="center">Engineered around prefix-cache stability — so token costs stay low across long sessions, and you can leave it running.</p>
+- **缓存优先** —— DeepSeek-only,每一层都围绕字节稳定的 prefix-cache 设计。冻结 system + tools + few-shots 前缀 + locale 无关工具排序,避免 cache 抖动,长会话 token 成本最低。
+- **工具调用自修复** —— 模型输出坏 JSON 也能修复(扁平化 schema、拾遗 dangling tool_calls、检测 storm、恢复截断参数),loop 不被坏输出打断。
+- **纯 CLI** —— 不再维护面板 / 桌面 GUI,所有交互在终端内完成。
 
-<br/>
+## 安装
 
-<p align="center">
-  <img src="docs/assets/hero-terminal.svg" alt="Reasonix code mode — assistant proposes a SEARCH/REPLACE edit; nothing on disk until /apply" width="860"/>
-</p>
+需要 Node ≥ 22。支持 macOS · Linux · Windows(PowerShell · Git Bash · Windows Terminal)。
 
-<br/>
+reasonix-legacy 目前只通过 GitHub 发布(暂未上 npm),从源码安装:
 
-> [!TIP]
-> **Cache stability isn't a feature you turn on; it's an invariant the loop is designed around.** That's the whole reason Reasonix is DeepSeek-only — every layer is tuned to the byte-stable prefix-cache mechanic.
+```bash
+git clone https://github.com/ZYist/reasonix-legacy.git
+cd reasonix-legacy
+npm install
+npm run build
+npm link        # 让 `reasonix` 命令全局可用
+```
 
-> [!NOTE]
-> **Real user, single day (2026-05-01):** 435M input tokens, **99.82% cache hit**, ~$12 instead of the ~$61 the same workload would cost with no cache on `v4-flash` — see the [case study](./benchmarks/real-world-cache/README.md). DeepSeek provides the cacheable bytes; the four mechanisms in [Pillar 1](./docs/ARCHITECTURE.md#pillar-1--cache-first-loop) are how Reasonix keeps them cacheable across long sessions.
+升级:`git pull && npm install && npm run build`。
 
-> [!IMPORTANT]
-> **Community · 加入社区** — bilingual Discord with channels for setup help (`#help` / `#求助`), workflow showcases, feature ideas, and contributor-only PR coordination. Verify your GitHub in-server to get the **Contributor** role automatically. → **<https://discord.gg/XF78rEME2D>**
+获取 [DeepSeek API key →](https://platform.deepseek.com/api_keys)。首次运行 `reasonix code` 会引导配置。
 
-<br/>
+> CLI 命令名是 **`reasonix`**(也保留 `dsnix` 短别名);npm 包名是 `reasonix-legacy`。裸 `reasonix` 等价于 `reasonix code`(在当前目录启动编程 agent)。
 
-## Install
+## 快速开始
 
-Requires Node ≥ 22. Works on macOS · Linux · Windows (PowerShell · Git Bash · Windows Terminal).
+| 命令 | 用途 |
+|------|------|
+| `reasonix` / `reasonix code [dir]` | 编程 agent(**从这里开始**) |
+| `reasonix chat` | 纯聊天,无文件 / shell 工具 |
+| `reasonix run "任务"` | 一次性执行,流式输出到 stdout(适合管道) |
+| `reasonix doctor` | 健康检查:Node、API key、MCP |
+| `reasonix qq` / `telegram` / `weixin` | 挂载远程机器人通道 |
 
-Install Reasonix globally if you want the `reasonix` command available on your `PATH`:
+其余子命令(`replay` · `diff` · `events` · `stats` · `index` · `mcp` · `prune-sessions` · `update` 等)见 `reasonix --help`。
 
-~~~bash
-npm install -g reasonix
-reasonix code my-project   # paste a DeepSeek API key on first run; persists after
-~~~
+## 核心特性
 
-Or run it once without installing globally:
+- **缓存优先 agentic loop** —— `CacheFirstLoop` 冻结前缀 + locale 无关工具排序,最大化 DeepSeek prefix-cache 命中。
+- **工具调用 JSON 自修复** —— `ToolCallRepair` 在请求 400 之前修复 malformed / truncated tool-call JSON。
+- **token 预算纵深防御** —— `ContextManager` 分层阈值折叠历史(正常 / 激进 / 强制摘要),在上下文预算内不中断。
+- **多端单核** —— CLI/TUI 和机器人通道都驱动同一个 `CacheFirstLoop`,核心 loop / 工具 / 记忆 / MCP / AcP 零重实现。
+- **Windows Terminal 标签页标题** —— tab 显示 `reasonix-legacy` 而非 cmd 路径(OSC 0,每 2 秒重发以对抗 ConPTY 把子进程标题同步到 tab)。
 
-~~~bash
-cd my-project
-npx reasonix code          # always uses the latest package by default
-~~~
+## 配置
 
-Grab a [DeepSeek API key →](https://platform.deepseek.com/api_keys) · `reasonix code --help` for flags.
+- DeepSeek API key:`process.env.DEEPSEEK_API_KEY`,或 `reasonix setup` 写入 `~/.reasonix/config.json`。
+- `.env` 自动加载(不覆盖已设的环境变量)。
+- Base URL 覆盖:`DEEPSEEK_BASE_URL` 或 config `baseUrl`(默认 `https://api.deepseek.com`,支持 Azure 兼容端点)。
 
-If you use Reasonix daily, global install is the simplest path. If you just want to try it, use `npx`.
+## 版本与发布
 
-**Prefer fewer keystrokes?** The shorter `dsnix` alias resolves to the same CLI:
+当前 **`legacy-1.2.0`**(2026-07-15)。发布历史见 [releases](https://github.com/ZYist/reasonix-legacy/releases)。
 
-~~~bash
-npm install -g dsnix       # exposes `dsnix` on PATH, depends on reasonix
-npx dsnix@latest code      # one-shot via the shorter command
-~~~
+版本号约定:npm version 为 semver(`1.2.0`),展示层加 `legacy-` 前缀(`legacy-1.2.0`,见 `--version` / TUI 右下角 / `/about`)。
 
-A global `npm install -g reasonix` also drops a `dsnix` shim on PATH, so the two are interchangeable.
+## 上游与归属
 
-Bare `reasonix` (no subcommand) launches `code` in the current directory — typing `reasonix` and `reasonix code` are equivalent.
+本项目 fork 自 [`esengine/DeepSeek-Reasonix`](https://github.com/esengine/DeepSeek-Reasonix),感谢上游的开源工作。上游的完整 README 存档于:
 
-| Command | When |
-|---|---|
-| `reasonix` / `reasonix code [dir]` | The coding agent. **Start here.** |
-| `reasonix chat` | Plain chat — no filesystem or shell tools. |
-| `reasonix run "task"` | One-shot, streams to stdout. Good for pipes. |
-| `reasonix doctor` | Health check: Node, API key, MCP wiring. |
-| `reasonix update` | Upgrade Reasonix itself. |
+- [README.upstream.md](./README.upstream.md)(英文)
+- [README.upstream.zh-CN.md](./README.upstream.zh-CN.md)(中文)
 
-Other subcommands (`replay` · `diff` · `events` · `stats` · `index` · `mcp` · `prune-sessions`) are in `reasonix --help` and the [CLI reference](./REASONIX.md).
+## 反馈
 
-### QQ channel
+- [Issues](https://github.com/ZYist/reasonix-legacy/issues)
+- [Discussions](https://github.com/ZYist/reasonix-legacy/discussions)
 
-QQ can extend an existing `chat`, `code`, or desktop session as a remote channel. It is part of the current session flow, not a separate runtime mode.
+## License
 
-- CLI: start a session, then run `/qq connect`
-- Desktop: open `Settings -> General -> QQ Channel`
-
-Once connected, QQ messages can enter the current session, assistant replies route back to QQ, and follow-up interactions can continue remotely.
-
-For full setup, desktop quick start, and troubleshooting, see [QQ channel setup](./docs/qq-connect.md).
-
-
-<details>
-<summary><strong>Working in another folder · chat vs. code · author a skill</strong></summary>
-
-**Working in a different folder.** Reasonix scopes filesystem tools to the launch directory; pass `--dir` to retarget. Mid-session switching isn't supported by design (memory paths would tangle with stale roots) — quit and relaunch.
-
-~~~bash
-npx reasonix code --dir /path/to/project
-~~~
-
-**Picking `chat` vs `code`.** `code` is the default and the only mode with filesystem / shell tools and SEARCH/REPLACE review. `chat` is the lighter, tools-off shell — reach for it when you want a thinking partner with MCP attached but no disk access.
-
-| What you get | `code` | `chat` |
-|---|---|---|
-| Filesystem tools + `edit_file` | ✓ | — |
-| SEARCH/REPLACE → `/apply` review | ✓ | — |
-| Shell tool (gated) | ✓ | — |
-| Plan mode · `/todo` · `/skill new` · `/mcp add` | ✓ | — |
-| Memory (`remember` / `recall_memory`) | project + global | global only |
-| MCP servers from config · web search · `ask_choice` | ✓ | ✓ |
-| Coding system prompt | ✓ | generic |
-| Session scope | per-directory | shared default |
-
-**Author your first skill.** No remote registry — write them directly. Edit the file (`description:` frontmatter + body), then `/skill list`. Add `runAs: subagent` to spawn an isolated subagent loop instead of inlining the body.
-
-~~~bash
-/skill new my-skill              # <project>/.reasonix/skills/my-skill.md
-/skill new my-skill --global     # ~/.reasonix/skills for cross-project use
-~~~
-
-**Claude-format skills also load.** `<project>/.claude/skills/<name>/SKILL.md` and `~/.claude/skills/` are read alongside Reasonix's native paths, so tooling that emits Claude-format skills works out of the box. Example — drop OpenSpec workflows in without an upstream adapter:
-
-~~~bash
-npx openspec init --tools claude    # writes .claude/skills/openspec-*/SKILL.md
-/skill openspec-propose <task>      # then invoke from Reasonix
-~~~
-
-</details>
-
-<br/>
-
-## Configuration
-
-One JSON file at `~/.reasonix/config.json` plus per-project overrides under `<project>/.reasonix/`. The full bilingual reference — every key, every slash command, the on-disk shape of skills/memory/hooks — lives at:
-
-> 📘 **[Configuration Guide](./REASONIX.md)** · [中文](./REASONIX.md?lang=zh)
-
-| Topic | Quick read |
-|---|---|
-| [MCP servers](./REASONIX.md#mcp) | stdio · SSE · Streamable HTTP. One spec format works for both `config.json` and `--mcp`. |
-| [Skills](./REASONIX.md#skills) | Markdown playbooks the model can invoke. `inline` or `subagent` mode. |
-| [Memory](./REASONIX.md#memory) | User-private knowledge pinned into the prefix. `user` / `feedback` / `project` / `reference` types. |
-| [Hooks](./REASONIX.md#hooks) | Shell commands on lifecycle events. `PreToolUse` (gating) · `PostToolUse` · `UserPromptSubmit` · `Stop`. |
-| [Permissions](./REASONIX.md#permissions) | Per-workspace shell allowlist. Exact-prefix match. |
-| [Web search](./REASONIX.md#search) | Bing by default; switch to Baidu AI Search, self-hosted SearXNG, Metaso, Tavily, Perplexity, Exa, Brave, or Ollama with `/search-engine`. |
-| [Semantic index](./REASONIX.md#index) | `reasonix index` — local Ollama or any OpenAI-compatible embedding endpoint. |
-
-<br/>
-
-## What makes Reasonix different
-
-The loop is organized around three pillars. Each one solves a problem generic agent frameworks don't even see — because they were designed for a different cache mechanic.
-
-<sub align="center">
-
-Click through to the full architecture writeup → [Pillar 1 — Cache-first loop](./docs/ARCHITECTURE.md#pillar-1--cache-first-loop) · [Pillar 2 — Tool-call repair](./docs/ARCHITECTURE.md#pillar-2--tool-call-repair) · [Pillar 3 — Cost control](./docs/ARCHITECTURE.md#pillar-3--cost-control-v06)
-
-</sub>
-
-<br/>
-
-## Capabilities
-
-<p align="center">
-  <img src="docs/assets/feature-grid.svg" alt="Reasonix capabilities — cell-diff renderer, MCP, plan mode, permissions, dashboard, persistent sessions, hooks/skills/memory, semantic search, auto-checkpoints, /effort knob, transcript replay, event log" width="880"/>
-</p>
-
-<br/>
-
-## How it compares
-
-|                                   | Reasonix         | Claude Code       | Cursor              | Aider              |
-|-----------------------------------|------------------|-------------------|---------------------|--------------------|
-| Backend                           | DeepSeek         | Anthropic         | OpenAI / Anthropic  | any (OpenRouter)   |
-| License                           | **MIT**          | closed            | closed              | Apache 2           |
-| Cost profile                      | **low per task** | premium           | subscription + use  | varies             |
-| DeepSeek prefix-cache             | **engineered**   | not applicable    | not applicable      | incidental         |
-| Embedded web dashboard            | yes              | —                 | n/a (IDE)           | —                  |
-| Configurable web search engine    | `/search-engine` | —             | —                   | —                  |
-| Persistent per-workspace sessions | yes              | partial           | n/a                 | —                  |
-| Plan mode · MCP · hooks · skills  | yes              | yes               | yes                 | partial            |
-| Web search (Bing + Baidu + SearXNG + API engines) | yes              | yes               | yes                 | yes                |
-| Open community development        | yes              | —                 | —                   | yes                |
-
-For live cache-hit rates, costs, and methodology, see [`benchmarks/`](./benchmarks/) — the numbers move with model pricing, so they live with the harness, not in the README.
-
-<br/>
-
-## Documentation
-
-- [**Architecture**](./docs/ARCHITECTURE.md) — three pillars: cache-first loop, tool-call repair, cost control
-- [**CLI Reference**](./docs/CLI-REFERENCE.md) — every shell subcommand, every slash command, every keybinding
-- [**QQ channel setup**](./docs/qq-connect.md) — CLI first-connect flow, desktop entry, and QQ Open Platform credentials
-- [**Benchmarks**](./benchmarks/) — τ-bench-lite harness, transcripts, cost methodology
-- [**Website**](./REASONIX.md) — getting started, dashboard mockup, TUI mockup
-- [**Contributing**](./CONTRIBUTING.md) — comment policy, error-handling rules, library-over-hand-rolled
-- [**Code of Conduct**](./CODE_OF_CONDUCT.md) · [**Security policy**](./SECURITY.md)
-
-<br/>
-
-## Community
-
-> [!NOTE]
-> Reasonix is open source and community-developed. Every avatar in the Acknowledgments wall at the bottom of this file is a real PR that shipped.
-
-Scoped starter tickets — each with background, code pointers, acceptance criteria, and hints — live under the [`good first issue`](https://github.com/ZYist/reasonix-legacy/labels/good%20first%20issue) label. Pick anything open.
-
-**Open Discussions — opinions wanted:**
-
-- [#20 · CLI / TUI design](https://github.com/ZYist/reasonix-legacy/discussions/20) — what's broken, what's missing, what would you change?
-- [#21 · Dashboard design](https://github.com/ZYist/reasonix-legacy/discussions/21) — react against the [proposed mockup](./REASONIX.mddesign/agent-dashboard.html)
-- [#22 · Future feature wishlist](https://github.com/ZYist/reasonix-legacy/discussions/22) — what would you build into Reasonix next?
-
-**Already using Reasonix and willing to help others discover it?** Publish blog posts, articles, screenshots, talks, or videos to [**Show and tell**](https://github.com/ZYist/reasonix-legacy/discussions/categories/show-and-tell). The project has no marketing budget — community word of mouth is how new users find it. Sustained advocates earn the badge below, displayed next to the contributors wall once awarded:
-
-<p align="center">
-  <a href="https://github.com/ZYist/reasonix-legacy/discussions/categories/show-and-tell">
-    <img src="https://img.shields.io/badge/REASONIX-📣%20ADVOCATE-c4b5fd?style=for-the-badge&labelColor=0d1117" alt="Reasonix Advocate badge — earned by sustained advocates"/>
-  </a>
-</p>
-
-**Before your first PR**: read [`CONTRIBUTING.md`](./CONTRIBUTING.md) — short, strict rules (comments, errors, libraries-over-hand-rolled). `tests/comment-policy.test.ts` enforces the comment ones; `npm run verify` is the pre-push gate. By participating you agree to the [Code of Conduct](./CODE_OF_CONDUCT.md). Security issues → [SECURITY.md](./SECURITY.md).
-
-<br/>
-
-## Non-goals
-
-> [!IMPORTANT]
-> Reasonix is opinionated. Some things it deliberately *doesn't* do — listed here so you can pick the right tool for your work.
-
-- **Multi-provider flexibility.** DeepSeek-only on purpose. Coupling to one backend is the feature, not a limitation.
-- **IDE integration.** Terminal-first. The diff lives in `git diff`, the file tree in `ls`. The dashboard is a companion, not a Cursor replacement.
-- **Hardest-leaderboard reasoning.** Claude Opus still wins some benchmarks. DeepSeek is competitive on coding; if your work is "solve this PhD proof" rather than "fix this auth bug," start with Claude.
-- **Air-gapped / fully-free.** Reasonix needs a paid DeepSeek API key. For air-gapped or zero-cost runs see Aider + Ollama or [Continue](https://continue.dev).
-
-<br/>
-
-## Star History
-
-<a href="https://www.star-history.com/?repos=esengine%2FDeepSeek-Reasonix&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=esengine/DeepSeek-Reasonix&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=esengine/DeepSeek-Reasonix&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=esengine/DeepSeek-Reasonix&type=date&legend=top-left" />
- </picture>
-</a>
-
-<br/>
-
-## Support
-
-If Reasonix has been useful and you'd like to say thanks, you can. It stays a coffee, not a contract — donations don't buy feature priority or change how issues get triaged.
-
-- **International** — PayPal: [paypal.me/yuhuahui](https://paypal.me/yuhuahui)
-- **国内** — 微信支付（扫码）
-
-<p align="center">
-  <img src=".github/sponsor/wechat-pay.jpg" alt="WeChat Pay QR code" width="240"/>
-</p>
-
-<br/>
-
-## Acknowledgments
-
-A small list of folks whose work has shaped Reasonix the most — measured
-by both commit count and code volume. **Listed alphabetically, no ordering
-of importance.** The full contributor graph is on
-[GitHub](https://github.com/esengine/DeepSeek-Reasonix/graphs/contributors).
-
-- [**ctharvey**](https://github.com/ctharvey)
-- [**dimasd-angga**](https://github.com/dimasd-angga) (Dimas D. Angga)
-- [**Evan-Pycraft**](https://github.com/Evan-Pycraft)
-- [**ForeverYoungPp**](https://github.com/ForeverYoungPp)
-- [**GTC2080**](https://github.com/GTC2080) (TaoMu)
-- [**kabaka9527**](https://github.com/kabaka9527)
-- [**lisniuse**](https://github.com/lisniuse) (Richie)
-- [**wade19990814-hue**](https://github.com/wade19990814-hue)
-- [**wviana**](https://github.com/wviana) (Wesley Viana)
-
-Also a separate thank-you to [**Bernardxu123**](https://github.com/Bernardxu123)
-for designing the project logo (see [`docs/brand/`](./docs/brand/)), and to
-[AIGC Link](https://xhslink.com/m/80ngts127cA) for promoting the project on XiaoHongShu.
-
-<p align="center">
-  <a href="https://github.com/esengine/DeepSeek-Reasonix/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=esengine/DeepSeek-Reasonix&max=100&columns=12" alt="Contributors to esengine/DeepSeek-Reasonix" width="860"/>
-  </a>
-</p>
-
-<br/>
-
----
-
-<p align="center">
-  <sub>MIT — see <a href="./LICENSE">LICENSE</a></sub>
-  <br/>
-  <sub>Built by the community at <a href="https://github.com/esengine/DeepSeek-Reasonix/graphs/contributors">esengine/DeepSeek-Reasonix</a></sub>
-</p>
+MIT
