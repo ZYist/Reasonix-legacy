@@ -6,8 +6,8 @@ current_phase: 9
 status: completed
 stopped_at: Phase 6 planned
 last_updated: "2026-07-13T07:51:56.078Z"
-last_activity: 2026-07-13
-last_activity_desc: Phase 9 marked complete
+last_activity: 2026-07-15
+last_activity_desc: Completed quick task 260715-brj: terminal tab title
 progress:
   total_phases: 5
   completed_phases: 5
@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-07-13)
 Phase: 9 — COMPLETE
 Plan: 1 of ?
 Status: Phase 9 complete
-Last activity: 2026-07-13 — Phase 9 marked complete
+Last activity: 2026-07-15 — Completed quick task 260715-brj (terminal tab title)
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -79,6 +79,12 @@ None recorded for this milestone.
 - Fresh `npm run verify` and coverage baselines must be rerun at execution time; the 2026-07-13 guide figures are evidence snapshots, not current truth.
 - Keep i18n bounded to its own phase and keep unrelated high-risk edits in separate plans.
 - Phase 8 characterization must precede any future REF-01..04 hotspot refactor.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260715-brj | Set Windows Terminal tab title to reasonix-legacy | 2026-07-15 | (squashed) | [260715-brj-set-windows-terminal-tab-title-to-reason](./quick/260715-brj-set-windows-terminal-tab-title-to-reason/) |
 
 ## Deferred Items
 

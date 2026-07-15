@@ -21,6 +21,7 @@ import { DISPLAY_VERSION } from "../version.js";
 import { startCpuProfile, stopAndSaveCpuProfile } from "./cpu-prof.js";
 import { resolveBareCommandMode, resolveContinueFlag, resolveDefaults } from "./resolve.js";
 import { markPhase } from "./startup-profile.js";
+import { setTabTitle } from "./tab-title.js";
 
 async function maybeStartCpuProfile(flag: unknown): Promise<boolean> {
   if (flag === undefined || flag === false) return false;
@@ -104,6 +105,7 @@ program
 // in the current directory. Filesystem-less chat stays reachable via
 // `reasonix chat`.
 program.action(async (opts: { continue?: boolean; mouse?: boolean }) => {
+  setTabTitle();
   const cfg = readConfig();
   const mode = resolveBareCommandMode(cfg);
   if (mode === "setup") {
@@ -180,6 +182,7 @@ program
     }
 
     persistEffortFlag(opts.effort);
+    setTabTitle();
     const profiling = await maybeStartCpuProfile(opts.profile);
     try {
       const { codeCommand } = await import("./commands/code.js");
@@ -228,6 +231,7 @@ program
     "record a V8 CPU profile; saved on exit. Send the .cpuprofile back if you're reporting a perf bug.",
   )
   .action(async (opts) => {
+    setTabTitle();
     const profiling = await maybeStartCpuProfile(opts.profile);
     try {
       persistEffortFlag(opts.effort);
@@ -292,6 +296,7 @@ program
   .option("--no-proxy", t("ui.noProxyHint"))
   .action(async (task: string, opts) => {
     persistEffortFlag(opts.effort);
+    setTabTitle();
     const defaults = resolveDefaults({
       model: opts.model,
       mcp: opts.mcp as string[],
