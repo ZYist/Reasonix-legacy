@@ -69,6 +69,7 @@ type Props = {
   readonly stderr: NodeJS.WriteStream;
   readonly exitOnCtrlC: boolean;
   readonly onExit: (error?: Error) => void;
+  readonly onForceRedraw: () => void;
   readonly terminalColumns: number;
   readonly terminalRows: number;
   /** Shared selection state. */
@@ -171,7 +172,8 @@ export default class App extends PureComponent<Props, State> {
     }
     return <TerminalSizeContext.Provider value={this._terminalSizeValue}>
         <AppContext.Provider value={{
-        exit: this.handleExit
+        exit: this.handleExit,
+        forceRedraw: this.handleForceRedraw
       }}>
           <StdinContext.Provider value={{
           stdin: this.props.stdin,
@@ -395,6 +397,9 @@ export default class App extends PureComponent<Props, State> {
       this.handleSetRawMode(false);
     }
     this.props.onExit(error);
+  };
+  handleForceRedraw = (): void => {
+    this.props.onForceRedraw();
   };
   handleTerminalFocus = (isFocused: boolean): void => {
     // The focus store fans out to `TerminalFocusProvider` (context) and

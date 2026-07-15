@@ -1,8 +1,8 @@
 import { type WriteStream, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { derivePrefix, toApprovalPrompt } from "@reasonix/core-utils";
-import { Box, Text, useStdin, useStdout } from "ink";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Box, Text, useApp, useStdin, useStdout } from "ink";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   type JsonlEventSink,
   eventLogPath,
@@ -776,6 +776,15 @@ function AppInner({
   } = useInputRecall(setInput);
   const chatScroll = useChatScrollActions();
   const { setRawMode, isRawModeSupported } = useStdin();
+  const { forceRedraw } = useApp();
+  // /new (aliases /clear, /reset) wipes the message stream; Ink's incremental
+  // diff mishandles background-coloured cells and leaves shadow artifacts.
+  // Bumping repaintGen fires a useLayoutEffect (after render, before paint)
+  // that force-redraws the whole screen — a clean full repaint like startup.
+  const [repaintGen, setRepaintGen] = useState(0);
+  useLayoutEffect(() => {
+    if (repaintGen > 0) forceRedraw();
+  }, [repaintGen, forceRedraw]);
   // Ctrl+X —hand the composer buffer to $EDITOR. Raw-mode flip lets the
   // editor own line-buffered input; result replaces the composer value.
   const handleOpenExternalEditor = useCallback(async () => {
@@ -2328,6 +2337,9 @@ function AppInner({
           );
         }
         setSlashUsage(recordSlashUse(slash.cmd));
+        if (slash.cmd === "new" || slash.cmd === "reset" || slash.cmd === "clear") {
+          setRepaintGen((g) => g + 1);
+        }
         const result = handleSlash(slash.cmd, slash.args, loop, {
           mcpSpecs,
           mcpServers: liveMcpServers,
