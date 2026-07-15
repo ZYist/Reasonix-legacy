@@ -85,6 +85,7 @@ None recorded for this milestone.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260715-brj | Set Windows Terminal tab title to reasonix-legacy | 2026-07-15 | (squashed) | [260715-brj-set-windows-terminal-tab-title-to-reason](./quick/260715-brj-set-windows-terminal-tab-title-to-reason/) |
+| 2 | 检查并完善 dev 分支 README 命令说明 | 2026-07-15 | db153d98 | — |
 
 ## Deferred Items
 
