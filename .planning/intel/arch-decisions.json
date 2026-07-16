@@ -1,7 +1,7 @@
 {
   "_meta": {
-    "updated_at": "2026-07-14T00:00:00.000Z",
-    "version": 3
+    "updated_at": "2026-07-16T10:31:31.971Z",
+    "version": 4
   },
   "entries": {
     "overview": {
@@ -18,7 +18,7 @@
     },
     "tui-runtime": {
       "pattern": "Custom Ink fork (React reconciler -> Yoga -> terminal)",
-      "description": "A forked Ink runtime lives at packages/ink (path-aliased as 'ink' in tsconfig.json). It renders React 19 components via react-reconciler + yoga-layout into a diff-based terminal screen. The chat/code TUI (src/cli/ui/App.tsx and ~50 supporting components) is the primary UX. There is no web UI."
+      "description": "A forked Ink runtime lives at packages/ink (path-aliased as 'ink' in tsconfig.json). It renders React 19 components via react-reconciler + yoga-layout into a diff-based terminal screen. The chat/code TUI (src/cli/ui/App.tsx and supporting components) is the primary UX, and the fork exposes `forceRedraw()` through AppContext so `/new`, `/clear`, and `/reset` can request a full repaint when incremental clearing leaves terminal artifacts."
     },
     "conventions": {
       "naming": "kebab-case filenames, camelCase identifiers, PascalCase types/components. CLI subcommands are verbs (run/chat/code/commit/stats/sessions).",
@@ -67,20 +67,73 @@
       "pattern": "Repo-truth alignment + critical-path tests + CI",
       "description": "v1.1 introduced governance hardening: machine intel under .planning/intel/, human-readable docs under .planning/codebase/, critical-path tests, and CI workflow (.github/workflows/ci.yml) pinning node 22 on ubuntu-latest + windows-latest with a cross-platform Vitest retry wrapper (scripts/ci-test-with-retry.mjs) for flaky visibility on active branches."
     },
-    "component:DeepSeekClient": { "path": "src/client.ts", "responsibility": "DeepSeek API HTTP client: chat completions (stream + non-stream), usage accounting, model list, balance." },
-    "component:CacheFirstLoop": { "path": "src/loop.ts", "responsibility": "Main agent loop: turn iteration, tool dispatch, healing, shrink, hook events, transcript writes." },
-    "component:ToolRegistry": { "path": "src/tools.ts", "responsibility": "Registers ToolDefinitions; supports interceptors, result augmenters, audit listeners, allow-lists, plan-mode gating, rate limiting." },
-    "component:ContextManager": { "path": "src/context-manager.ts", "responsibility": "Tracks token usage and folds old messages past threshold (normal/aggressive/forced-summary)." },
-    "component:ToolCallRepair": { "path": "src/repair/index.ts", "responsibility": "Scavenge, truncation repair, schema flatten/nest, storm-breaking." },
-    "component:McpClient": { "path": "src/mcp/client.ts", "responsibility": "MCP JSON-RPC client over stdio/sse/streamable-http." },
-    "component:MemoryStore": { "path": "src/memory/user.ts", "responsibility": "User-scoped persistent memory entries." },
-    "component:TranscriptLog": { "path": "src/transcript/log.ts", "responsibility": "Append-only transcript persistence + replay parsing." },
-    "component:InkRuntime": { "path": "packages/ink/src/index.ts", "responsibility": "Forked Ink TUI runtime (React reconciler + Yoga + terminal renderer)." },
-    "component:ChatTUI": { "path": "src/cli/ui/App.tsx", "responsibility": "Interactive chat TUI app (Ink React tree)." },
-    "component:SemanticIndex": { "path": "src/index/semantic/builder.ts", "responsibility": "Builds and queries an embedding index over the workspace." },
-    "component:ACP": { "path": "src/acp/server.ts", "responsibility": "Agent Client Protocol stdio JSON-RPC server (editor/IDE integration)." },
-    "component:Hooks": { "path": "src/hooks.ts", "responsibility": "Loads + runs configured shell hooks on tool events." },
-    "component:ChannelBots": { "path": "src/qq|src/telegram|src/weixin", "responsibility": "CLI-hosted headless QQ/Telegram/WeChat bot adapters driving the same CacheFirstLoop." },
-    "component:I18n": { "path": "src/i18n/index.ts", "responsibility": "Bilingual (en/zh-CN) message lookup, locale detection, fallback." }
+    "component:DeepSeekClient": {
+      "path": "src/client.ts",
+      "responsibility": "DeepSeek API HTTP client: chat completions (stream + non-stream), usage accounting, model list, balance."
+    },
+    "component:CacheFirstLoop": {
+      "path": "src/loop.ts",
+      "responsibility": "Main agent loop: turn iteration, tool dispatch, healing, shrink, hook events, transcript writes."
+    },
+    "component:ToolRegistry": {
+      "path": "src/tools.ts",
+      "responsibility": "Registers ToolDefinitions; supports interceptors, result augmenters, audit listeners, allow-lists, plan-mode gating, rate limiting."
+    },
+    "component:ContextManager": {
+      "path": "src/context-manager.ts",
+      "responsibility": "Tracks token usage and folds old messages past threshold (normal/aggressive/forced-summary)."
+    },
+    "component:ToolCallRepair": {
+      "path": "src/repair/index.ts",
+      "responsibility": "Scavenge, truncation repair, schema flatten/nest, storm-breaking."
+    },
+    "component:McpClient": {
+      "path": "src/mcp/client.ts",
+      "responsibility": "MCP JSON-RPC client over stdio/sse/streamable-http."
+    },
+    "component:MemoryStore": {
+      "path": "src/memory/user.ts",
+      "responsibility": "User-scoped persistent memory entries."
+    },
+    "component:TranscriptLog": {
+      "path": "src/transcript/log.ts",
+      "responsibility": "Append-only transcript persistence + replay parsing."
+    },
+    "component:InkRuntime": {
+      "path": "packages/ink/src/index.ts",
+      "responsibility": "Forked Ink TUI runtime (React reconciler + Yoga + terminal renderer)."
+    },
+    "component:ChatTUI": {
+      "path": "src/cli/ui/App.tsx",
+      "responsibility": "Interactive chat TUI app (Ink React tree)."
+    },
+    "component:SemanticIndex": {
+      "path": "src/index/semantic/builder.ts",
+      "responsibility": "Builds and queries an embedding index over the workspace."
+    },
+    "component:ACP": {
+      "path": "src/acp/server.ts",
+      "responsibility": "Agent Client Protocol stdio JSON-RPC server (editor/IDE integration)."
+    },
+    "component:Hooks": {
+      "path": "src/hooks.ts",
+      "responsibility": "Loads + runs configured shell hooks on tool events."
+    },
+    "component:ChannelBots": {
+      "path": "src/qq|src/telegram|src/weixin",
+      "responsibility": "CLI-hosted headless QQ/Telegram/WeChat bot adapters driving the same CacheFirstLoop."
+    },
+    "component:I18n": {
+      "path": "src/i18n/index.ts",
+      "responsibility": "Bilingual (en/zh-CN) message lookup, locale detection, fallback."
+    },
+    "maintenance-surface": {
+      "pattern": "Maintained-fork user surfaces with archived upstream references",
+      "description": "User-facing docs, issue-report flows, and `/about` links point at the maintained `ZYist/reasonix-legacy` GitHub repository and docs tree. Historical upstream website/design assets remain archived under `docs/archive/upstream-reasonix/` as a read-only reference for copy, structure, and TUI/MCP presentation cues."
+    },
+    "terminal-session-identity": {
+      "pattern": "Persistent terminal title identity for interactive entrypoints",
+      "description": "Interactive CLI/TUI entrypoints call `setTabTitle()` from `src/cli/tab-title.ts` to emit OSC 0 title sequences for `reasonix-legacy`. The keeper periodically re-emits the title on TTY stdout so Windows ConPTY and spawned processes do not permanently override the visible tab title."
+    }
   }
 }

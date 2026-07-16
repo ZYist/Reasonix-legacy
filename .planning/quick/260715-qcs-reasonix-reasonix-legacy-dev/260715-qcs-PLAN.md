@@ -101,8 +101,8 @@ Output: 一个带明确历史标签的上游文档快照、一套当前文档树
 @.planning/codebase/STRUCTURE.md
 @.planning/codebase/CONVENTIONS.md
 @.planning/codebase/INTEGRATIONS.md
-@.planning/phases/06-repository-truth-alignment/06-01-SUMMARY.md
-@.planning/phases/06-repository-truth-alignment/06-02-SUMMARY.md
+@.planning/milestones/v1.1-phases/06-repository-truth-alignment/06-01-SUMMARY.md
+@.planning/milestones/v1.1-phases/06-repository-truth-alignment/06-02-SUMMARY.md
 @README.md
 @REASONIX.md
 @docs/ARCHITECTURE.md
