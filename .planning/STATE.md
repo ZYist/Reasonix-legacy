@@ -1,20 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: Risk Foundations & Maintenance Simplification
-current_phase: 1
-status: Awaiting next milestone
-stopped_at: Completed quick task 260717-bvq
-last_updated: "2026-07-17T02:21:16.127Z"
+milestone: v1.3
+milestone_name: Stable Release Hardening
+status: planning
+last_updated: "2026-07-17T02:30:53.885Z"
 last_activity: 2026-07-17
-last_activity_desc: Milestone v1.1 completed and archived
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 9
-  completed_plans: 9
-  percent: 100
-current_phase_name: Governance Decisions; v1.1 phase 1 of 5
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -28,10 +24,10 @@ See: .planning/PROJECT.md (updated 2026-07-17)
 
 ## Current Position
 
-Phase: Milestone v1.1 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-07-17 — Milestone v1.1 completed and archived
+Status: Defining requirements
+Last activity: 2026-07-17 — Milestone v1.3 started
 
 ## Performance Metrics
 

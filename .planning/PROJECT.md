@@ -10,7 +10,7 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 
 在终端里跑一个**低成本、不中断**的 DeepSeek 编程 agent——缓存优先把 token 成本压到最低,工具调用 JSON 自修复保证 loop 不被坏输出打断。这是面板/UI 都可以失败、唯独不能失败的那一件事。
 
-## Current Milestone: Planning v1.3 Stable Release Hardening
+## Current Milestone: v1.3 Stable Release Hardening
 
 **Goal:** 按 2026-07-17 稳定版评估完成发布整改，把 npm package 与 CLI 统一为 `reasonix-legacy`，删除全部 `dsnix` 遗留，并将强制测试/CI 基线收敛到当前 Windows + Node.js 环境。
 
@@ -117,3 +117,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 *Last updated: 2026-07-17 after v1.1 milestone closeout and v1.3 direction lock*
+
