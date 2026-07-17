@@ -52,6 +52,51 @@
 
 ---
 
+## Milestone: v1.1 — Risk Foundations & Maintenance Simplification
+
+**Shipped:** 2026-07-17
+**Phases:** 5 | **Plans:** 9
+
+### What Was Built
+
+- 固化版本、fork、`dev` CI 和风险 coverage 四项治理政策。
+- 对齐当前文档、规划 maps 与测试配置，移除 Tauri 测试残留。
+- 将 runtime i18n 收敛到 `en`/`zh-CN` 并提供安全迁移。
+- 为 TUI、关键 CLI command 和 Telegram/Weixin 生命周期补齐离线特征测试。
+- 为 CI 增加跨平台首轮/诊断重试可见性。
+
+### What Worked
+
+- 先做 human-governance gate，再让身份、测试和 CI 改动引用同一事实源。
+- 按风险面拆分工作包，避免 i18n、测试、文档与 CI 的高风险编辑互相污染。
+- 使用离线 fake transport、fake TTY 和 synthetic events 保护用户可观察行为。
+
+### What Was Inefficient
+
+- phase 目录在正式 milestone closeout 前被提前移入 archive，导致 `init.manager` 无法投影已完成状态。
+- REQUIREMENTS traceability 在 audit 通过后仍保持 Pending，正式归档时需要补同步。
+- 版本治理结论随后被 package 1.2.0 与历史发布链再次打破，说明“文档政策”必须配合自动一致性门禁。
+
+### Patterns Established
+
+- 关键路径采用 characterization test，而不是按覆盖率百分比补无意义断言。
+- 真实凭据/网络/TTY UAT 与自动化测试明确分层。
+- CI retry 必须保留首轮失败证据，不能只呈现最终绿色。
+
+### Key Lessons
+
+1. 正式 closeout 前不要提前移动 phase 目录；若必须移动，readiness 工具也要能读取 archive。
+2. 版本、package、bin、lockfile、运行时版本和 release workflow 需要自动一致性检查，单靠治理文档会再次漂移。
+3. 支持矩阵应匹配真实维护环境；v1.3 将 Windows / Node 24.15.0 设为唯一强制标准。
+
+### Cost Observations
+
+- Model mix: inherited project profile。
+- Sessions: milestone work concentrated on 2026-07-13, with closeout on 2026-07-17。
+- Notable: 9 plans in one implementation day; most value came from deterministic characterization and explicit governance boundaries。
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -59,12 +104,14 @@
 | Milestone | Timeline | Phases | Key Change |
 |-----------|----------|--------|------------|
 | v1.0 Pure CLI | ~4 天 | 4 | 建立 GSD phase 工作流(.discuss → .plan → .execute → .verify);确立删除 recipe + retirement stub + 三段预存红证明 |
+| v1.1 Risk Foundations | 1 implementation day + closeout | 5 | 建立治理 gate、双语边界、离线 characterization 与 flaky retry 可见性 |
 
 ### Cumulative Quality
 
 | Milestone | Test Files | verify 状态 | Zero-Dep Additions |
 |-----------|------------|-------------|--------------------|
 | v1.0 Pure CLI | 3 failed \| 266 passed | build/lint/typecheck exit 0 | 0(纯删除/解耦里程碑,无新依赖) |
+| v1.1 Risk Foundations | 278 files / 3783 passed / 15 skipped | full verify + retry wrapper passed | 0 |
 
 ### Top Lessons (Verified Across Milestones)
 

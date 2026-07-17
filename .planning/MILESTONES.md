@@ -1,5 +1,27 @@
 # Milestones
 
+## v1.1 Risk Foundations & Maintenance Simplification (Shipped: 2026-07-17)
+
+**Closeout:** verified_closeout · 5 phases · 9 plans · 9 work packages
+**Requirements:** 21/21 complete (GOV-01..04, TRUTH-01..04, I18N-01..05, TEST-01..05, CI-01..03)
+**Git range:** `b296f0d2` (milestone start) → `9a30e8f7` (milestone audit) · 30 commits · +2,814 / −14,717 lines across 143 files
+
+**Key accomplishments:**
+
+- **治理事实固化（Phase 5）** — 明确 package semver、fork 身份、`dev` CI 和风险导向 coverage policy，形成可引用的 `docs/governance.md`。
+- **仓库事实对齐（Phase 6）** — 中英文入口文档、codebase maps 和测试配置与 Pure CLI live source 对齐，并移除遗留 Tauri 测试 aliases/mocks。
+- **双语边界（Phase 7）** — 运行时 locale 收敛为 `en`/`zh-CN`，支持别名归一化、旧配置迁移、系统语言 fallback 和字典 key parity。
+- **关键路径保护（Phase 8）** — 为 TUI composer/live output、关键 CLI command、Telegram/Weixin 生命周期建立确定性离线特征测试和显式 live-UAT 边界。
+- **CI 与 flaky 可见性（Phase 9）** — 活跃分支获得完整 CI 门禁，并通过跨平台 retry wrapper 暴露“首轮失败、诊断重试通过”的结果。
+
+### Known Gaps
+
+- 真实凭据、网络和交互式 TTY 依赖的 Telegram、Weixin 与终端体验仍是人工 UAT，不伪装为自动化通过。
+- GitHub branch protection 仍是仓库外 operator action。
+- 2026-07-17 稳定版评估识别出的依赖漏洞、版本/发布链漂移、`dsnix` 遗留和发布治理问题已路由到 v1.3。
+
+---
+
 ## v1.0 Pure CLI (Shipped: 2026-07-05)
 
 **Closeout:** override_closeout · 4 phases · 8 plans · 19 tasks

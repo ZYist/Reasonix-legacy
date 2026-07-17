@@ -10,14 +10,15 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 
 在终端里跑一个**低成本、不中断**的 DeepSeek 编程 agent——缓存优先把 token 成本压到最低,工具调用 JSON 自修复保证 loop 不被坏输出打断。这是面板/UI 都可以失败、唯独不能失败的那一件事。
 
-## Current Milestone: v1.1 Risk Foundations & Maintenance Simplification
+## Current Milestone: Planning v1.3 Stable Release Hardening
 
-**Goal:** 在不改变核心 agent 行为的前提下，统一项目事实源、将运行时 i18n 收缩为中英文、补齐关键用户路径保护并提高 CI 风险可见性，为后续热点模块拆分建立安全基础。
+**Goal:** 按 2026-07-17 稳定版评估完成发布整改，把 npm package 与 CLI 统一为 `reasonix-legacy`，删除全部 `dsnix` 遗留，并将强制测试/CI 基线收敛到当前 Windows + Node.js 环境。
 
-**Target features:**
-- 记录版本、公开仓库、开发分支和 coverage policy 四个人工决策，并对齐当前文档与 live source。
-- 仅保留 `en` 与 `zh-CN` 两个规范 locale，提供别名归一化、旧配置迁移、fallback、key parity 和资源清理。
-- 为 TUI、CLI command wiring、Telegram/Weixin 生命周期补充离线特征测试，并按决策落实 CI 与 flaky 可见性。
+**Locked direction:**
+- 保持 DeepSeek-first，不做多模型适配。
+- npm package 与 CLI 命令均统一为 `reasonix-legacy`；不保留 `dsnix` 发布、shim、workspace 或兼容映射。
+- 强制测试标准仅为 Windows、Node.js 24.15.0、npm 11.16.0、PowerShell。
+- 修复生产依赖漏洞、版本权威、发布链、安全治理和最终 clean-install/pack/隔离安装验证。
 
 ## Requirements
 
@@ -31,7 +32,6 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 - ✓ **完整工具集** — 文件/shell/web/plan/todo/memory/subagent/skills/java-source/code-query + MCP 桥接 — existing
 - ✓ **会话持久化与恢复** — append-only 日志、session resume/healing — existing
 - ✓ **ACP JSON-RPC** — IDE/编辑器集成入口 — existing
-- ✓ **多语言 i18n** — zh/EN/ja/de/ru — existing
 - ✓ **tree-sitter 代码符号语义检索** — code-query 工具 — existing
 - ✓ **Web 面板剥离** — `dashboard/` + `src/server/` + CLI 内部面板适配代码完全切除,CLI/TUI 无面板运行 — v1.0 (Phase 1, 2026-07-03)
 - ✓ **机器人接入解耦为独立 CLI 命令** — QQ/Telegram/微信 channel 经传输协议无关的 HeadlessHost 作为独立 CLI 命令运行,复用核心 CacheFirstLoop/PauseGate/完整 ToolRegistry,脱离桌面 sidecar 与 Tauri JSON-RPC — v1.0 (Phase 2, 2026-07-04)
@@ -39,23 +39,26 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 - ✓ **构建链简化** — `postinstall.mjs`/`sync-desktop-version.mjs`/`release.yml` 退役,`package.json`/`ci.yml`/`.claude/CLAUDE.md` 对齐纯 CLI,`npm pack` 输出干净 CLI-only tarball(无 postinstall 钩子) — v1.0 (Phase 4, 2026-07-05)
 - ✓ **纯 CLI 路径零回归** — 19 个命令 `--help` 全绿、8 个离线命令功能冒烟、tree-sitter `code-query` 跨 6 语言 e2e 存活;核心 loop/工具/记忆/MCP/AcP 零回归(14 baseline 红 → 3 evidence-deferred 预存红) — v1.0 (Phase 4, 2026-07-05)
 
+- ✓ **治理决策与身份对齐** — 版本、fork、开发分支与风险 coverage policy 已形成权威文档 — v1.1
+- ✓ **双语 i18n 边界** — 仅保留 `en`/`zh-CN`，支持 alias、migration、fallback 与 key parity — v1.1
+- ✓ **关键路径离线保护** — TUI、关键 CLI command、Telegram/Weixin 生命周期具备确定性特征测试 — v1.1
+- ✓ **CI 与 flaky 可见性** — 活跃路径具备完整门禁和首轮失败/诊断重试报告 — v1.1
+
 ### Active
 
-<!-- v1.1 需求将在 REQUIREMENTS.md 中分配稳定 REQ-ID；此处先记录已确认的里程碑方向。 -->
-
-- [ ] **治理决策与身份对齐** — 明确版本权威、公开仓库、分支 CI 与关键路径 coverage policy，并修正当前文档/规划事实源
-- [ ] **双语 i18n 收缩** — 仅维护英文与简体中文，兼容旧 locale 配置并保证 key parity
-- [ ] **关键路径回归保护** — 覆盖 TUI、CLI command wiring、Telegram/Weixin 生命周期的离线用户可观察契约
-- [ ] **CI 与 flaky 可见性** — 保护活跃开发路径并显式暴露首轮失败、重试通过
+- [ ] **统一发布身份** — npm package 与 CLI 均为 `reasonix-legacy`，删除全部 `dsnix` workspace、shim、bin、文档与发布 workflow。
+- [ ] **稳定版安全整改** — 修复生产依赖高危漏洞，并对齐 `SECURITY.md`、CodeQL、CI 与 branch-protection 指引。
+- [ ] **版本与发布权威** — package、lockfile、运行时版本、README、CHANGELOG、tag/release 叙述一致。
+- [ ] **Windows 发布验证** — 以 Windows + Node.js 24.15.0 + npm 11.16.0 + PowerShell 完成 clean install、全量 verify、pack 和隔离安装验证。
 
 ### Out of Scope
 
-- Web 面板(`dashboard/`) — 用户不再维护,聚焦 CLI;v1.0 已物理移除
-- Tauri 桌面 GUI(`desktop/`) — 用户不再维护,聚焦 CLI;v1.0 已物理移除
-- 重写聊天机器人 channel 协议 — `src/qq|telegram|weixin` 已是独立模块,只换宿主不改协议
-- 新增 CLI 功能 — 精简优先于新增
-- v1.1 内实际拆分 `App.tsx`、`config.ts`、`loop.ts` 或大型 tools — 先完成特征测试与风险基础设施，作为 v1.2 候选范围
-- 自动发布、移动/重写 tags 或替用户修改 GitHub branch protection — 需要独立人工操作与明确授权
+- Web 面板(`dashboard/`) 与 Tauri desktop GUI — v1.0 已物理移除，不重新引入。
+- 多模型/provider 适配 — v1.3 保持 DeepSeek-first，避免稀释针对 DeepSeek 的缓存与工具调用优化。
+- 保留 `dsnix` 兼容入口或双命令迁移期 — 用户已决定直接统一为 `reasonix-legacy`。
+- 重写聊天机器人 channel 协议 — 只验证现有入口不因发布身份整改回归。
+- 自动修改 GitHub branch protection 或未经授权推送 tag/release — 属于外部 operator action。
+- `App.tsx`、`config.ts`、`loop.ts` 或大型 tools 的结构性重构 — 不与稳定版发布整改混合。
 
 ## Context
 
@@ -70,9 +73,10 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 
 ## Constraints
 
-- **Tech stack**: TypeScript + tsup 打包;Node ≥22;Ink(React)TUI;Commander CLI;Vitest / Biome / Stryker。
-- **Compatibility**: 保留 CLI 二进制入口(`reasonix` / `dsnix` → `dist/cli/index.js`)与 npm 包发布能力。
-- **不回归**: 核心 loop / 工具 / 记忆 / MCP / AcP 代码零回归;tree-sitter grammars 构建链保留。
+- **Tech stack**: TypeScript + tsup；Ink/React TUI；Commander CLI；Vitest / Biome / Stryker。
+- **Mandatory runtime/test baseline for v1.3**: Windows + Node.js 24.15.0 + npm 11.16.0 + PowerShell；其他 OS/Node 组合不作为阻塞标准。
+- **Product identity**: npm package 与 CLI bin 统一为 `reasonix-legacy`；不得保留 `dsnix` 映射；保持 DeepSeek-first。
+- **不回归**: 核心 loop / 工具 / 记忆 / MCP / ACP / chat channels；保留 tree-sitter grammars 构建链。
 
 ## Key Decisions
 
@@ -88,6 +92,11 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 | HG-02：当前维护身份属于 ZYist fork | 当前操作入口必须与历史来源清楚分离 | ✓ v1.1 — 当前链接与写操作仅指向 `ZYist/reasonix-legacy`；upstream 只读 attribution，禁止 push/tag/release |
 | HG-03：`dev` push 运行完整 CI | 活跃开发路径需要直接反馈，同时不虚构 GitHub 外部保护设置 | ✓ v1.1 — `dev` push 跑 CI；进 `main` 推荐 PR；branch protection 仅作为经验证的 operator action |
 | HG-04：采用风险导向 coverage policy | 单一全局百分比无法代表 TUI、command 与 channel 生命周期风险 | ✓ v1.1 — 67.39% 仅作 fresh-baseline 前的非回归参考；纯模块高覆盖；关键路径按离线行为场景验收；详见 `docs/governance.md` |
+
+| v1.3：package 与 CLI 统一为 `reasonix-legacy` | 单一公开身份消除 package/bin/docs/release 漂移 | — Approved 2026-07-17；实现与验证待 v1.3 |
+| v1.3：删除全部 `dsnix` 遗留，不设兼容期 | 老旧映射已经损坏发布链，继续维护只增加歧义 | — Approved 2026-07-17；实现与验证待 v1.3 |
+| v1.3：保持 DeepSeek-first，不做多模型适配 | 保护针对 DeepSeek 的 cache-first 与工具调用修复差异化 | — Approved 2026-07-17；实现与验证待 v1.3 |
+| v1.3：仅 Windows / Node 24.15.0 为强制测试标准 | 与当前真实维护环境一致，避免为未支持矩阵阻塞稳定版 | — Approved 2026-07-17；实现与验证待 v1.3 |
 
 ## Evolution
 
@@ -107,4 +116,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-13 after starting v1.1 Risk Foundations & Maintenance Simplification*
+*Last updated: 2026-07-17 after v1.1 milestone closeout and v1.3 direction lock*

@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Risk Foundations & Maintenance Simplification
-current_phase: 9
-status: completed
+current_phase: 1
+status: Awaiting next milestone
 stopped_at: Completed quick task 260717-bvq
-last_updated: "2026-07-17T01:33:32Z"
+last_updated: "2026-07-17T02:21:16.127Z"
 last_activity: 2026-07-17
-last_activity_desc: Completed quick task 260717-bvq: assess stable release readiness
+last_activity_desc: Milestone v1.1 completed and archived
 progress:
   total_phases: 5
   completed_phases: 5
@@ -21,19 +21,17 @@ current_phase_name: Governance Decisions; v1.1 phase 1 of 5
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-07-13)
+See: .planning/PROJECT.md (updated 2026-07-17)
 
 **Core value:** 在终端里跑一个低成本、不中断的 DeepSeek 编程 agent——缓存优先压低 token 成本，工具调用 JSON 自修复保证 loop 不被坏输出打断。
-**Current focus:** Phase null
+**Current focus:** Planning v1.3 stable release hardening
 
 ## Current Position
 
-Phase: 9 — COMPLETE
-Plan: 1 of ?
-Status: Phase 9 complete
-Last activity: 2026-07-17 — Completed quick task 260717-bvq (assess stable release readiness)
-
-Progress: [░░░░░░░░░░] 0%
+Phase: Milestone v1.1 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-07-17 — Milestone v1.1 completed and archived
 
 ## Performance Metrics
 
@@ -62,17 +60,10 @@ Progress: [░░░░░░░░░░] 0%
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table. Required before dependent work:
-
-- Phase 5 / HG-01: version authority and first Pure CLI release — pending explicit human choice
-- Phase 5 / HG-02: current fork repository identity vs upstream attribution — pending explicit human choice
-- Phase 5 / HG-03: `dev` push CI vs protected-PR-only policy — pending explicit human choice
-- Phase 5 / HG-04: risk-based coverage policy — pending explicit human approval
-- Quick 260715-qcs: obsolete upstream product docs are preserved only in a dated read-only archive; `docs/README.md` is the current documentation hub.
-- Quick 260715-qcs: current documentation claims derive from live package/CLI/config/channel sources and are guarded by `scripts/check-docs.mjs`.
-- Quick 260715-qcs: within current maintenance surfaces, runtime and contributor URLs target `ZYist/reasonix-legacy`; upstream remains explicit attribution or a specific historical issue reference.
-- Quick 260716-qbx recommendation: expose `reasonix provider ...` backed by named `ApiProfile` records rather than a single base-URL toggle.
-- Quick 260716-qbx scope recommendation: first support OpenAI-compatible Chat Completions profiles with legacy DeepSeek compatibility; defer native protocols, automatic fallback, and silent mid-session switching.
+- v1.1 governance, repository truth, bilingual i18n, critical-path tests, and CI/flaky visibility are verified and archived.
+- v1.3 remains DeepSeek-first; no multi-model/provider adaptation.
+- npm package and CLI bin will both be `reasonix-legacy`; all `dsnix` compatibility and publication surfaces will be removed.
+- Mandatory v1.3 test baseline is Windows + Node.js 24.15.0 + npm 11.16.0 + PowerShell only.
 
 ### Pending Todos
 
@@ -80,10 +71,9 @@ None recorded for this milestone.
 
 ### Blockers/Concerns
 
-- Phase 5 is a HUMAN GATE: do not infer defaults or begin dependent identity/CI edits before all four decisions are recorded.
-- Fresh `npm run verify` and coverage baselines must be rerun at execution time; the 2026-07-13 guide figures are evidence snapshots, not current truth.
-- Keep i18n bounded to its own phase and keep unrelated high-risk edits in separate plans.
-- Phase 8 characterization must precede any future REF-01..04 hotspot refactor.
+- Stable release remains blocked by the findings in `.planning/quick/260717-bvq-assess-stable-release/260717-bvq-SUMMARY.md` until v1.3 addresses dependency, identity, release-chain, CI/CodeQL, and governance drift.
+- Remote GitHub settings, tag creation/push, and release publication remain explicit operator actions.
+- Credential/network/TTY-dependent live UAT remains manual and must not be represented as automated coverage.
 
 ### Quick Tasks Completed
 
@@ -106,6 +96,9 @@ None recorded for this milestone.
 ## Session Continuity
 
 Last session: 2026-07-17T01:33:32Z
-Stopped at: Completed quick task 260717-bvq
+Stopped at: Milestone v1.1 completed and archived
 Resume file: None
 
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone
