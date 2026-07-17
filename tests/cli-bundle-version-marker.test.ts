@@ -17,7 +17,7 @@ describe("write-cli-package-marker", () => {
     tmp = mkdtempSync(join(tmpdir(), "reasonix-cli-marker-"));
     writeFileSync(
       join(tmp, "package.json"),
-      JSON.stringify({ name: "reasonix", version: "9.8.7" }),
+      JSON.stringify({ name: "reasonix-legacy", version: "9.8.7" }),
     );
   });
 
@@ -32,7 +32,7 @@ describe("write-cli-package-marker", () => {
     expect(run.status).toBe(0);
     const marker = JSON.parse(readFileSync(join(tmp, "dist/cli/package.json"), "utf8"));
     expect(marker).toEqual({
-      name: "reasonix",
+      name: "reasonix-legacy",
       version: "9.8.7",
       type: "module",
     });
@@ -43,7 +43,7 @@ describe("write-cli-package-marker", () => {
     // from package.json rather than silently coercing to upstream reasonix.
     writeFileSync(
       join(tmp, "package.json"),
-      JSON.stringify({ name: "reasonix-legacy", version: "0.55.0" }),
+      JSON.stringify({ name: "reasonix-legacy", version: "1.3.0" }),
     );
     const script = resolve("scripts/write-cli-package-marker.mjs");
     const run = spawnSync(process.execPath, [script], { cwd: tmp, encoding: "utf8" });
@@ -52,7 +52,7 @@ describe("write-cli-package-marker", () => {
     const marker = JSON.parse(readFileSync(join(tmp, "dist/cli/package.json"), "utf8"));
     expect(marker).toEqual({
       name: "reasonix-legacy",
-      version: "0.55.0",
+      version: "1.3.0",
       type: "module",
     });
   });

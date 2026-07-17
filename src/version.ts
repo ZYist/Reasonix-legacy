@@ -9,15 +9,15 @@ import { fileURLToPath } from "node:url";
 const REGISTRY_URL = "https://registry.npmjs.org/reasonix-legacy/latest";
 
 /** TTL for the on-disk cache entry. 24h keeps noise low; users who
- * want a fresh check can run `reasonix update` which passes
+ * want a fresh check can run `reasonix-legacy update` which passes
  * `force: true`. */
 export const LATEST_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
 /** Network timeout. Short — we never block the UI waiting on this. */
 export const LATEST_FETCH_TIMEOUT_MS = 2_000;
 
-/** Name guard accepts reasonix + reasonix-legacy so VERSION tracks the real package.json. */
-const OWN_PACKAGE_NAMES = new Set(["reasonix", "reasonix-legacy"]);
+/** The current package identity is intentionally singular. */
+const OWN_PACKAGE_NAMES = new Set(["reasonix-legacy"]);
 function readPackageVersion(): string {
   try {
     let dir = dirname(fileURLToPath(import.meta.url));
@@ -41,12 +41,12 @@ function readPackageVersion(): string {
 
 export const VERSION: string = readPackageVersion();
 
-/** Display prefix for the legacy fork — user-facing version renders as `legacy-X.Y.Z`. */
-const DISPLAY_PREFIX = "legacy";
+/** Public package and executable identity shown by --version and status surfaces. */
+const DISPLAY_NAME = "reasonix-legacy";
 
-/** `1.1.0` → `legacy-1.1.0`. Never feed the result into compareVersions (it needs bare semver). */
+/** `1.3.0` → `reasonix-legacy 1.3.0`. Keep bare semver for comparisons. */
 export function toDisplayVersion(semver: string): string {
-  return `${DISPLAY_PREFIX}-${semver}`;
+  return `${DISPLAY_NAME} ${semver}`;
 }
 
 /** User-facing version (statusline / --version / /about / /update). Derived from VERSION so a package.json bump propagates everywhere. */
@@ -87,7 +87,7 @@ function writeCache(entry: VersionCacheEntry, homeDirOverride?: string): void {
 }
 
 export interface GetLatestVersionOptions {
-  /** Ignore the cached entry and always fetch fresh. Used by `reasonix update`. */
+  /** Ignore the cached entry and always fetch fresh. Used by `reasonix-legacy update`. */
   force?: boolean;
   /** Registry URL override (tests). */
   registryUrl?: string;
@@ -162,7 +162,7 @@ export function detectInstallSource(bin?: string): InstallSource {
   if (/\/\.bun\//.test(norm) || /\/bun\/install\//.test(norm)) return "bun";
   if (/\/pnpm\/global\//.test(norm) || /\/pnpm\/[^/]+\/node_modules\//.test(norm)) return "pnpm";
   if (/\/yarn\/global\//.test(norm) || /\/\.yarn\/global\//.test(norm)) return "yarn";
-  if (/\/node_modules\/reasonix(?:-legacy)?(?:\/|$)/.test(norm)) return "npm";
+  if (/\/node_modules\/reasonix-legacy(?:\/|$)/.test(norm)) return "npm";
   return "unknown";
 }
 
@@ -176,9 +176,9 @@ export function detectNpmInstallPrefix(bin?: string): string | null {
   const raw = bin ?? process.argv[1] ?? "";
   if (!raw) return null;
   const norm = raw.replace(/\\/g, "/");
-  const posix = norm.match(/^(.+?)\/lib\/node_modules\/reasonix(?:-legacy)?(?:\/|$)/i);
+  const posix = norm.match(/^(.+?)\/lib\/node_modules\/reasonix-legacy(?:\/|$)/i);
   if (posix) return posix[1] ?? null;
-  const win = norm.match(/^(.+?)\/node_modules\/reasonix(?:-legacy)?(?:\/|$)/i);
+  const win = norm.match(/^(.+?)\/node_modules\/reasonix-legacy(?:\/|$)/i);
   if (win) return win[1] ?? null;
   return null;
 }
