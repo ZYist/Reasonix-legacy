@@ -24,7 +24,9 @@ v1.3 把 2026-07-17 稳定版评估的本地发布阻塞项收敛为四个顺序
 3. `reasonix-legacy --version`、package/lock/runtime、README、CHANGELOG、governance 与 milestone 一致指向 `1.3.0` / `v1.3`。
 4. 自动检查会阻止当前维护表面重新出现旧 bin、`dsnix` 或版本/tag convention 漂移，同时允许历史 archive 保持原样。
 
-**Plans:** TBD
+**Plans:**
+- [ ] 10-01 — Package graph and runtime identity
+- [ ] 10-02 — Maintained docs and identity drift guard
 
 ### Phase 11: Supply Chain and Security Contract
 
