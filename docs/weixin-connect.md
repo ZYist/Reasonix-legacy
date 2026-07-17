@@ -9,7 +9,7 @@ no owner was already configured.
 ## QR lifecycle
 
 ```bash
-reasonix weixin --workspace path/to/project
+reasonix-legacy weixin --workspace path/to/project
 ```
 
 1. The command boots HeadlessHost and installs signal cleanup.

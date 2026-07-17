@@ -11,7 +11,7 @@
 3. standalone QQ, Telegram, and Weixin channel processes.
 
 The old Web dashboard, server adapter, Tauri application, and desktop sidecar are
-not runtime dependencies. `reasonix desktop` remains only as an explicit retired
+not runtime dependencies. `reasonix-legacy desktop` remains only as an explicit retired
 command that exits non-zero.
 
 ## Dependency direction

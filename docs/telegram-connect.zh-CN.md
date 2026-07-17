@@ -23,7 +23,7 @@
 ## 独立命令
 
 ```bash
-reasonix telegram --workspace path/to/project
+reasonix-legacy telegram --workspace path/to/project
 ```
 
 命令把 Telegram 挂载到 HeadlessHost，转发远程权限确认；同一时刻只处理一个 turn，

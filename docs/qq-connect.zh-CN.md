@@ -30,7 +30,7 @@ HeadlessHost、核心 loop 和权限确认。
 ## 独立命令
 
 ```bash
-reasonix qq --workspace path/to/project
+reasonix-legacy qq --workspace path/to/project
 ```
 
 可选参数包括 `--model`、`--effort`、`--budget`。Ctrl-C 会触发清理并释放 PID 锁。

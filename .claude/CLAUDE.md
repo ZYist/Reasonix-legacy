@@ -6,14 +6,14 @@
 
 DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优先(cache-first)**的 agentic loop,自动修复模型输出的工具调用 JSON,并在 token 预算内折叠上下文。面向希望在终端内用 DeepSeek 完成编程任务、并严格控制 token 成本的开发者。
 
-本仓库是上游的 fork,首个 fork release 为 v0.55.0。
+本仓库是上游的 fork；当前 package 为 1.3.0，当前 GSD milestone 为 v1.3。
 
 **Core Value:** 在终端里跑一个**低成本、不中断**的 DeepSeek 编程 agent——缓存优先把 token 成本压到最低,工具调用 JSON 自修复保证 loop 不被坏输出打断。这是面板/UI 都可以失败、唯独不能失败的那一件事。
 
 ### Constraints
 
 - **Tech stack**: TypeScript + tsup 打包;Node ≥22;Ink(React)TUI;Commander CLI;Vitest / Biome / Stryker。
-- **Compatibility**: 保留 CLI 二进制入口(`reasonix` / `dsnix` → `dist/cli/index.js`)与 npm 包发布能力。
+- **Identity**: npm package 与唯一 CLI 二进制入口均为 `reasonix-legacy`（→ `dist/cli/index.js`）。
 - **不回归**: 核心 loop / 工具 / 记忆 / MCP / AcP 代码零回归;tree-sitter grammars 构建链保留。
 
 <!-- GSD:project-end -->
@@ -80,7 +80,7 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 
 - Node.js 22+ (CI matrix pins node `"22"` on ubuntu-latest + windows-latest in `.github/workflows/ci.yml`).
 - OS: Windows, macOS, or Linux. Tests tolerate Windows scheduler hiccups via `vitest` `retry: 1`.
-- CLI: published to npm as `reasonix-legacy` (binaries `reasonix` / `dsnix` → `dist/cli/index.js`).
+- CLI: package `reasonix-legacy` exposes the sole `reasonix-legacy` binary → `dist/cli/index.js`.
 
 <!-- GSD:stack-end -->
 
@@ -282,13 +282,13 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 ## Entry Points
 
 - Location: `src/cli/index.ts`
-- Triggers: `reasonix` / `dsnix` bin (package.json `bin` → `dist/cli/index.js`); also `npm run dev` (`tsx src/cli/index.ts`).
+- Triggers: `reasonix-legacy` bin (package.json `bin` → `dist/cli/index.js`); also `npm run dev` (`tsx src/cli/index.ts`).
 - Responsibilities: Guards (node version, heap limit, BEL strip), proxy install, Commander subcommands (`setup`, `code`, `chat`, `run`, `acp`, `desktop`, `stats`, `doctor`, `commit`, `sessions`, `events`, `replay`, `diff`, `mcp`, `update`, `import-sessions`, `prune-sessions`), default action launches the Ink TUI.
 - Location: `src/index.ts`
 - Triggers: `import { CacheFirstLoop, DeepSeekClient, ToolRegistry, ... } from "reasonix-legacy"`.
 - Responsibilities: Re-exports the public API (client, loop, memory, tools, MCP, telemetry, transcript, hooks, version).
 - Location: `src/acp/server.ts`
-- Triggers: `reasonix acp` subcommand (editor integrations).
+- Triggers: `reasonix-legacy acp` subcommand (editor integrations).
 - Responsibilities: NDJSON JSON-RPC 2.0 stdio protocol.
 
 ## Architectural Constraints

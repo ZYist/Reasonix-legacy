@@ -48,29 +48,29 @@ npm run build
 npm link
 ```
 
-`npm link` 会把 `reasonix` 加入 `PATH`，同时保留兼容别名 `dsnix`。获取 [DeepSeek API Key →](https://platform.deepseek.com/api_keys)，然后运行：
+`npm link` 会把唯一的 `reasonix-legacy` 命令加入 `PATH`。获取 [DeepSeek API Key →](https://platform.deepseek.com/api_keys)，然后运行：
 
 ```bash
-reasonix setup
-reasonix code
+reasonix-legacy setup
+reasonix-legacy code
 ```
 
-裸 `reasonix` 等价于在当前目录运行 `reasonix code`。完整的安装、升级与首次配置流程见 [快速开始](./docs/getting-started.md)。
+裸 `reasonix-legacy` 等价于在当前目录运行 `reasonix-legacy code`。完整的安装、升级与首次配置流程见 [快速开始](./docs/getting-started.md)。
 
 ## 先用这些命令
 
 | 命令 | 何时用 |
 |---|---|
-| `reasonix` / `reasonix code [dir]` | 编程 agent。**先用这个。** |
-| `reasonix chat` | 纯聊天，不挂文件系统与 shell 工具。 |
-| `reasonix run "任务"` | 一次性执行，结果流到 stdout；适合 shell 管道。 |
-| `reasonix doctor` | 检查 Node、API Key、配置与 MCP 接线。 |
-| `reasonix acp` | 通过 stdio 启动 ACP agent，供编辑器或 IDE 接入。 |
-| `reasonix qq` | 启动 QQ headless 通道。 |
-| `reasonix telegram` | 启动 Telegram headless 通道。 |
-| `reasonix weixin` | 启动微信 headless 通道。 |
+| `reasonix-legacy` / `reasonix-legacy code [dir]` | 编程 agent。**先用这个。** |
+| `reasonix-legacy chat` | 纯聊天，不挂文件系统与 shell 工具。 |
+| `reasonix-legacy run "任务"` | 一次性执行，结果流到 stdout；适合 shell 管道。 |
+| `reasonix-legacy doctor` | 检查 Node、API Key、配置与 MCP 接线。 |
+| `reasonix-legacy acp` | 通过 stdio 启动 ACP agent，供编辑器或 IDE 接入。 |
+| `reasonix-legacy qq` | 启动 QQ headless 通道。 |
+| `reasonix-legacy telegram` | 启动 Telegram headless 通道。 |
+| `reasonix-legacy weixin` | 启动微信 headless 通道。 |
 
-其余子命令（`replay`、`diff`、`events`、`stats`、`index`、`mcp`、`prune-sessions`、`update` 等）见 `reasonix --help` 与 [CLI 参考](./docs/cli-reference.md)。
+其余子命令（`replay`、`diff`、`events`、`stats`、`index`、`mcp`、`prune-sessions`、`update` 等）见 `reasonix-legacy --help` 与 [CLI 参考](./docs/cli-reference.md)。
 
 ## Reasonix 的不同之处
 
@@ -111,7 +111,7 @@ reasonix code
 
 ## 配置速览
 
-- API Key：环境变量 `DEEPSEEK_API_KEY`，或运行 `reasonix setup` 写入 `~/.reasonix/config.json`。
+- API Key：环境变量 `DEEPSEEK_API_KEY`，或运行 `reasonix-legacy setup` 写入 `~/.reasonix/config.json`。
 - Base URL：`DEEPSEEK_BASE_URL` 或配置项 `baseUrl`；默认值为 `https://api.deepseek.com`。
 - 项目环境：启动时自动加载 `.env`，但不会覆盖已经存在的环境变量。
 - 机器人凭据：QQ、Telegram、微信 token 都应当视为 secret；对外开放前先配置 owner / allowlist 与权限策略。
@@ -126,11 +126,11 @@ reasonix code
 - **不恢复 Web 面板或桌面 GUI。** 这个 fork 只维护 CLI / TUI、ACP 与 headless 通道。
 - **不把多供应商抽象放在缓存稳定之前。** DeepSeek-first 是设计约束，不是临时缺口。
 - **不把机器人通道做成三套 agent。** 通道负责接入，核心行为仍由共享 loop 和权限系统决定。
-- **不把历史上游文档当作当前说明。** 当前行为以源码、`reasonix --help` 与 `docs/` 下的维护文档为准。
+- **不把历史上游文档当作当前说明。** 当前行为以源码、`reasonix-legacy --help` 与 `docs/` 下的维护文档为准。
 
 ## 版本、上游与归属
 
-当前展示版本为 **`legacy-1.2.0`**；对应 npm semver 为 `1.2.0`。发布记录见 [Releases](https://github.com/ZYist/reasonix-legacy/releases)。
+当前版本为 **`reasonix-legacy 1.3.0`**；对应 npm semver 为 `1.3.0`，当前里程碑为 `v1.3`。发布记录见 [Releases](https://github.com/ZYist/reasonix-legacy/releases)。
 
 本项目 fork 自 [`esengine/DeepSeek-Reasonix`](https://github.com/esengine/DeepSeek-Reasonix)，感谢上游作者与贡献者的开源工作。原始 README 与网站文档已经归档，并在 [历史存档索引](./docs/archive/upstream-reasonix/ARCHIVE.md) 中标明来源与适用范围。
 

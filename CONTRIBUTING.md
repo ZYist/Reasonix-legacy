@@ -25,7 +25,7 @@ For project working knowledge, see [`REASONIX.md`](./REASONIX.md). For the maint
   X" PRs that arrive cold are usually rejected or scoped down.
 - **External MCP servers, plugins, presets** — a thin wrapper is
   fine; a sprawling integration is better hosted as a separate
-  package that depends on `reasonix`.
+  package that depends on `reasonix-legacy`.
 
 ## Code rules
 

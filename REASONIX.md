@@ -2,16 +2,15 @@
 
 <!-- source-of-truth: package.json; docs/README.md; src/cli/index.ts; src/loop.ts; src/config.ts -->
 
-This file is the project-memory entrypoint loaded by reasonix code mode. Keep it
+This file is the project-memory entrypoint loaded by reasonix-legacy code mode. Keep it
 short, current, and useful to coding agents; detailed user guidance belongs in
 [`docs/README.md`](docs/README.md).
 
 ## Product facts
 
-- Package: `reasonix-legacy`; executables: `reasonix` and compatibility alias
-  `dsnix`; Node.js `>=22`.
+- Package and sole executable: `reasonix-legacy`; Node.js `>=22`.
 - Maintained branch direction: Pure CLI. Web dashboard and Tauri desktop are
-  removed. `reasonix desktop` is a retired error stub.
+  removed. `reasonix-legacy desktop` is a retired error stub.
 - Maintained surfaces: Ink code/chat TUI, non-interactive CLI commands, ACP over
   stdio, and standalone QQ/Telegram/Weixin channels.
 - Repository and issue authority: `https://github.com/ZYist/reasonix-legacy`.
@@ -33,7 +32,7 @@ short, current, and useful to coding agents; detailed user guidance belongs in
 
 ## Change discipline
 
-1. Verify command claims against `package.json`, built `reasonix --help`, and
+1. Verify command claims against `package.json`, built `reasonix-legacy --help`, and
    `src/cli/index.ts`.
 2. Verify slash claims against `src/cli/ui/slash/commands.ts` and handlers.
 3. Verify config/channel claims against `src/config.ts`, `src/index/config.ts`,

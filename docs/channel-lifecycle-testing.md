@@ -50,7 +50,7 @@ Before starting:
 
 ## Telegram live UAT
 
-Run the built `reasonix telegram` command with a real BotFather token and an explicit owner/allowlist, then verify:
+Run the built `reasonix-legacy telegram` command with a real BotFather token and an explicit owner/allowlist, then verify:
 
 1. **Startup:** the command reaches the online state and the bot command menu is visible.
 2. **Authorized forwarding:** an authorized Telegram text reaches the local session and receives the expected response.
@@ -64,7 +64,7 @@ A rejected/expired token, Telegram API availability, real Markdown rendering, co
 
 ## Weixin live UAT
 
-Run the built `reasonix weixin` command with a disposable Weixin bot account, then verify:
+Run the built `reasonix-legacy weixin` command with a disposable Weixin bot account, then verify:
 
 1. **QR startup:** with no saved credentials, the QR is readable in a human terminal and scanning it completes before channel startup.
 2. **Configured startup:** a subsequent run reuses the persisted account and reaches the online state without another QR scan while the session remains valid.

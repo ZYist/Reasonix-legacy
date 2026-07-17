@@ -24,7 +24,7 @@ Environment values override the corresponding config values.
 ## Standalone command
 
 ```bash
-reasonix telegram --workspace path/to/project
+reasonix-legacy telegram --workspace path/to/project
 ```
 
 The command mounts Telegram on HeadlessHost, forwards remote permission choices,

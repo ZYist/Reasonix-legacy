@@ -52,7 +52,7 @@ setup links. It is provenance, not current guidance.
 | Claim | Live source to verify |
 |---|---|
 | package name, version, Node requirement, scripts | `package.json` |
-| shell commands and options | built `reasonix --help` and `src/cli/index.ts` |
+| shell commands and options | built `reasonix-legacy --help` and `src/cli/index.ts` |
 | TUI slash commands | `src/cli/ui/slash/commands.ts` and handlers |
 | user configuration and precedence | `src/config.ts`, `src/index/config.ts`, `.env.example` |
 | headless channel lifecycle | `src/cli/headless/host.ts`, `src/cli/commands/{qq,telegram,weixin}.ts` |

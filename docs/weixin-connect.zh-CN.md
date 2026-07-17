@@ -8,7 +8,7 @@ owner，扫码返回的用户会成为 owner。
 ## 二维码生命周期
 
 ```bash
-reasonix weixin --workspace path/to/project
+reasonix-legacy weixin --workspace path/to/project
 ```
 
 1. 命令先启动 HeadlessHost，并提前安装信号清理。

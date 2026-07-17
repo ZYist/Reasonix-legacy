@@ -22,15 +22,14 @@ npm run build
 npm link
 ```
 
-`npm link` exposes both executable names from `package.json`: `reasonix` and the
-compatibility alias `dsnix`.
+`npm link` exposes the sole executable from `package.json`: `reasonix-legacy`.
 
 ## Configure
 
 Run the interactive setup wizard:
 
 ```bash
-reasonix setup
+reasonix-legacy setup
 ```
 
 The wizard writes user configuration to `~/.reasonix/config.json`. You can also
@@ -50,44 +49,44 @@ controls.
 Start the coding TUI in the current directory:
 
 ```bash
-reasonix code
+reasonix-legacy code
 ```
 
-A bare `reasonix` invocation also enters code mode after first-run setup. To use
+A bare `reasonix-legacy` invocation also enters code mode after first-run setup. To use
 a different workspace:
 
 ```bash
-reasonix code path/to/project
+reasonix-legacy code path/to/project
 ```
 
 Use chat mode when filesystem and shell tools are not wanted:
 
 ```bash
-reasonix chat
+reasonix-legacy chat
 ```
 
 Run one non-interactive task and stream the answer to stdout:
 
 ```bash
-reasonix run "Summarize the repository structure"
+reasonix-legacy run "Summarize the repository structure"
 ```
 
 Useful checks:
 
 ```bash
-reasonix doctor
-reasonix --help
-reasonix code --help
+reasonix-legacy doctor
+reasonix-legacy --help
+reasonix-legacy code --help
 ```
 
 ## Optional surfaces
 
-- ACP over stdio: `reasonix acp`
-- QQ: `reasonix qq`
-- Telegram: `reasonix telegram`
-- Weixin: `reasonix weixin`
+- ACP over stdio: `reasonix-legacy acp`
+- QQ: `reasonix-legacy qq`
+- Telegram: `reasonix-legacy telegram`
+- Weixin: `reasonix-legacy weixin`
 
-The retired `reasonix desktop` command is only a compatibility error stub. The
+The retired `reasonix-legacy desktop` command is only a compatibility error stub. The
 Web dashboard and desktop GUI are not part of the maintained branch. Continue
 with the [CLI reference](cli-reference.md) or the channel guides in the
 [documentation hub](README.md).

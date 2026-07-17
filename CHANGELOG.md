@@ -1,9 +1,17 @@
 # Changelog
 
-> **Current fork policy (2026-07-13):** `ZYist/Reasonix-legacy` uses package version `1.1.0` and is maintained as CLI/TUI-only. Entries below preserve historical upstream and fork history; their older version numbers and links are not current operational identity. See [`docs/governance.md`](docs/governance.md).
+> **Current fork policy (2026-07-17):** `ZYist/reasonix-legacy` uses package version `1.3.0` with the sole `reasonix-legacy` executable and is maintained as CLI/TUI-only. Entries below preserve historical upstream and fork history; their older version numbers, command aliases, and links are not current operational identity. See [`docs/governance.md`](docs/governance.md).
 
 All notable changes to Reasonix. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.3.0] — 2026-07-17
+
+**Stable-release hardening.** The npm package and CLI now share the single
+`reasonix-legacy` identity. The obsolete `reasonix` and `dsnix` executable aliases,
+`packages/dsnix` shim package, and dedicated dsnix publication workflow were removed.
+Runtime version output is now `reasonix-legacy 1.3.0`; maintained current documentation
+uses the same command while historical entries below remain unchanged.
 
 ## [0.55.0] — 2026-07-02
 

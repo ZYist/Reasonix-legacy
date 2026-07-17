@@ -31,7 +31,7 @@ publicly reachable bot.
 ## Standalone command
 
 ```bash
-reasonix qq --workspace path/to/project
+reasonix-legacy qq --workspace path/to/project
 ```
 
 Optional flags include `--model`, `--effort`, and `--budget`. Stop with Ctrl-C;
