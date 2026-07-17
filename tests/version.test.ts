@@ -103,9 +103,9 @@ describe("isNpxInstall", () => {
 
 describe("detectInstallSource", () => {
   it("identifies npm via lib/node_modules/reasonix-legacy", () => {
-    expect(detectInstallSource("/usr/local/lib/node_modules/reasonix-legacy/dist/cli/index.js")).toBe(
-      "npm",
-    );
+    expect(
+      detectInstallSource("/usr/local/lib/node_modules/reasonix-legacy/dist/cli/index.js"),
+    ).toBe("npm");
   });
 
   it("identifies npm via Windows %APPDATA%/npm path", () => {
@@ -126,7 +126,9 @@ describe("detectInstallSource", () => {
 
   it("identifies bun via .bun install dir", () => {
     expect(
-      detectInstallSource("/Users/me/.bun/install/global/node_modules/reasonix-legacy/dist/cli/index.js"),
+      detectInstallSource(
+        "/Users/me/.bun/install/global/node_modules/reasonix-legacy/dist/cli/index.js",
+      ),
     ).toBe("bun");
   });
 
@@ -148,12 +150,16 @@ describe("detectInstallSource", () => {
 
   it("identifies yarn via yarn/global", () => {
     expect(
-      detectInstallSource("/Users/me/.config/yarn/global/node_modules/reasonix-legacy/dist/cli/index.js"),
+      detectInstallSource(
+        "/Users/me/.config/yarn/global/node_modules/reasonix-legacy/dist/cli/index.js",
+      ),
     ).toBe("yarn");
   });
 
   it("identifies npx via _npx fragment", () => {
-    expect(detectInstallSource("/Users/me/.npm/_npx/abc/node_modules/.bin/reasonix-legacy")).toBe("npx");
+    expect(detectInstallSource("/Users/me/.npm/_npx/abc/node_modules/.bin/reasonix-legacy")).toBe(
+      "npx",
+    );
   });
 
   it("returns unknown for paths that match no known pattern", () => {
@@ -173,9 +179,9 @@ describe("detectInstallSource", () => {
 
 describe("detectNpmInstallPrefix", () => {
   it("extracts the prefix from a POSIX lib/node_modules path", () => {
-    expect(detectNpmInstallPrefix("/usr/local/lib/node_modules/reasonix-legacy/dist/cli/index.js")).toBe(
-      "/usr/local",
-    );
+    expect(
+      detectNpmInstallPrefix("/usr/local/lib/node_modules/reasonix-legacy/dist/cli/index.js"),
+    ).toBe("/usr/local");
   });
 
   it("extracts the prefix from an nvm-style path", () => {
@@ -213,7 +219,9 @@ describe("detectNpmInstallPrefix", () => {
   });
 
   it("does not derive a prefix from the removed reasonix package path", () => {
-    expect(detectNpmInstallPrefix("/usr/local/lib/node_modules/reasonix/dist/cli/index.js")).toBeNull();
+    expect(
+      detectNpmInstallPrefix("/usr/local/lib/node_modules/reasonix/dist/cli/index.js"),
+    ).toBeNull();
   });
 
   it("returns null for empty path", () => {
