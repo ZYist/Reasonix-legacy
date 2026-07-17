@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, isAbsolute, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -28,6 +28,14 @@ function read(relativePath) {
 }
 function fail(message) {
   errors.push(message);
+}
+function collectCurrentFiles(relativeDir, extensions) {
+  const absoluteDir = resolve(root, relativeDir);
+  if (!existsSync(absoluteDir)) return [];
+  return readdirSync(absoluteDir, { recursive: true })
+    .map((entry) => `${relativeDir}/${String(entry).replaceAll("\\", "/")}`)
+    .filter((relativePath) => extensions.some((extension) => relativePath.endsWith(extension)))
+    .filter((relativePath) => statSync(resolve(root, relativePath)).isFile());
 }
 
 for (const relativePath of [...requiredDocs, archiveManifest]) {
@@ -105,11 +113,20 @@ if (!structureOnly) {
     "docs/ci-branch-protection.md",
     "docs/governance.md",
   ];
+  const identitySurfaces = [
+    ...maintainedMarkdown,
+    ".github/ISSUE_TEMPLATE/bug_report.md",
+    ".github/ISSUE_TEMPLATE/display_issue.md",
+    "scripts/probe-fanout.mts",
+    ...collectCurrentFiles("src", [".ts", ".tsx", ".md"]),
+    ...collectCurrentFiles("examples", [".ts", ".tsx", ".md"]),
+    ...collectCurrentFiles("benchmarks", [".ts", ".tsx", ".mts", ".md"]),
+  ];
   const obsoleteExecutable = /\bdsnix\b|\breasonix(?=\s+(?:--(?:help|version)|<command>|setup|code|chat|run|acp|desktop|stats|doctor(?:-cache)?|commit|sessions|prune-sessions|events|replay|diff|mcp|version|update|index|qq|telegram|weixin)\b)/m;
-  for (const relativePath of maintainedMarkdown) {
+  for (const relativePath of new Set(identitySurfaces)) {
     if (!existsSync(resolve(root, relativePath))) continue;
     if (obsoleteExecutable.test(read(relativePath))) {
-      fail(`obsolete executable identity in maintained document: ${relativePath}`);
+      fail(`obsolete executable identity in maintained surface: ${relativePath}`);
     }
   }
   if (!read("README.md").includes("reasonix-legacy 1.3.0")) {
@@ -173,10 +190,25 @@ if (!structureOnly) {
   if (version !== "reasonix-legacy 1.3.0") {
     fail(`built CLI version identity is ${JSON.stringify(version)}`);
   }
+  try {
+    const versionCommand = execFileSync(
+      process.execPath,
+      [resolve(root, "dist/cli/index.js"), "version"],
+      { cwd: root, encoding: "utf8", env: { ...process.env, NO_COLOR: "1" } },
+    ).trim();
+    if (versionCommand !== version) {
+      fail(`built CLI version subcommand is ${JSON.stringify(versionCommand)}`);
+    }
+  } catch (error) {
+    fail(`could not run built CLI version subcommand: ${error.message}`);
+  }
   const commandsBlock = help.split("Commands:")[1] ?? "";
   const topLevelCommands = [...commandsBlock.matchAll(/^ {2}([a-z][a-z0-9-]*)(?:\s|$)/gm)].map(
     (match) => match[1],
   );
+  if (!help.startsWith("Usage: reasonix-legacy ")) {
+    fail("built CLI help does not use reasonix-legacy as the program name");
+  }
   if (topLevelCommands.length === 0) fail("no top-level commands parsed from built CLI help");
   for (const command of topLevelCommands) {
     if (!cliDoc.includes(`reasonix-legacy ${command}`)) {
