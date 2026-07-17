@@ -95,7 +95,7 @@ function ChromeRow({
   const GAP = 2;
 
   const fixedLeft =
-    stringWidth("◈ reasonix") + (projectName ? SEP_DOT + stringWidth(projectName) : 0);
+    stringWidth("◈ reasonix-legacy") + (projectName ? SEP_DOT + stringWidth(projectName) : 0);
   const modeW = modePill ? GAP + stringWidth(`[${modePill.label}]`) : 0;
   const fixedRight = modeW + stringWidth(costLabel);
   let budget = cols - fixedLeft - fixedRight;
@@ -120,7 +120,7 @@ function ChromeRow({
         {"◈ "}
       </Text>
       <Text color={COLOR.brand} bold>
-        reasonix
+        reasonix-legacy
       </Text>
       {projectName ? (
         <>

@@ -94,16 +94,16 @@ function parseBudgetFlag(raw: number | undefined): number | undefined {
 
 const program = new Command();
 program
-  .name("reasonix")
+  .name("reasonix-legacy")
   .description(t("cli.description"))
   .version(DISPLAY_VERSION)
   .option("-c, --continue", t("cli.continue"))
   .option("--no-mouse", t("ui.noMouseHint"))
   .option("--no-proxy", t("ui.noProxyHint"));
 
-// `reasonix` with no subcommand → setup wizard on first run, otherwise `code`
+// `reasonix-legacy` with no subcommand → setup wizard on first run, otherwise `code`
 // in the current directory. Filesystem-less chat stays reachable via
-// `reasonix chat`.
+// `reasonix-legacy chat`.
 program.action(async (opts: { continue?: boolean; mouse?: boolean }) => {
   setTabTitle();
   const cfg = readConfig();
@@ -160,7 +160,7 @@ program
           "\n" +
           "Short-term recommendation:\n" +
           "  Run Reasonix directly on the remote host:\n" +
-          "  $ reasonix code\n",
+          "  $ reasonix-legacy code\n",
       );
       process.exit(1);
     }
@@ -317,7 +317,9 @@ program
 
 program
   .command("acp")
-  .description("run reasonix as an Agent Client Protocol (ACP) agent on stdio NDJSON JSON-RPC")
+  .description(
+    "run reasonix-legacy as an Agent Client Protocol (ACP) agent on stdio NDJSON JSON-RPC",
+  )
   .option("-m, --model <id>", t("ui.modelIdHint"))
   .option("--dir <path>", "root directory for filesystem tools (default: cwd)")
   .option("--effort <level>", t("ui.effortHintShort"))
@@ -353,7 +355,7 @@ program
 
 program
   .command("desktop")
-  .description("removed — use `reasonix qq | telegram | weixin` instead")
+  .description("removed — use `reasonix-legacy qq | telegram | weixin` instead")
   .action(() => {
     console.error(t("commands.desktop.retired"));
     process.exit(1);

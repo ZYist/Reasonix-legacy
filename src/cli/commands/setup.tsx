@@ -1,4 +1,4 @@
-/** `reasonix setup` — re-mount the first-run wizard. */
+/** `reasonix-legacy setup` — re-mount the first-run wizard. */
 
 import { render } from "ink";
 import React from "react";

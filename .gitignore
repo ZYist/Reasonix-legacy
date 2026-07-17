@@ -18,7 +18,7 @@ transcripts/
 sessions/
 *.jsonl
 !tests/**/*.jsonl
-# Committed reference transcripts so readers can reasonix replay / diff
+# Committed reference transcripts so readers can reasonix-legacy replay / diff
 # the v0.1 bench results without an API key.
 !benchmarks/tau-bench/transcripts/
 !benchmarks/tau-bench/transcripts/*.jsonl

@@ -1,9 +1,9 @@
-// `reasonix weixin` — standalone Weixin (WeChat) bot command (BOT-02).
+// `reasonix-legacy weixin` — standalone Weixin (WeChat) bot command (BOT-02).
 //
 // Thin entry (D-04): assembles HeadlessHost (02-01) + WeixinChannel +
 // installHeadlessGateBridges, wires inbound onSubmitMessage to
 // host.runTurn and outbound replies to channel.sendResponse. Same
-// gate-callback shape as `reasonix qq`/`telegram` (D-08).
+// gate-callback shape as `reasonix-legacy qq`/`telegram` (D-08).
 //
 // PINNED QR-login-before-start path: WeixinChannel.start() does NOT
 // internally drive the QR scan — it requires loadWeixinConfig() to

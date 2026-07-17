@@ -51,7 +51,7 @@ describe("MCP command characterization", () => {
 
     await expect(mcpInstallCommand("   ")).rejects.toBe(exitSignal);
 
-    expect(consoleOutput(error)).toContain("usage: reasonix mcp install <name>");
+    expect(consoleOutput(error)).toContain("usage: reasonix-legacy mcp install <name>");
     expect(exit).toHaveBeenCalledWith(1);
     expect(log).not.toHaveBeenCalled();
   });

@@ -161,7 +161,7 @@ export const SLASH_COMMANDS: readonly SlashCommandSpec[] = [
     group: "session",
     argsHint: "<on|off>",
     summary:
-      "toggle whether reasonix resumes the last session on launch. 'off' = always start fresh (#2238).",
+      "toggle whether reasonix-legacy resumes the last session on launch. 'off' = always start fresh (#2238).",
   },
   {
     cmd: "title",

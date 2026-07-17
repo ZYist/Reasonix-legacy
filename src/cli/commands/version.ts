@@ -1,5 +1,5 @@
-import { VERSION } from "../../index.js";
+import { DISPLAY_VERSION } from "../../version.js";
 
 export function versionCommand(): void {
-  console.log(`reasonix ${VERSION}`);
+  console.log(DISPLAY_VERSION);
 }

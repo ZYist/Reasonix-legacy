@@ -39,7 +39,7 @@ export interface WizardProps {
   onCancel?: () => void;
   /** Skip the API-key step if a key already exists (env or config). */
   existingApiKey?: string;
-  /** Force the API-key step so `reasonix setup` can replace a saved key. */
+  /** Force the API-key step so `reasonix-legacy setup` can replace a saved key. */
   forceApiKeyStep?: boolean;
   /** Verifies the submitted key before the wizard can continue. */
   validateApiKey?: (apiKey: string) => Promise<ApiKeyValidationResult>;
@@ -718,7 +718,7 @@ function deriveInitialCatalog(existingSpecs: string[]): string[] {
 
 /**
  * Build the `--mcp` spec string for a catalog entry. Same format
- * `mcpCommandFor` produces for `reasonix mcp list`, minus the leading
+ * `mcpCommandFor` produces for `reasonix-legacy mcp list`, minus the leading
  * `--mcp "..."` wrapper — we store the inner spec directly.
  */
 export function buildSpec(name: string, argsByName: Record<string, string>): string {

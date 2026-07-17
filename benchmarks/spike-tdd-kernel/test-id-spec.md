@@ -58,7 +58,7 @@ This handles the failure modes of A:
 - **Rename it/describe**: a user who anticipates renames adds the annotation once. Without it, kernel treats rename as a new test (correct — the old red is gone, so should be the old claim).
 - **Move file**: same — annotation makes the id survive moves.
 - **Brownfield**: zero churn for existing 96 files; they use the default.
-- **Greenfield**: model uses the default unless the user requests stability. `reasonix doctor` could surface a warning when a `test_id` would be lost.
+- **Greenfield**: model uses the default unless the user requests stability. `reasonix-legacy doctor` could surface a warning when a `test_id` would be lost.
 
 ### How the dispatcher resolves it
 

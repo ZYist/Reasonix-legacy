@@ -203,7 +203,7 @@ export class SkillStore {
       return { error: `invalid skill name: "${name}" — use letters, digits, _, -, .` };
     }
     if (scope === "project" && !this.projectRoot) {
-      return { error: "project scope requires a workspace — run from `reasonix code`" };
+      return { error: "project scope requires a workspace — run from `reasonix-legacy code`" };
     }
     const root =
       scope === "project"
@@ -622,7 +622,7 @@ What this skill is for:
 
 Key facts:
 - QQ is a remote channel attached to an existing Reasonix session, not a separate mode.
-- Standalone \`reasonix qq\` and TUI \`/qq connect\` both attach QQ to a HeadlessHost-backed Reasonix session.
+- Standalone \`reasonix-legacy qq\` and TUI \`/qq connect\` both attach QQ to a HeadlessHost-backed Reasonix session.
 - Inbound QQ messages appear in the session transcript and replies route back to QQ.
 - \`未绑定\` / \`unbound\` is an access-control state, not a transport failure by itself.
 

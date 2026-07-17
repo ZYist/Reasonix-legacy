@@ -1,4 +1,4 @@
-/** reasonix update — pure planUpdate + orchestrator with every side effect mocked via test seams. */
+/** reasonix-legacy update — pure planUpdate + orchestrator with every side effect mocked via test seams. */
 
 import { describe, expect, it } from "vitest";
 import { planUpdate, updateCommand } from "../src/cli/commands/update.js";

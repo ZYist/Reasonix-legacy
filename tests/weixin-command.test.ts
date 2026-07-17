@@ -1,4 +1,4 @@
-// `reasonix weixin` command assembly + dispatch vertical slice (Task 2 — BOT-02).
+// `reasonix-legacy weixin` command assembly + dispatch vertical slice (Task 2 — BOT-02).
 //
 // Stubs HeadlessHost + WeixinChannel + runWeixinQrLogin + installHeadlessGateBridges
 // and proves weixinCommand wires them correctly: inbound onSubmitMessage ->
@@ -119,7 +119,7 @@ vi.mock("../src/env.js", () => ({
 
 const { weixinCommand } = await import("../src/cli/commands/weixin.js");
 
-describe("reasonix weixin — BOT-02 host+channel assembly", () => {
+describe("reasonix-legacy weixin — BOT-02 host+channel assembly", () => {
   let tmpWorkspace: string;
   let exitSpy: ReturnType<typeof vi.spyOn>;
 

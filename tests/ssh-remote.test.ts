@@ -89,7 +89,7 @@ describe("generateSshDryRunReport", () => {
     expect(report).toContain("probe remote environment");
     expect(report).toContain("install or update Reasonix");
     expect(report).toContain("launch Reasonix");
-    expect(report).toContain("reasonix code");
+    expect(report).toContain("reasonix-legacy code");
   });
 
   it("warns when ssh is missing and shows install instructions", () => {
@@ -120,7 +120,7 @@ describe("generateSshDryRunReport", () => {
     expect(report).toContain("no network connections are made");
   });
 
-  it("includes the reasonix version", () => {
+  it("includes the reasonix-legacy version", () => {
     const report = generateSshDryRunReport(uri, {
       sshBin: "ssh",
       version: "OpenSSH_9.6",

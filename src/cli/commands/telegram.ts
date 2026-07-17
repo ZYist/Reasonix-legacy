@@ -1,9 +1,9 @@
-// `reasonix telegram` — standalone Telegram bot command (BOT-02).
+// `reasonix-legacy telegram` — standalone Telegram bot command (BOT-02).
 //
 // Thin entry (D-04): assembles HeadlessHost (02-01) + TelegramChannel +
 // installHeadlessGateBridges, wires inbound onSubmitMessage to
 // host.runTurn and outbound replies to channel.sendResponse. Same
-// gate-callback shape as `reasonix qq` (02-02) — the host mounts the
+// gate-callback shape as `reasonix-legacy qq` (02-02) — the host mounts the
 // channel rather than rewriting its long-polling protocol (D-08).
 //
 // Constructor divergence (PATTERNS.md): TelegramChannel's ctor accepts

@@ -122,7 +122,7 @@ describe("commitCommand characterization", () => {
     await expect(commitCommand({ yes: true })).rejects.toBe(exitSignal);
 
     expect(captured(stderr)).toContain(
-      "reasonix commit: model call failed — offline model unavailable",
+      "reasonix-legacy commit: model call failed — offline model unavailable",
     );
     expect(exit).toHaveBeenCalledWith(1);
     expect(fakes.spawn).not.toHaveBeenCalled();
@@ -137,7 +137,7 @@ describe("commitCommand characterization", () => {
 
     await expect(commitCommand({ yes: true })).rejects.toBe(exitSignal);
 
-    expect(captured(stderr)).toContain("reasonix commit: git commit exited 7.");
+    expect(captured(stderr)).toContain("reasonix-legacy commit: git commit exited 7.");
     expect(exit).toHaveBeenCalledWith(7);
   });
 });

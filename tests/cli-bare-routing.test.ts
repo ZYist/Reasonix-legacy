@@ -1,4 +1,4 @@
-/** Bare `reasonix` routing — defaults to code mode in the current directory; explicit `chat` stays chat. */
+/** Bare `reasonix-legacy` routing — defaults to code mode in the current directory; explicit `chat` stays chat. */
 
 import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -111,7 +111,7 @@ describe("bare CLI routing", () => {
     );
   });
 
-  it("keeps explicit reasonix chat in chat mode even inside a project", async () => {
+  it("keeps explicit reasonix-legacy chat in chat mode even inside a project", async () => {
     writeConfig({ setupCompleted: true }, join(home, ".reasonix", "config.json"));
     writeFileSync(join(cwd, "package.json"), "{}\n", "utf8");
 

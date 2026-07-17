@@ -1,4 +1,4 @@
-// `reasonix qq` command assembly + dispatch vertical slice (Task 2 — BOT-01).
+// `reasonix-legacy qq` command assembly + dispatch vertical slice (Task 2 — BOT-01).
 //
 // Stubs HeadlessHost + QQChannel + installHeadlessGateBridges and proves
 // qqCommand wires them correctly: inbound onSubmitMessage -> host.runTurn
@@ -88,7 +88,7 @@ vi.mock("../src/env.js", () => ({
 
 const { qqCommand } = await import("../src/cli/commands/qq.js");
 
-describe("reasonix qq — BOT-01 host+channel assembly", () => {
+describe("reasonix-legacy qq — BOT-01 host+channel assembly", () => {
   let tmpWorkspace: string;
   let exitSpy: ReturnType<typeof vi.spyOn>;
 

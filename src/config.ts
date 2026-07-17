@@ -204,7 +204,7 @@ export interface ReasonixConfig {
   /** Canonical MCP server configuration — merges with and overrides legacy `mcp`/`mcpEnv`/`mcpDisabled`. */
   mcpServers?: Record<string, McpServerConfig>;
   session?: string | null;
-  /** When false, each `reasonix code` / `reasonix chat` launch starts a fresh session instead
+  /** When false, each `reasonix-legacy code` / `reasonix-legacy chat` launch starts a fresh session instead
    *  of resuming the last one (#2238). Default true preserves existing behavior. */
   autoResumeSession?: boolean;
   setupCompleted?: boolean;
@@ -476,7 +476,9 @@ function sanitizeStringArrayField(
   if (value === undefined) return;
   const fieldName = segments.join(".");
   if (!Array.isArray(value)) {
-    console.warn(`reasonix: config "${filePath}" field "${fieldName}" is not an array — ignoring`);
+    console.warn(
+      `reasonix-legacy: config "${filePath}" field "${fieldName}" is not an array — ignoring`,
+    );
     delete parent[leaf];
     return;
   }
@@ -484,7 +486,7 @@ function sanitizeStringArrayField(
   if (parsed.success) return;
   const filtered = value.filter((x): x is string => typeof x === "string");
   console.warn(
-    `reasonix: config "${filePath}" field "${fieldName}" had ${value.length - filtered.length} non-string item(s) — dropped`,
+    `reasonix-legacy: config "${filePath}" field "${fieldName}" had ${value.length - filtered.length} non-string item(s) — dropped`,
   );
   parent[leaf] = filtered;
 }

@@ -1,4 +1,4 @@
-// `reasonix qq` — standalone QQ bot command (BOT-01).
+// `reasonix-legacy qq` — standalone QQ bot command (BOT-01).
 //
 // Thin entry (D-04): assembles HeadlessHost (02-01) + QQChannel +
 // installHeadlessGateBridges, wires inbound onSubmitMessage to

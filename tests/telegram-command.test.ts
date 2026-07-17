@@ -1,4 +1,4 @@
-// `reasonix telegram` command assembly + dispatch vertical slice (Task 1 — BOT-02).
+// `reasonix-legacy telegram` command assembly + dispatch vertical slice (Task 1 — BOT-02).
 //
 // Stubs HeadlessHost + TelegramChannel + installHeadlessGateBridges and proves
 // telegramCommand wires them correctly: inbound onSubmitMessage -> host.runTurn
@@ -96,7 +96,7 @@ vi.mock("../src/env.js", () => ({
 
 const { telegramCommand } = await import("../src/cli/commands/telegram.js");
 
-describe("reasonix telegram — BOT-02 host+channel assembly", () => {
+describe("reasonix-legacy telegram — BOT-02 host+channel assembly", () => {
   let tmpWorkspace: string;
   let exitSpy: ReturnType<typeof vi.spyOn>;
 

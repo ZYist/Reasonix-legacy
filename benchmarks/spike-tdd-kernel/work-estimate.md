@@ -81,6 +81,6 @@ This is where most of the actual integration risk lives.
 
 ## Cross-cutting risks not pinned to a stage
 
-1. **Untested codebases.** `reasonix doctor` should detect (no `tests/` dir, no `vitest.config.*`) and refuse to enable strict mode at all on first run. Otherwise the flag is unusable.
+1. **Untested codebases.** `reasonix-legacy doctor` should detect (no `tests/` dir, no `vitest.config.*`) and refuse to enable strict mode at all on first run. Otherwise the flag is unusable.
 2. **Greenfield test-file location.** Spike Exp 3 showed the model picks reasonable but inconsistent paths when none is specified. The plan-step `test_file_path` field is the fix, but a user editing a single file with no plan still has the gap. Stage 2 should refuse `edit_file` when strict + no `test_file_path` is in scope.
 3. **MCP-served edit tools.** Reasonix supports MCP-hosted tools (`src/mcp.ts`). If an MCP server exposes its own write/edit tool, the kernel gate doesn't apply. Stage 2 should at minimum log a warning; longer-term, MCP write tools could opt into the same gate via a hook.

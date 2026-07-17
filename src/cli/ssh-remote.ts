@@ -67,7 +67,7 @@ function shellQuote(value: string): string {
 export function generateSshDryRunReport(uri: SshUri, ssh: SshProbe | null): string {
   const sq = shellQuote;
   const sections = [
-    `reasonix ${DISPLAY_VERSION}  ·  SSH remote workspace RFC dry-run`,
+    `${DISPLAY_VERSION}  ·  SSH remote workspace RFC dry-run`,
     "issue: https://github.com/esengine/DeepSeek-Reasonix/issues/2140",
     "",
     `target:  ${sq(`ssh://${uri.user}@${uri.host}:${uri.port}${uri.path}`)}`,
@@ -95,7 +95,7 @@ export function generateSshDryRunReport(uri: SshUri, ssh: SshProbe | null): stri
   );
 
   const remote = `${sq(uri.user)}@${sq(uri.host)}`;
-  const cdCmd = `cd ${sq(uri.path)} && reasonix code`;
+  const cdCmd = `cd ${sq(uri.path)} && reasonix-legacy code`;
 
   if (ssh) {
     sections.push(
@@ -106,7 +106,7 @@ export function generateSshDryRunReport(uri: SshUri, ssh: SshProbe | null): stri
       `   $ ssh -p ${uri.port} ${remote} -- 'node --version && npm --version && uname -s'`,
       "",
       "3. install or update Reasonix on remote",
-      `   $ ssh -p ${uri.port} ${remote} -- 'npm i -g reasonix'`,
+      `   $ ssh -p ${uri.port} ${remote} -- 'npm i -g reasonix-legacy'`,
       "",
       "4. launch Reasonix in the target workspace on the remote host",
       `   $ ssh -p ${uri.port} ${remote} -- '${cdCmd}'`,
@@ -123,7 +123,7 @@ export function generateSshDryRunReport(uri: SshUri, ssh: SshProbe | null): stri
       `   $ ssh -p ${uri.port} ${remote} -- 'echo ok'`,
       "",
       "3. install Reasonix on remote",
-      `   $ ssh -p ${uri.port} ${remote} -- 'npm i -g reasonix'`,
+      `   $ ssh -p ${uri.port} ${remote} -- 'npm i -g reasonix-legacy'`,
       "",
       "4. launch Reasonix remotely",
       `   $ ssh -p ${uri.port} ${remote} -- '${cdCmd}'`,
@@ -135,7 +135,7 @@ export function generateSshDryRunReport(uri: SshUri, ssh: SshProbe | null): stri
     "--- short-term recommendation ---",
     "",
     "Until native remote execution lands, the simplest working setup is:",
-    "  1. Run Reasonix directly on the remote host (`ssh user@host`, then `reasonix code`).",
+    "  1. Run Reasonix directly on the remote host (`ssh user@host`, then `reasonix-legacy code`).",
     "",
     "--- RFC scope ---",
     "",
