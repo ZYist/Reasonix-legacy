@@ -8,12 +8,12 @@
 
 ### 发布身份与版本权威
 
-- [ ] **ID-01**: 用户安装 npm package `reasonix-legacy` 后，只获得名为 `reasonix-legacy` 的 CLI bin；当前 package 不再暴露 `reasonix` 或 `dsnix` 命令。
-- [ ] **ID-02**: 维护者在 workspace、package graph、lockfile 和发布内容中不再看到 `packages/dsnix`、`dsnix` shim、file dependency 或相关 workspace 记录。
-- [ ] **ID-03**: 当前 README、帮助文本、安装示例、贡献文档和维护文档只使用 `reasonix-legacy` 命令；历史 CHANGELOG 与已归档里程碑不被重写。
-- [ ] **ID-04**: `reasonix-legacy --version` 输出明确的 `reasonix-legacy 1.3.0` 身份，运行时版本只从单一 package authority 派生。
-- [ ] **VER-01**: root package、lockfile root record、运行时版本、README、CHANGELOG、governance、SECURITY 与 v1.3 milestone 对同一 `1.3.0` / `v1.3` 关系无冲突。
-- [ ] **VER-02**: 自动一致性检查会在 package/bin/version/current-doc/release workflow 再次漂移或当前维护表面重新出现 `dsnix` 时失败。
+- [x] **ID-01**: 用户安装 npm package `reasonix-legacy` 后，只获得名为 `reasonix-legacy` 的 CLI bin；当前 package 不再暴露 `reasonix` 或 `dsnix` 命令。
+- [x] **ID-02**: 维护者在 workspace、package graph、lockfile 和发布内容中不再看到 `packages/dsnix`、`dsnix` shim、file dependency 或相关 workspace 记录。
+- [x] **ID-03**: 当前 README、帮助文本、安装示例、贡献文档和维护文档只使用 `reasonix-legacy` 命令；历史 CHANGELOG 与已归档里程碑不被重写。
+- [x] **ID-04**: `reasonix-legacy --version` 输出明确的 `reasonix-legacy 1.3.0` 身份，运行时版本只从单一 package authority 派生。
+- [x] **VER-01**: root package、lockfile root record、运行时版本、README、CHANGELOG、governance、SECURITY 与 v1.3 milestone 对同一 `1.3.0` / `v1.3` 关系无冲突。
+- [x] **VER-02**: 自动一致性检查会在 package/bin/version/current-doc/release workflow 再次漂移或当前维护表面重新出现 `dsnix` 时失败。
 
 ### 供应链与安全合同
 
@@ -60,12 +60,12 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ID-01 | Phase 10 | Pending |
-| ID-02 | Phase 10 | Pending |
-| ID-03 | Phase 10 | Pending |
-| ID-04 | Phase 10 | Pending |
-| VER-01 | Phase 10 | Pending |
-| VER-02 | Phase 10 | Pending |
+| ID-01 | Phase 10 | Complete |
+| ID-02 | Phase 10 | Complete |
+| ID-03 | Phase 10 | Complete |
+| ID-04 | Phase 10 | Complete |
+| VER-01 | Phase 10 | Complete |
+| VER-02 | Phase 10 | Complete |
 | SEC-01 | Phase 11 | Pending |
 | SEC-02 | Phase 11 | Pending |
 | SEC-03 | Phase 11 | Pending |
@@ -83,6 +83,7 @@
 | REL-02 | Phase 13 | Pending |
 
 **Coverage:**
+
 - v1.3 requirements: 21 total
 - Mapped to phases: 21
 - Unmapped: 0 ✓

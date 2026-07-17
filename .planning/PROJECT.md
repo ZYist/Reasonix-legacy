@@ -43,13 +43,14 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 - ✓ **双语 i18n 边界** — 仅保留 `en`/`zh-CN`，支持 alias、migration、fallback 与 key parity — v1.1
 - ✓ **关键路径离线保护** — TUI、关键 CLI command、Telegram/Weixin 生命周期具备确定性特征测试 — v1.1
 - ✓ **CI 与 flaky 可见性** — 活跃路径具备完整门禁和首轮失败/诊断重试报告 — v1.1
+- ✓ **统一发布身份** — root npm package、CLI bin、运行时帮助与维护文档统一为 `reasonix-legacy@1.3.0`，`reasonix`/`dsnix` 当前入口及 dsnix workspace/publish path 已删除 — v1.3 Phase 10
+- ✓ **当前版本权威** — package、lockfile root、运行时版本、README、CHANGELOG、governance、SECURITY 与 milestone 对齐到 `1.3.0` / `v1.3`，并有自动漂移 guard — v1.3 Phase 10
 
 ### Active
 
-- [ ] **统一发布身份** — npm package 与 CLI 均为 `reasonix-legacy`，删除全部 `dsnix` workspace、shim、bin、文档与发布 workflow。
-- [ ] **稳定版安全整改** — 修复生产依赖高危漏洞，并对齐 `SECURITY.md`、CodeQL、CI 与 branch-protection 指引。
-- [ ] **版本与发布权威** — package、lockfile、运行时版本、README、CHANGELOG、tag/release 叙述一致。
-- [ ] **Windows 发布验证** — 以 Windows + Node.js 24.15.0 + npm 11.16.0 + PowerShell 完成 clean install、全量 verify、pack 和隔离安装验证。
+- [ ] **稳定版安全整改** — 修复生产依赖高危漏洞，并对齐 `SECURITY.md` 的当前支持边界与 install-script provenance 记录。
+- [ ] **Windows 发布自动化与发布权威** — CI、CodeQL、branch 指引、npm publish workflow 与 `v1`/`dev`、Windows 基线和 `v1.3.0` tag convention 一致。
+- [ ] **Windows 候选包验证** — 以 Windows + Node.js 24.15.0 + npm 11.16.0 + PowerShell 完成 clean install、全量 verify、pack、隔离安装和最终稳定版复评。
 
 ### Out of Scope
 
@@ -93,8 +94,8 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 | HG-03：`dev` push 运行完整 CI | 活跃开发路径需要直接反馈，同时不虚构 GitHub 外部保护设置 | ✓ v1.1 — `dev` push 跑 CI；进 `main` 推荐 PR；branch protection 仅作为经验证的 operator action |
 | HG-04：采用风险导向 coverage policy | 单一全局百分比无法代表 TUI、command 与 channel 生命周期风险 | ✓ v1.1 — 67.39% 仅作 fresh-baseline 前的非回归参考；纯模块高覆盖；关键路径按离线行为场景验收；详见 `docs/governance.md` |
 
-| v1.3：package 与 CLI 统一为 `reasonix-legacy` | 单一公开身份消除 package/bin/docs/release 漂移 | — Approved 2026-07-17；实现与验证待 v1.3 |
-| v1.3：删除全部 `dsnix` 遗留，不设兼容期 | 老旧映射已经损坏发布链，继续维护只增加歧义 | — Approved 2026-07-17；实现与验证待 v1.3 |
+| v1.3：package 与 CLI 统一为 `reasonix-legacy` | 单一公开身份消除 package/bin/docs/release 漂移 | ✓ Phase 10 — `reasonix-legacy@1.3.0` 与唯一同名 bin 已实现并验证 |
+| v1.3：删除全部 `dsnix` 遗留，不设兼容期 | 老旧映射已经损坏发布链，继续维护只增加歧义 | ✓ Phase 10 — workspace、shim/bin、lock records 与专用 publish workflow 已删除 |
 | v1.3：保持 DeepSeek-first，不做多模型适配 | 保护针对 DeepSeek 的 cache-first 与工具调用修复差异化 | — Approved 2026-07-17；实现与验证待 v1.3 |
 | v1.3：仅 Windows / Node 24.15.0 为强制测试标准 | 与当前真实维护环境一致，避免为未支持矩阵阻塞稳定版 | — Approved 2026-07-17；实现与验证待 v1.3 |
 
@@ -116,5 +117,5 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-17 after v1.1 milestone closeout and v1.3 direction lock*
+*Last updated: 2026-07-17 after Phase 10 package identity unification*
 

@@ -24,9 +24,10 @@ v1.3 把 2026-07-17 稳定版评估的本地发布阻塞项收敛为四个顺序
 3. `reasonix-legacy --version`、package/lock/runtime、README、CHANGELOG、governance 与 milestone 一致指向 `1.3.0` / `v1.3`。
 4. 自动检查会阻止当前维护表面重新出现旧 bin、`dsnix` 或版本/tag convention 漂移，同时允许历史 archive 保持原样。
 
-**Plans:**
+**Plans:** 2/2 plans complete
+
 - [x] 10-01 — Package graph and runtime identity
-- [ ] 10-02 — Maintained docs and identity drift guard
+- [x] 10-02 — Maintained docs and identity drift guard
 
 ### Phase 11: Supply Chain and Security Contract
 
@@ -84,7 +85,7 @@ v1.3 把 2026-07-17 稳定版评估的本地发布阻塞项收敛为四个顺序
 |-------|-----------|----------------|--------|-----------|
 | 1-4. Pure CLI | v1.0 | 8/8 | Complete | 2026-07-05 |
 | 5-9. Risk Foundations | v1.1 | 9/9 | Complete | 2026-07-17 |
-| 10. Package Identity Unification | v1.3 | 0/TBD | Not started | — |
+| 10. Package Identity Unification | v1.3 | 2/2 | Complete    | 2026-07-17 |
 | 11. Supply Chain and Security Contract | v1.3 | 0/TBD | Not started | — |
 | 12. Windows Release Automation | v1.3 | 0/TBD | Not started | — |
 | 13. Candidate Packaging and Stable Reassessment | v1.3 | 0/TBD | Not started | — |
