@@ -18,6 +18,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+const FAKE_DEEPSEEK_KEY = "sk-FAKEDEEPSEEKKEY0123456789abcdef";
+const FAKE_TELEGRAM_TOKEN = "123456789:AAFfakeTELEGRAMtoken0123456789xyz";
+
 // Stub HeadlessHost before importing telegramCommand. The factory records its
 // args and returns a fake host whose runTurn echoes the inbound text so
 // the test can trace the dispatch end-to-end.
@@ -86,6 +89,7 @@ vi.mock("../src/config.js", async (importOriginal) => {
     ...actual,
     loadEditMode: vi.fn(() => "review" as const),
     bridgeEndpointEnv: vi.fn(() => undefined),
+    collectBotSecrets: vi.fn(() => [FAKE_DEEPSEEK_KEY, FAKE_TELEGRAM_TOKEN]),
     DEFAULT_MODEL: "deepseek-v4-flash",
   };
 });
@@ -99,6 +103,8 @@ const { telegramCommand } = await import("../src/cli/commands/telegram.js");
 describe("reasonix-legacy telegram — BOT-02 host+channel assembly", () => {
   let tmpWorkspace: string;
   let exitSpy: ReturnType<typeof vi.spyOn>;
+  let stderrSpy: ReturnType<typeof vi.spyOn>;
+  let stderrWrites: string[];
 
   beforeEach(() => {
     tmpWorkspace = mkdtempSync(join(tmpdir(), "reasonix-tg-cmd-"));
@@ -112,6 +118,13 @@ describe("reasonix-legacy telegram — BOT-02 host+channel assembly", () => {
     bridgeConsumeReplyMock.mockReturnValue(false);
     capturedOnSubmit = null;
     capturedCallbacks = null;
+    stderrWrites = [];
+    stderrSpy = vi.spyOn(process.stderr, "write").mockImplementation(((
+      chunk: string | Uint8Array,
+    ) => {
+      stderrWrites.push(String(chunk));
+      return true;
+    }) as typeof process.stderr.write);
     // telegramCommand's cleanup calls process.exit(0) — intercept so the test
     // worker survives to assert. The spy records the call without exiting.
     exitSpy = vi.spyOn(process, "exit").mockImplementation((() => {
@@ -120,6 +133,7 @@ describe("reasonix-legacy telegram — BOT-02 host+channel assembly", () => {
   });
 
   afterEach(() => {
+    stderrSpy.mockRestore();
     exitSpy.mockRestore();
     vi.clearAllMocks();
   });
@@ -173,6 +187,32 @@ describe("reasonix-legacy telegram — BOT-02 host+channel assembly", () => {
       expect.objectContaining({ onEvent: expect.any(Function) }),
     );
     expect(channelSendResponseMock).toHaveBeenCalledWith("echo: hi");
+
+    process.emit("SIGINT", "SIGINT");
+    await promise.catch(() => undefined);
+  });
+
+  it("redacts secret-bearing transport failures before writing sendFailed stderr output", async () => {
+    const promise = telegramCommand({ workspace: tmpWorkspace });
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    channelSendResponseMock.mockRejectedValueOnce(
+      new Error(
+        `POST https://api.telegram.org/bot${FAKE_TELEGRAM_TOKEN}/sendMessage failed for ${FAKE_DEEPSEEK_KEY}`,
+      ),
+    );
+
+    capturedOnSubmit?.("hi");
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const stderr = stderrWrites.join("");
+    expect(stderr).toContain("[redacted]");
+    expect(stderr).not.toContain(FAKE_TELEGRAM_TOKEN);
+    expect(stderr).not.toContain(FAKE_DEEPSEEK_KEY);
 
     process.emit("SIGINT", "SIGINT");
     await promise.catch(() => undefined);

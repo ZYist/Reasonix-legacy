@@ -13,6 +13,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+const FAKE_QQ_SECRET = "fakeQQappSecret0123456789";
+
 // Stub HeadlessHost before importing qqCommand. The factory records its
 // args and returns a fake host whose runTurn echoes the inbound text so
 // the test can trace the dispatch end-to-end.
@@ -51,14 +53,24 @@ vi.mock("../src/cli/headless/gate-bridges.js", () => ({
 
 // Capture onSubmitMessage so the test can drive an inbound message.
 let capturedOnSubmit: ((text: string) => void) | null = null;
+let capturedCallbacks: {
+  onSubmitMessage: unknown;
+  onError?: unknown;
+  onInfo?: unknown;
+} | null = null;
 const channelStartMock = vi.fn(async () => undefined);
 const channelStopMock = vi.fn(async () => undefined);
 const channelSendResponseMock = vi.fn(async (_text: string) => undefined);
 
 vi.mock("../src/qq/channel.js", () => ({
   QQChannel: class {
-    constructor(callbacks: { onSubmitMessage: (text: string) => void }) {
+    constructor(callbacks: {
+      onSubmitMessage: (text: string) => void;
+      onError?: (msg: string) => void;
+      onInfo?: (msg: string) => void;
+    }) {
       capturedOnSubmit = callbacks.onSubmitMessage;
+      capturedCallbacks = callbacks;
     }
     start = channelStartMock;
     stop = channelStopMock;
@@ -78,6 +90,7 @@ vi.mock("../src/config.js", async (importOriginal) => {
     ...actual,
     loadEditMode: vi.fn(() => "review" as const),
     bridgeEndpointEnv: vi.fn(() => undefined),
+    collectBotSecrets: vi.fn(() => [FAKE_QQ_SECRET]),
     DEFAULT_MODEL: "deepseek-v4-flash",
   };
 });
@@ -91,6 +104,8 @@ const { qqCommand } = await import("../src/cli/commands/qq.js");
 describe("reasonix-legacy qq — BOT-01 host+channel assembly", () => {
   let tmpWorkspace: string;
   let exitSpy: ReturnType<typeof vi.spyOn>;
+  let stderrSpy: ReturnType<typeof vi.spyOn>;
+  let stderrWrites: string[];
 
   beforeEach(() => {
     tmpWorkspace = mkdtempSync(join(tmpdir(), "reasonix-qq-cmd-"));
@@ -103,6 +118,14 @@ describe("reasonix-legacy qq — BOT-01 host+channel assembly", () => {
     bridgeUnsubscribeMock.mockClear();
     bridgeConsumeReplyMock.mockReturnValue(false);
     capturedOnSubmit = null;
+    capturedCallbacks = null;
+    stderrWrites = [];
+    stderrSpy = vi.spyOn(process.stderr, "write").mockImplementation(((
+      chunk: string | Uint8Array,
+    ) => {
+      stderrWrites.push(String(chunk));
+      return true;
+    }) as typeof process.stderr.write);
     // qqCommand's cleanup calls process.exit(0) — intercept so the test
     // worker survives to assert. The spy records the call without exiting.
     exitSpy = vi.spyOn(process, "exit").mockImplementation((() => {
@@ -111,6 +134,7 @@ describe("reasonix-legacy qq — BOT-01 host+channel assembly", () => {
   });
 
   afterEach(() => {
+    stderrSpy.mockRestore();
     exitSpy.mockRestore();
     vi.clearAllMocks();
   });
@@ -150,6 +174,25 @@ describe("reasonix-legacy qq — BOT-01 host+channel assembly", () => {
       expect.objectContaining({ onEvent: expect.any(Function) }),
     );
     expect(channelSendResponseMock).toHaveBeenCalledWith("echo: hi");
+
+    process.emit("SIGINT", "SIGINT");
+    await promise.catch(() => undefined);
+  });
+
+  it("redacts secret-bearing channel onError output before writing stderr", async () => {
+    const promise = qqCommand({ workspace: tmpWorkspace });
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(capturedCallbacks?.onError).toEqual(expect.any(Function));
+    (capturedCallbacks?.onError as ((msg: string) => void) | undefined)?.(
+      `qq transport failed with ${FAKE_QQ_SECRET}`,
+    );
+
+    const stderr = stderrWrites.join("");
+    expect(stderr).toContain("[redacted]");
+    expect(stderr).not.toContain(FAKE_QQ_SECRET);
 
     process.emit("SIGINT", "SIGINT");
     await promise.catch(() => undefined);

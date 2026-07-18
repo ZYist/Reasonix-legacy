@@ -38,6 +38,7 @@ bot to other users.
 - [CI and branch protection](ci-branch-protection.md)
 - [Contributing](../CONTRIBUTING.md)
 - [Security policy](../SECURITY.md)
+- [Install-script provenance](install-script-provenance.md)
 - [Repository README](../README.md)
 
 ## Historical upstream snapshot

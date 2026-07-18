@@ -41,7 +41,10 @@ v1.3 把 2026-07-17 稳定版评估的本地发布阻塞项收敛为四个顺序
 3. npm install scripts 的来源与必要性有可审计记录，没有静默 auto-approve。
 4. 历史 raw-error 风险被测试确认；若仍存在，用户可见错误被脱敏且失败退出/诊断语义不回归。
 
-**Plans:** TBD
+**Plans:** 2/2 plans complete
+
+- [x] 11-01 — Dependency remediation and install-script provenance
+- [x] 11-02 — Security policy alignment and redaction regression evidence
 
 ### Phase 12: Windows Release Automation
 
@@ -86,9 +89,10 @@ v1.3 把 2026-07-17 稳定版评估的本地发布阻塞项收敛为四个顺序
 | 1-4. Pure CLI | v1.0 | 8/8 | Complete | 2026-07-05 |
 | 5-9. Risk Foundations | v1.1 | 9/9 | Complete | 2026-07-17 |
 | 10. Package Identity Unification | v1.3 | 2/2 | Complete    | 2026-07-17 |
-| 11. Supply Chain and Security Contract | v1.3 | 0/TBD | Not started | — |
+| 11. Supply Chain and Security Contract | v1.3 | 2/2 | Complete | 2026-07-18 |
 | 12. Windows Release Automation | v1.3 | 0/TBD | Not started | — |
 | 13. Candidate Packaging and Stable Reassessment | v1.3 | 0/TBD | Not started | — |
 
 ---
 *Roadmap created: 2026-07-17 · v1.3 requirements: 21/21 mapped*
+

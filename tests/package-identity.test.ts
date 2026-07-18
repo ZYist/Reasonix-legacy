@@ -27,6 +27,7 @@ const maintainedDocs = [
   "docs/cli-reference.md",
   "docs/configuration.md",
   "docs/getting-started.md",
+  "docs/install-script-provenance.md",
   "docs/governance.md",
   "docs/qq-connect.md",
   "docs/qq-connect.zh-CN.md",

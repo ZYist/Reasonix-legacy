@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Stable Release Hardening
-current_phase: 11
-current_phase_name: Supply Chain and Security Contract
+current_phase: 12
+current_phase_name: Windows Release Automation
 status: ready_to_discuss
-stopped_at: Phase 10 complete; ready to discuss Phase 11
-last_updated: "2026-07-17T07:47:00.000Z"
-last_activity: 2026-07-17
-last_activity_desc: Phase 10 complete, transitioned to Phase 11
+stopped_at: Phase 11 complete; ready to discuss Phase 12
+last_updated: "2026-07-18T05:19:46.000Z"
+last_activity: 2026-07-18
+last_activity_desc: Phase 11 complete, transitioned to Phase 12
 progress:
   total_phases: 4
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
-  percent: 25
+  completed_phases: 2
+  total_plans: 4
+  completed_plans: 4
+  percent: 50
 ---
 
 # Project State
@@ -24,40 +24,41 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-17)
 
 **Core value:** 在终端里跑一个低成本、不中断的 DeepSeek 编程 agent——缓存优先压低 token 成本，工具调用 JSON 自修复保证 loop 不被坏输出打断。
-**Current focus:** Phase 11 — Supply Chain and Security Contract
+**Current focus:** Phase 12 — Windows Release Automation
 
 ## Current Position
 
-Phase: 11 of 13 (Supply Chain and Security Contract)
+Phase: 12 of 13 (Windows Release Automation)
 Plan: Not started
 Status: Ready to discuss
-Last activity: 2026-07-17 — Phase 10 complete, transitioned to Phase 11
+Last activity: 2026-07-18 — Phase 11 complete, transitioned to Phase 12
 
-Progress: [█████░░░░░░░░░░░░░░░] 25%
+Progress: [██████████░░░░░░░░░░] 50%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 19 across v1.0, v1.1, and v1.3
-- Average duration: ~24 min/plan
-- Total execution time: ~2.9 hours
+- Total plans completed: 21 across v1.0, v1.1, and v1.3
+- v1.3 plans completed: 4 across Phases 10-11
+- Completed v1.3 phases: 2 of 4
 
 **By Phase:**
 
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 1. Web Panel Removal | 2/2 | ~81 min | ~41 min |
-| 2. Bot Decoupling | 3/3 | ~37 min | ~12 min |
-| 3. Desktop GUI Removal | 1/1 | ~18 min | ~18 min |
-| 4. Build Chain & Regression | 2/2 | ~23 min | ~12 min |
-| 5-9. Risk Foundations | 9/9 | - | - |
-| 10. Package Identity Unification | 2/2 | - | - |
+| Phase | Plans | Status |
+|-------|-------|--------|
+| 1. Web Panel Removal | 2/2 | Complete |
+| 2. Bot Decoupling | 3/3 | Complete |
+| 3. Desktop GUI Removal | 1/1 | Complete |
+| 4. Build Chain & Regression | 2/2 | Complete |
+| 5-9. Risk Foundations | 9/9 | Complete |
+| 10. Package Identity Unification | 2/2 | Complete |
+| 11. Supply Chain and Security Contract | 2/2 | Complete |
 
 **Recent Trend:**
 
-- Last 5 completed plans: ~21, ~16, 18, 7, 16 min
-- Trend: Phase 10 completed in 2 plans; Phase 11 plan count awaits discussion and planning
+- Stable-release hardening has closed package identity plus dependency/security contract work.
+- Remaining v1.3 blockers are Phase 12 automation alignment and Phase 13 candidate packaging evidence.
 
 ## Accumulated Context
 
@@ -67,6 +68,7 @@ Progress: [█████░░░░░░░░░░░░░░░] 25%
 - v1.3 remains DeepSeek-first; no multi-model/provider adaptation.
 - npm package and CLI bin will both be `reasonix-legacy`; all `dsnix` compatibility and publication surfaces will be removed.
 - Mandatory v1.3 test baseline is Windows + Node.js 24.15.0 + npm 11.16.0 + PowerShell only.
+- Phase 11 locked in a maintained install-script provenance contract and aligned `SECURITY.md` to the real CLI / TUI + ACP / MCP + QQ / Telegram / Weixin surface.
 
 ### Pending Todos
 
@@ -74,7 +76,7 @@ None recorded for this milestone.
 
 ### Blockers/Concerns
 
-- Phase 10 closed package/CLI identity and current-version drift; stable release remains blocked on Phase 11 dependency/security work, Phase 12 release automation, and Phase 13 candidate evidence.
+- Stable release remains blocked on Phase 12 release automation alignment and Phase 13 candidate packaging / reassessment evidence.
 - Remote GitHub settings, tag creation/push, and release publication remain explicit operator actions.
 - Credential/network/TTY-dependent live UAT remains manual and must not be represented as automated coverage.
 
@@ -98,10 +100,10 @@ None recorded for this milestone.
 
 ## Session Continuity
 
-Last session: 2026-07-17T15:47:00+08:00
-Stopped at: Phase 10 complete; ready to discuss Phase 11
+Last session: 2026-07-18T13:00:00+08:00
+Stopped at: Phase 11 complete; ready to discuss Phase 12
 Resume file: None
 
 ## Operator Next Steps
 
-- Discuss Phase 11 with `$gsd-discuss-phase 11`
+- Discuss Phase 12 with `$gsd-discuss-phase 12`

@@ -18,6 +18,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+const FAKE_DEEPSEEK_KEY = "sk-FAKEDEEPSEEKKEY0123456789abcdef";
+const FAKE_WEIXIN_TOKEN = "fakeWEIXINtoken0123456789";
+
 // Stub HeadlessHost before importing weixinCommand. The factory records its
 // args and returns a fake host whose runTurn echoes the inbound text.
 const hostCreateMock = vi.fn(async (_opts: unknown) => ({
@@ -68,6 +71,11 @@ vi.mock("../src/weixin/bot.js", () => ({
 // Capture onSubmitMessage so the test can drive an inbound message.
 // WeixinChannel ctor accepts {onSubmitMessage, onError?, onInfo?}.
 let capturedOnSubmit: ((text: string) => void) | null = null;
+let capturedCallbacks: {
+  onSubmitMessage: unknown;
+  onError?: unknown;
+  onInfo?: unknown;
+} | null = null;
 const channelStartMock = vi.fn(async () => undefined);
 const channelStopMock = vi.fn(async () => undefined);
 const channelSendResponseMock = vi.fn(async (_text: string) => undefined);
@@ -80,6 +88,7 @@ vi.mock("../src/weixin/channel.js", () => ({
       onInfo?: (msg: string) => void;
     }) {
       capturedOnSubmit = callbacks.onSubmitMessage;
+      capturedCallbacks = callbacks;
     }
     start = channelStartMock;
     stop = channelStopMock;
@@ -108,6 +117,7 @@ vi.mock("../src/config.js", async (importOriginal) => {
     loadEditMode: vi.fn(() => "review" as const),
     bridgeEndpointEnv: vi.fn(() => undefined),
     DEFAULT_MODEL: "deepseek-v4-flash",
+    collectBotSecrets: vi.fn(() => [FAKE_DEEPSEEK_KEY, FAKE_WEIXIN_TOKEN]),
     loadWeixinConfig: loadWeixinConfigMock,
     saveWeixinConfig: saveWeixinConfigMock,
   };
@@ -122,6 +132,8 @@ const { weixinCommand } = await import("../src/cli/commands/weixin.js");
 describe("reasonix-legacy weixin — BOT-02 host+channel assembly", () => {
   let tmpWorkspace: string;
   let exitSpy: ReturnType<typeof vi.spyOn>;
+  let stderrSpy: ReturnType<typeof vi.spyOn>;
+  let stderrWrites: string[];
 
   beforeEach(() => {
     tmpWorkspace = mkdtempSync(join(tmpdir(), "reasonix-wx-cmd-"));
@@ -136,6 +148,14 @@ describe("reasonix-legacy weixin — BOT-02 host+channel assembly", () => {
     runWeixinQrLoginMock.mockClear();
     loadWeixinConfigMock.mockClear();
     saveWeixinConfigMock.mockClear();
+    capturedCallbacks = null;
+    stderrWrites = [];
+    stderrSpy = vi.spyOn(process.stderr, "write").mockImplementation(((
+      chunk: string | Uint8Array,
+    ) => {
+      stderrWrites.push(String(chunk));
+      return true;
+    }) as typeof process.stderr.write);
     // Default: credentials already present (QR path skipped).
     loadWeixinConfigMock.mockReturnValue({
       token: "saved-token",
@@ -152,6 +172,7 @@ describe("reasonix-legacy weixin — BOT-02 host+channel assembly", () => {
   });
 
   afterEach(() => {
+    stderrSpy.mockRestore();
     exitSpy.mockRestore();
     vi.clearAllMocks();
   });
@@ -190,6 +211,31 @@ describe("reasonix-legacy weixin — BOT-02 host+channel assembly", () => {
       expect.objectContaining({ onEvent: expect.any(Function) }),
     );
     expect(channelSendResponseMock).toHaveBeenCalledWith("echo: hi");
+
+    process.emit("SIGINT", "SIGINT");
+    await promise.catch(() => undefined);
+  });
+
+  it("redacts secret-bearing host errors before writing user-visible stderr output", async () => {
+    const promise = weixinCommand({ workspace: tmpWorkspace });
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const fakeHost = await hostCreateMock.mock.results[0]?.value;
+    fakeHost?.runTurn.mockRejectedValueOnce(
+      new Error(`weixin upstream failed with ${FAKE_WEIXIN_TOKEN} and ${FAKE_DEEPSEEK_KEY}`),
+    );
+
+    capturedOnSubmit?.("hi");
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const stderr = stderrWrites.join("");
+    expect(stderr).toContain("[redacted]");
+    expect(stderr).not.toContain(FAKE_WEIXIN_TOKEN);
+    expect(stderr).not.toContain(FAKE_DEEPSEEK_KEY);
 
     process.emit("SIGINT", "SIGINT");
     await promise.catch(() => undefined);

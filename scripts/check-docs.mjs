@@ -12,6 +12,7 @@ const requiredDocs = [
   "docs/getting-started.md",
   "docs/cli-reference.md",
   "docs/configuration.md",
+  "docs/install-script-provenance.md",
   "docs/architecture.md",
   "docs/qq-connect.md",
   "docs/qq-connect.zh-CN.md",
@@ -36,6 +37,22 @@ function collectCurrentFiles(relativeDir, extensions) {
     .map((entry) => `${relativeDir}/${String(entry).replaceAll("\\", "/")}`)
     .filter((relativePath) => extensions.some((extension) => relativePath.endsWith(extension)))
     .filter((relativePath) => statSync(resolve(root, relativePath)).isFile());
+}
+function collectInstallScriptEntries(packageLock) {
+  return Object.entries(packageLock.packages ?? {})
+    .filter(([, meta]) => meta?.hasInstallScript)
+    .map(([packagePath, meta]) => ({
+      path: packagePath,
+      version: meta.version,
+      dev: Boolean(meta.dev),
+      optional: Boolean(meta.optional),
+    }))
+    .sort((a, b) => a.path.localeCompare(b.path));
+}
+function parseInstallScriptReview(docText) {
+  const match = docText.match(/```install-script-review\r?\n([\s\S]*?)\r?\n```/);
+  if (!match) throw new Error("missing ```install-script-review block");
+  return JSON.parse(match[1]);
 }
 
 for (const relativePath of [...requiredDocs, archiveManifest]) {
@@ -163,6 +180,59 @@ if (!structureOnly) {
     }
     if (!text.includes("archive/upstream-reasonix/ARCHIVE.md")) {
       fail(`${relativePath} does not link the upstream archive manifest`);
+    }
+  }
+
+  const installScriptDoc = read("docs/install-script-provenance.md");
+  let installScriptReview = null;
+  try {
+    installScriptReview = parseInstallScriptReview(installScriptDoc);
+  } catch (error) {
+    fail(`docs/install-script-provenance.md review block invalid: ${error.message}`);
+  }
+  const expectedInstallScripts = collectInstallScriptEntries(packageLock);
+  const productionInstallScripts = expectedInstallScripts.filter((entry) => !entry.dev);
+  if (packageJson.scripts?.prepare !== "simple-git-hooks || true") {
+    fail("package.json prepare script must stay on simple-git-hooks || true");
+  }
+  if (!installScriptDoc.includes("No current production dependency is allowed to require an install script.")) {
+    fail("docs/install-script-provenance.md must state that production install scripts are disallowed");
+  }
+  if (installScriptReview) {
+    if (installScriptReview.rootPrepareScript !== packageJson.scripts?.prepare) {
+      fail("docs/install-script-provenance.md rootPrepareScript does not match package.json");
+    }
+    if (installScriptReview.productionInstallScriptsAllowed !== false) {
+      fail("docs/install-script-provenance.md must declare productionInstallScriptsAllowed=false");
+    }
+    if (JSON.stringify(installScriptReview.entries ?? []) !== JSON.stringify(expectedInstallScripts)) {
+      fail("docs/install-script-provenance.md reviewed install-script set does not match package-lock.json");
+    }
+  }
+  if (productionInstallScripts.length > 0) {
+    fail(
+      `production dependency install scripts present: ${productionInstallScripts.map((entry) => entry.path).join(", ")}`,
+    );
+  }
+
+  const securityPolicy = read("SECURITY.md");
+  const requiredSecurityPhrases = [
+    "`reasonix-legacy`",
+    "CLI / TUI",
+    "ACP",
+    "MCP",
+    "QQ",
+    "Telegram",
+    "Weixin",
+  ];
+  for (const phrase of requiredSecurityPhrases) {
+    if (!securityPolicy.includes(phrase)) {
+      fail(`SECURITY.md missing maintained surface phrase: ${phrase}`);
+    }
+  }
+  for (const forbiddenPhrase of ["dashboard", "local HTTP server", "Tauri"]) {
+    if (securityPolicy.toLowerCase().includes(forbiddenPhrase.toLowerCase())) {
+      fail(`SECURITY.md mentions retired surface: ${forbiddenPhrase}`);
     }
   }
 
