@@ -6,6 +6,8 @@ import { DISPLAY_VERSION, VERSION } from "../src/version.js";
 const readJson = (path: string) => JSON.parse(readFileSync(path, "utf8"));
 const expectedBin = { "reasonix-legacy": "dist/cli/index.js" };
 
+const branchPolicyFiles = ["CONTRIBUTING.md", "docs/ci-branch-protection.md", "docs/governance.md"];
+
 function collectCurrentFiles(relativeDir: string, extensions: string[]): string[] {
   return readdirSync(relativeDir, { recursive: true })
     .map((entry) => `${relativeDir}/${String(entry).replaceAll("\\", "/")}`)
@@ -56,6 +58,11 @@ describe("v1.3 package identity contract", () => {
     expect(pkg.name).toBe("reasonix-legacy");
     expect(pkg.version).toBe("1.3.0");
     expect(pkg.bin).toEqual(expectedBin);
+    expect(
+      Object.entries(pkg.dependencies ?? {}).filter(([, version]) =>
+        /^workspace:/.test(String(version)),
+      ),
+    ).toEqual([]);
     expect(VERSION).toBe(pkg.version);
     expect(DISPLAY_VERSION).toBe("reasonix-legacy 1.3.0");
   });
@@ -95,5 +102,54 @@ describe("v1.3 package identity contract", () => {
     expect(readFileSync("src/cli/commands/version.ts", "utf8")).toContain(
       "console.log(DISPLAY_VERSION)",
     );
+  });
+
+  it("keeps release automation aligned to the Windows v1.3 branch contract", () => {
+    const ci = readFileSync(".github/workflows/ci.yml", "utf8");
+    expect(ci).toMatch(/branches:\s*\[v1, dev\]/);
+    expect(ci).toMatch(/runs-on:\s*windows-latest/);
+    expect(ci).toMatch(/node-version:\s*"24\.15\.0"/);
+    expect(ci).toMatch(/npm@11\.16\.0/);
+    expect(ci).toMatch(/shell:\s*pwsh/);
+    expect(ci).toContain("node scripts/check-docs.mjs");
+    expect(ci).toContain("node scripts/ci-test-with-retry.mjs");
+    expect(ci).not.toMatch(/\bmain\b/);
+    expect(ci).not.toContain("ubuntu-latest");
+
+    const codeql = readFileSync(".github/workflows/codeql.yml", "utf8");
+    expect(codeql).toMatch(/branches:\s*\[v1, dev\]/);
+    expect(codeql).toMatch(/runs-on:\s*windows-latest/);
+    expect(codeql).toMatch(/node-version:\s*"24\.15\.0"/);
+    expect(codeql).toMatch(/npm@11\.16\.0/);
+    expect(codeql).not.toMatch(/\bmain\b/);
+
+    const publish = readFileSync(".github/workflows/publish-npm.yml", "utf8");
+    expect(publish).toMatch(/runs-on:\s*windows-latest/);
+    expect(publish).toMatch(/node-version:\s*"24\.15\.0"/);
+    expect(publish).toMatch(/npm@11\.16\.0/);
+    expect(publish).toContain("v1.3.0");
+    expect(publish).toContain("workflow_dispatch:");
+    expect(publish).not.toMatch(/(^|\n)\s*push:/m);
+    expect(publish).toContain("node scripts/check-docs.mjs");
+    expect(publish).toContain("τ-bench harness dry-run");
+    expect(publish).toContain("npm publish --access public");
+    expect(publish).not.toMatch(/id-token:\s*write/);
+    expect(publish).toContain("reasonix-legacy");
+    expect(publish).not.toContain("ubuntu-latest");
+    expect(publish).not.toMatch(/desktop|Tauri/i);
+
+    expect(existsSync(".github/workflows/release-mirror.yml")).toBe(false);
+
+    for (const path of branchPolicyFiles) {
+      const text = readFileSync(path, "utf8");
+      expect(text, path).toContain("`v1`");
+      expect(text, path).toContain("`dev`");
+      expect(text, path).not.toMatch(/\bmain\b/);
+    }
+    expect(readFileSync("docs/ci-branch-protection.md", "utf8")).toContain("Node.js `24.15.0`");
+    expect(readFileSync("docs/ci-branch-protection.md", "utf8")).toContain("npm `11.16.0`");
+    expect(readFileSync("docs/ci-branch-protection.md", "utf8")).toContain("PowerShell");
+    expect(readFileSync("docs/governance.md", "utf8")).toContain("npm package only");
+    expect(readFileSync("CONTRIBUTING.md", "utf8")).toContain("node scripts/check-docs.mjs");
   });
 });

@@ -1,65 +1,90 @@
 name: Publish npm
 
-# Tag namespace: plain `v<semver>` triggers npm publish for the
-# reasonix CLI package. Desktop Tauri releases use `desktop-v*`
-# (see release.yml) — pushing one of those never reaches this
-# workflow, so the two release tracks are fully decoupled.
+# This workflow is intentionally manual. Maintainers must first push the plain
+# `vX.Y.Z` tag, wait for the Windows CI and CodeQL checks on `v1`/`dev`, then
+# dispatch this workflow with that exact tag. The stable artifact is npm only.
 on:
-  push:
-    tags: ["v*"]
   workflow_dispatch:
     inputs:
       tag:
-        description: "Tag to publish (e.g. v0.47.0). Required when running manually."
+        description: "Tag to publish after Windows release gates (for example v1.3.0)."
         required: true
         type: string
 
 permissions:
   contents: read
-  # `id-token: write` is the npm provenance handshake — harmless if we
-  # don't enable provenance, required if we ever do.
-  id-token: write
 
 jobs:
   publish:
-    name: publish to npm
-    runs-on: ubuntu-latest
+    name: publish reasonix-legacy to npm
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
     steps:
       - uses: actions/checkout@v4
         with:
-          # workflow_dispatch lets a maintainer publish an older tag
-          # without re-pushing it; tag pushes already point HEAD at the
-          # right ref so the fallback is a no-op.
-          ref: ${{ github.event.inputs.tag || github.ref }}
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
 
-      - name: Setup Node 22
+      - name: Setup Node 24.15.0
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24.15.0"
           cache: npm
           registry-url: https://registry.npmjs.org/
 
-      # Fail-fast if someone tags without bumping package.json. npm itself
-      # would reject the duplicate publish, but the error there is
-      # opaque ("403 You cannot publish over the previously published
-      # versions") and CI is the place to catch it cleanly.
-      - name: Verify tag matches package.json version
-        shell: bash
+      - name: Pin npm 11.16.0
+        run: npm install --global npm@11.16.0
+
+      - name: Show runtime versions
         run: |
-          tag="${{ github.event.inputs.tag || github.ref_name }}"
-          tag_version="${tag#v}"
-          pkg_version=$(node -p "require('./package.json').version")
-          if [ "$tag_version" != "$pkg_version" ]; then
-            echo "::error::tag $tag (version $tag_version) does not match package.json version $pkg_version"
-            exit 1
-          fi
-          echo "tag $tag matches package.json $pkg_version"
+          node --version
+          npm --version
+
+      - name: Verify tag matches package.json version
+        run: |
+          $tag = '${{ inputs.tag }}'
+          if (-not $tag) {
+            throw 'Missing tag input.'
+          }
+          if ($tag -notmatch '^v\d+\.\d+\.\d+$') {
+            throw "Tag '$tag' must use the plain vX.Y.Z format (for example v1.3.0)."
+          }
+          if (-not (git tag --list $tag)) {
+            throw "Tag '$tag' is not available in the checked-out repository."
+          }
+          $pkg = Get-Content package.json -Raw | ConvertFrom-Json
+          if ($pkg.name -ne 'reasonix-legacy') {
+            throw "publish workflow only supports reasonix-legacy, found '$($pkg.name)'."
+          }
+          $tagVersion = $tag.Substring(1)
+          if ($tagVersion -ne $pkg.version) {
+            throw "Tag $tag (version $tagVersion) does not match package.json version $($pkg.version)."
+          }
+          Write-Host "Tag $tag matches reasonix-legacy $($pkg.version)"
 
       - name: Install dependencies
         run: npm ci
 
-      # `npm publish` runs the prepublishOnly hook (lint + typecheck +
-      # test + build) automatically, so no separate verify step here.
+      - name: Docs gate
+        run: node scripts/check-docs.mjs
+
+      - name: Lint (biome)
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build (tsup)
+        run: npm run build
+
+      - name: Test (vitest + coverage)
+        run: node scripts/ci-test-with-retry.mjs
+
+      - name: τ-bench harness dry-run
+        run: npx tsx benchmarks/tau-bench/runner.ts --dry --out (Join-Path $env:RUNNER_TEMP 'tau-dry.json')
+
       - name: Publish to npm
         run: npm publish --access public
         env:

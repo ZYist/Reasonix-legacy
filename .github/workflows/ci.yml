@@ -2,30 +2,39 @@ name: CI
 
 on:
   push:
-    branches: [main, dev]
+    branches: [v1, dev]
   pull_request:
-    branches: [main, dev]
+    branches: [v1, dev]
 
 jobs:
   build:
-    name: build (${{ matrix.os }} · node ${{ matrix.node }})
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        node: ["22"]
+    name: build (Windows · node 24.15.0)
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node ${{ matrix.node }}
+      - name: Setup Node 24.15.0
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node }}
+          node-version: "24.15.0"
           cache: npm
+
+      - name: Pin npm 11.16.0
+        run: npm install --global npm@11.16.0
+
+      - name: Show runtime versions
+        run: |
+          node --version
+          npm --version
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Docs gate
+        run: node scripts/check-docs.mjs
 
       - name: Lint (biome)
         run: npm run lint
@@ -46,20 +55,19 @@ jobs:
       # Smoke-test the bench harnesses themselves. --dry skips all LLM
       # calls, so this catches wiring regressions (task factories, CLI
       # parsing, file IO, checker determinism) without needing a
-      # DEEPSEEK_API_KEY in CI. RUNNER_TEMP is set on every GH Actions
-      # runner (POSIX + Windows) — beats hardcoding /tmp.
+      # DEEPSEEK_API_KEY in CI.
       - name: τ-bench harness dry-run
-        run: npx tsx benchmarks/tau-bench/runner.ts --dry --out "${{ runner.temp }}/tau-dry.json"
+        run: npx tsx benchmarks/tau-bench/runner.ts --dry --out (Join-Path $env:RUNNER_TEMP 'tau-dry.json')
 
-      - name: Notify Discord on main failure
-        if: failure() && github.event_name == 'push' && github.ref == 'refs/heads/main'
-        shell: bash
+      - name: Notify Discord on v1 failure
+        if: failure() && github.event_name == 'push' && github.ref == 'refs/heads/v1'
         env:
           WEBHOOK_URL: ${{ secrets.DISCORD_CI_WEBHOOK }}
         run: |
-          test -n "$WEBHOOK_URL" || { echo "DISCORD_CI_WEBHOOK unset, skipping"; exit 0; }
-          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          curl -sS -X POST -H "Content-Type: application/json" \
-            -d "{\"content\":\"❌ CI failed on \`${{ github.ref_name }}\` (${{ matrix.os }}) — ${{ github.actor }}\n${RUN_URL}\"}" \
-            "$WEBHOOK_URL"
-
+          if (-not $env:WEBHOOK_URL) {
+            Write-Host 'DISCORD_CI_WEBHOOK unset, skipping'
+            exit 0
+          }
+          $runUrl = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          $payload = @{ content = "❌ CI failed on `${{ github.ref_name }}` (Windows) — ${{ github.actor }}`n$runUrl" } | ConvertTo-Json -Compress
+          Invoke-RestMethod -Method Post -ContentType 'application/json' -Uri $env:WEBHOOK_URL -Body $payload | Out-Null

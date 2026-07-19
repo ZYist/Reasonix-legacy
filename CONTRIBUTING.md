@@ -13,7 +13,7 @@ npm install
 npm run dev          # tsx src/cli/index.ts — live source
 ```
 
-Node ≥ 22. No global install needed during development.
+Node ≥ 22. No global install needed during development. The maintained release baseline, however, is Windows + Node.js `24.15.0` + npm `11.16.0` + PowerShell; release-blocking checks are judged against that environment.
 
 For project working knowledge, see [`REASONIX.md`](./REASONIX.md). For the maintained documentation map and architecture, see [`docs/README.md`](./docs/README.md) and [`docs/architecture.md`](./docs/architecture.md).
 
@@ -117,10 +117,8 @@ wrapper — don't fork a local table.
 
 ## PR expectations
 
-- Branch off `main`. One logical change per PR.
-- `npm run verify` must pass locally (lint + typecheck + tests +
-  comment-policy gate). Pre-push hook runs this; CI runs it on
-  Node 22.
+- Branch off `dev`. One logical change per PR; `v1` is the protected/default release branch.
+- `npm run verify` should pass locally, and release-hardening work should also run `node scripts/check-docs.mjs`. The maintained CI baseline is Windows + Node.js `24.15.0` + npm `11.16.0` + PowerShell.
 - Don't touch `CHANGELOG.md` — release notes are written by the
   maintainer at release time, drawn from commit history. PR
   descriptions are the authoritative record while the work is in
@@ -144,8 +142,8 @@ None of this is personal — it's how the codebase stays small.
 2. Add `## [X.Y.Z] — <date>` to `CHANGELOG.md` with a hand-written
    summary drawn from `git log` since the prior tag.
 3. `chore(release): X.Y.Z — <one-line summary>` commit.
-4. `git tag -a vX.Y.Z -m "..."`, push commit + tag.
-5. Wait for CI green, then `npm publish`.
+4. `git tag -a vX.Y.Z -m "..."`, push commit + tag. The current stable-release example is `v1.3.0`.
+5. Wait for the Windows CI + CodeQL checks on `v1`/`dev` to go green, then trigger the root npm publish workflow. The maintained release artifact is the `reasonix-legacy` npm package only.
 
 ## Reporting security issues
 

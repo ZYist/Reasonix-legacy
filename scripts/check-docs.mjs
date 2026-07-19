@@ -215,6 +215,131 @@ if (!structureOnly) {
     );
   }
 
+
+  const ciWorkflow = read(".github/workflows/ci.yml");
+  if (!/branches:\s*\[v1, dev\]/.test(ciWorkflow)) {
+    fail("CI workflow must trigger on v1 and dev only");
+  }
+  if (/\bmain\b/.test(ciWorkflow)) {
+    fail("CI workflow still references main branch");
+  }
+  if (/ubuntu-latest/.test(ciWorkflow)) {
+    fail("CI workflow must not use ubuntu-latest in the maintained release baseline");
+  }
+  if (!/runs-on:\s*windows-latest/.test(ciWorkflow)) {
+    fail("CI workflow must run on windows-latest");
+  }
+  if (!/node-version:\s*"24\.15\.0"/.test(ciWorkflow)) {
+    fail("CI workflow must pin Node.js 24.15.0");
+  }
+  if (!/npm@11\.16\.0/.test(ciWorkflow)) {
+    fail("CI workflow must pin npm 11.16.0");
+  }
+  if (!/shell:\s*pwsh/.test(ciWorkflow)) {
+    fail("CI workflow must use PowerShell");
+  }
+  for (const requiredStep of [
+    "node scripts/check-docs.mjs",
+    "npm run lint",
+    "npm run typecheck",
+    "npm run build",
+    "node scripts/ci-test-with-retry.mjs",
+    "benchmarks/tau-bench/runner.ts",
+  ]) {
+    if (!ciWorkflow.includes(requiredStep)) {
+      fail(`CI workflow missing required release gate: ${requiredStep}`);
+    }
+  }
+
+  const codeqlWorkflow = read(".github/workflows/codeql.yml");
+  if (!/branches:\s*\[v1, dev\]/.test(codeqlWorkflow)) {
+    fail("CodeQL workflow must trigger on v1 and dev only");
+  }
+  if (/\bmain\b/.test(codeqlWorkflow)) {
+    fail("CodeQL workflow still references main branch");
+  }
+  if (!/runs-on:\s*windows-latest/.test(codeqlWorkflow)) {
+    fail("CodeQL workflow must run on windows-latest");
+  }
+  if (!/node-version:\s*"24\.15\.0"/.test(codeqlWorkflow)) {
+    fail("CodeQL workflow must pin Node.js 24.15.0");
+  }
+  if (!/npm@11\.16\.0/.test(codeqlWorkflow)) {
+    fail("CodeQL workflow must pin npm 11.16.0");
+  }
+
+  const publishWorkflow = read(".github/workflows/publish-npm.yml");
+  if (!/workflow_dispatch:/.test(publishWorkflow) || /(^|\n)\s*push:/m.test(publishWorkflow)) {
+    fail("publish-npm workflow must be manually dispatched after release gates, not tag-triggered");
+  }
+  if (!/runs-on:\s*windows-latest/.test(publishWorkflow)) {
+    fail("publish-npm workflow must run on windows-latest");
+  }
+  if (/ubuntu-latest/.test(publishWorkflow)) {
+    fail("publish-npm workflow must not use ubuntu-latest");
+  }
+  if (!/node-version:\s*"24\.15\.0"/.test(publishWorkflow)) {
+    fail("publish-npm workflow must pin Node.js 24.15.0");
+  }
+  if (!/npm@11\.16\.0/.test(publishWorkflow)) {
+    fail("publish-npm workflow must pin npm 11.16.0");
+  }
+  if (!publishWorkflow.includes("v1.3.0")) {
+    fail("publish-npm workflow must document the current v1.3.0 tag example");
+  }
+  if (/desktop|Tauri/i.test(publishWorkflow)) {
+    fail("publish-npm workflow must not describe desktop/Tauri release tracks");
+  }
+  for (const requiredStep of [
+    "node scripts/check-docs.mjs",
+    "npm run lint",
+    "npm run typecheck",
+    "npm run build",
+    "node scripts/ci-test-with-retry.mjs",
+    "τ-bench harness dry-run",
+    "npm publish --access public",
+    "reasonix-legacy",
+  ]) {
+    if (!publishWorkflow.includes(requiredStep)) {
+      fail(`publish-npm workflow missing required release contract detail: ${requiredStep}`);
+    }
+  }
+  if (/id-token:\s*write/.test(publishWorkflow)) {
+    fail("publish-npm workflow must not request unused OIDC write permission while using NPM_TOKEN");
+  }
+  if (existsSync(resolve(root, ".github/workflows/release-mirror.yml"))) {
+    fail("release-mirror workflow must remain retired for the npm-only release contract");
+  }
+
+  const branchDocs = {
+    "docs/ci-branch-protection.md": read("docs/ci-branch-protection.md"),
+    "docs/governance.md": read("docs/governance.md"),
+    "CONTRIBUTING.md": read("CONTRIBUTING.md"),
+  };
+  for (const [relativePath, docText] of Object.entries(branchDocs)) {
+    if (!docText.includes("`v1`") || !docText.includes("`dev`")) {
+      fail(`${relativePath} must mention the v1/dev branch model`);
+    }
+    if (/\bmain\b/.test(docText)) {
+      fail(`${relativePath} still references the nonexistent main branch`);
+    }
+  }
+  if (!branchDocs["docs/ci-branch-protection.md"].includes("Node.js `24.15.0`")) {
+    fail("docs/ci-branch-protection.md must state the Node.js 24.15.0 baseline");
+  }
+  if (!branchDocs["docs/ci-branch-protection.md"].includes("npm `11.16.0`")) {
+    fail("docs/ci-branch-protection.md must state the npm 11.16.0 baseline");
+  }
+  if (!branchDocs["docs/ci-branch-protection.md"].includes("PowerShell")) {
+    fail("docs/ci-branch-protection.md must state the PowerShell baseline");
+  }
+  if (!branchDocs["docs/governance.md"].includes("npm package only")) {
+    fail("docs/governance.md must state that the stable release artifact is the npm package only");
+  }
+  if (!branchDocs["CONTRIBUTING.md"].includes("node scripts/check-docs.mjs")) {
+    fail("CONTRIBUTING.md must mention the docs gate for release-hardening work");
+  }
+
   const securityPolicy = read("SECURITY.md");
   const requiredSecurityPhrases = [
     "`reasonix-legacy`",

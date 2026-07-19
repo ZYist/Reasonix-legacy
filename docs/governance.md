@@ -10,6 +10,7 @@ This document is the durable authority for the four governance decisions made be
 
 - `package.json` package semver is the public version authority for this fork.
 - The active GSD milestone must use the matching major/minor version. The current pair is package `1.3.0` and milestone `v1.3`; they may not evolve independently.
+- The maintained release tag convention is plain `vX.Y.Z`; the current stable-release example is `v1.3.0`.
 - The Pure CLI work completed on 2026-07-05 at the end of historical GSD Phase 4. The package at that delivery point was already `1.1.0`, so `1.1.0` is the first Pure CLI release version for this fork. Historical GSD milestone `v1.0` names the completed engineering scope; it is not a second public package version.
 - Existing `1.17.x`, `npm-v1.17.x`, and `desktop-v1.17.x` tags record upstream lineage. They are not releases of the current fork and must not be moved, deleted, or rewritten.
 - Publishing packages, creating releases, or changing tags always remains an explicit maintainer operation; planning automation does none of these actions.
@@ -19,12 +20,14 @@ This document is the durable authority for the four governance decisions made be
 - `https://github.com/ZYist/reasonix-legacy` is the current maintained repository and the destination for current CI, issues, discussions, stars, and other operational links.
 - `https://github.com/esengine/DeepSeek-Reasonix` is the historical upstream source and must be acknowledged clearly as attribution, not presented as the current maintenance entry point.
 - All write operations are limited to local branches and the `ZYist/reasonix-legacy` fork. The `upstream` remote is read-only reference material: do not push branches or tags to it, create releases there, or modify the original author's assets.
+- The current stable-release artifact is the npm package only. Desktop/Tauri bundles and release-mirror automation are historical upstream context, not part of the maintained fork's release contract.
 
 ## HG-03 / GOV-03 — Development branch and CI
 
-- Pushes to `dev` must run the complete repository CI checks.
-- Changes entering `main` should still use pull requests, but repository files must not claim that GitHub branch protection is active unless a maintainer has configured and verified it.
-- Branch protection is an optional external operator action. Workflow code can provide CI checks but cannot itself enforce GitHub repository settings.
+- `v1` is the default/release branch and `dev` is the development branch for this fork; maintained docs and workflows must use `v1` as the only default/release branch name.
+- Pushes and pull requests for `v1` and `dev` must run the maintained Windows CI and CodeQL workflows.
+- The release-hardening automation baseline is Windows + Node.js `24.15.0` + npm `11.16.0` + PowerShell.
+- Branch protection is an optional external operator action. Workflow code can provide CI checks and documented guidance, but cannot itself enforce GitHub repository settings.
 
 ## HG-04 / GOV-04 — Risk-based coverage
 
@@ -38,3 +41,4 @@ This document is the durable authority for the four governance decisions made be
 - Phase 6 applies HG-01 and HG-02 when aligning current README, CHANGELOG notes, links, and planning truth.
 - Phase 8 applies HG-04 when creating characterization tests and refreshing coverage evidence.
 - Phase 9 applies HG-03 and HG-04 when updating CI triggers and flaky-test visibility.
+- Phase 12 applies HG-01..HG-03 when aligning the maintained Windows release automation and npm-only publish contract.
