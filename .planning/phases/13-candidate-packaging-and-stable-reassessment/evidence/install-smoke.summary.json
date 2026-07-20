@@ -1,0 +1,39 @@
+{
+  "installDir": "D:\\workspace\\reasonix_legacy\\.planning\\phases\\13-candidate-packaging-and-stable-reassessment\\evidence\\install-smoke",
+  "tgz": "D:\\workspace\\reasonix_legacy\\.planning\\phases\\13-candidate-packaging-and-stable-reassessment\\evidence\\reasonix-legacy-1.3.0.tgz",
+  "hasReasonixLegacyBin": true,
+  "hasReasonixBin": false,
+  "hasDsnixBin": false,
+  "binEntries": [
+    "he",
+    "he.cmd",
+    "he.ps1",
+    "highlight",
+    "highlight.cmd",
+    "highlight.ps1",
+    "qrcode",
+    "qrcode.cmd",
+    "qrcode.ps1",
+    "reasonix-legacy",
+    "reasonix-legacy.cmd",
+    "reasonix-legacy.ps1",
+    "semver",
+    "semver.cmd",
+    "semver.ps1"
+  ],
+  "version": "reasonix-legacy 1.3.0",
+  "helpFirstLines": [
+    "Usage: reasonix-legacy [options] [command]",
+    "",
+    "DeepSeek 原生智能体框架 — 专为缓存命中和低成本令牌构建。",
+    "",
+    "Options:",
+    "  -V, --version                  output the version number",
+    "  -c, --continue                 恢复最近使用的聊天会话，不显示选择器。",
+    "  --no-mouse                     关闭 SGR 鼠标跟踪；恢复终端原生拖选和右键行为",
+    "  --no-proxy                     本次运行忽略 HTTPS_PROXY / HTTP_PROXY，直连",
+    "  -h, --help                     display help for command",
+    "",
+    "Commands:"
+  ]
+}

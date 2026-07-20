@@ -1,5 +1,26 @@
 # Milestones
 
+## v1.3 Stable Release Hardening (Shipped: 2026-07-18)
+
+**Closeout:** verified_local_closeout · 4 phases · 8 plans · 8 work packages
+**Requirements:** 21/21 complete (ID-01..04, VER-01..02, SEC-01..05, WIN-01..03, PUB-01..02, PKG-01..03, REL-01..02)
+**Local candidate SHA:** `d595d30b7e56`
+
+**Key accomplishments:**
+
+- **发布身份统一（Phase 10）** — root npm package、唯一 CLI bin、运行时帮助与维护文档全部统一到 `reasonix-legacy@1.3.0`，并删除当前 `dsnix` / `reasonix` 发布残留与漂移路径。
+- **安全合同收敛（Phase 11）** — 生产依赖 high/critical 风险清零，`SECURITY.md` 与 install-script provenance 记录对齐当前 CLI-only 支持边界，并重验历史 raw-error 风险。
+- **Windows 发布自动化对齐（Phase 12）** — CI、CodeQL、branch guidance 和 npm publish contract 全部与 `v1`/`dev`、Windows + Node.js 24.15.0 + npm 11.16.0 基线一致，release surface 收敛为 npm-only。
+- **候选包与本地稳定版复评（Phase 13）** — clean verify、tarball inventory、真实 `npm pack`、隔离安装与 production audit 全部通过，并把本地 PASS verdict 绑定到候选 SHA `d595d30b7e56`。
+
+### Known Gaps
+
+- 远程 GitHub branch protection、tag/push、npm publish 与 GitHub release creation 仍是 manual operator actions。
+- Telegram / Weixin / 交互式 TTY 的 live credential/network-dependent UAT 仍未作为仓库自动化重跑。
+- HeadlessHost reasoning/tool-event rendering 仍是共享宿主层的 deferred future improvement。
+
+---
+
 ## v1.1 Risk Foundations & Maintenance Simplification (Shipped: 2026-07-17)
 
 **Closeout:** verified_closeout · 5 phases · 9 plans · 9 work packages
@@ -42,5 +63,3 @@
 - **UAT #2 — weixin 不显示内部反馈(思考过程/工具输出)** — accepted-and-deferred(维护者决议 2026-07-05)。根因非 weixin 专属 bug,而是 Phase-2 既存的共享 `HeadlessHost` 渲染缺口(`runTurn` 未订阅 `turn-driver` 的 `onEvent` 回调 → 全部 channel 都丢弃 reasoning/tool 事件);非 Phase-04 回归(`git diff 9d7b706c..HEAD` 在 `src/` 仅触 `update.ts` + `version.ts`)。定性:pre-existing / out-of-phase-scope / feature(stream-to-chat,适用于全部 3 channel)。路由到 fix cycle 或未来 channel-streaming phase。完整记录见 `04-VERIFICATION.md` §deferred 与 `STATE.md` §Deferred Items。
 
 Known verification overrides: 1 (see STATE.md §Deferred Items).
-
----

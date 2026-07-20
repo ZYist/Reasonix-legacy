@@ -1,0 +1,5 @@
+
+> reasonix-legacy@1.3.0 lint
+> biome check src tests
+
+Checked 684 files in 290ms. No fixes applied.

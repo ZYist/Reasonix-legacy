@@ -4,21 +4,21 @@
 
 DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优先(cache-first)**的 agentic loop,自动修复模型输出的工具调用 JSON,并在 token 预算内折叠上下文。面向希望在终端内用 DeepSeek 完成编程任务、并严格控制 token 成本的开发者。
 
-本仓库是上游的 fork,首个 fork release 为 v0.55.0。v1.0「Pure CLI」里程碑(2026-07-05)把项目从多前端(CLI/TUI + Web 面板 + Tauri 桌面)收敛为**纯 CLI**,同时保留 QQ/Telegram/微信聊天机器人接入能力。
+本仓库是上游的 fork,首个 fork release 为 v0.55.0。v1.0「Pure CLI」里程碑(2026-07-05)把项目从多前端(CLI/TUI + Web 面板 + Tauri 桌面)收敛为**纯 CLI**,同时保留 QQ/Telegram/微信聊天机器人接入能力。v1.3「Stable Release Hardening」里程碑(2026-07-18)进一步把当前维护表面收敛为单一 `reasonix-legacy` 发布身份,并为 Windows 基线下的本地稳定候选补齐了可审计的打包与发布证据。
 
 ## Core Value
 
 在终端里跑一个**低成本、不中断**的 DeepSeek 编程 agent——缓存优先把 token 成本压到最低,工具调用 JSON 自修复保证 loop 不被坏输出打断。这是面板/UI 都可以失败、唯独不能失败的那一件事。
 
-## Current Milestone: v1.3 Stable Release Hardening
+## Current Milestone: Awaiting next milestone definition
 
-**Goal:** 按 2026-07-17 稳定版评估完成发布整改，把 npm package 与 CLI 统一为 `reasonix-legacy`，删除全部 `dsnix` 遗留，并将强制测试/CI 基线收敛到当前 Windows + Node.js 环境。
+**Goal:** 保持 v1.3 已验证的稳定基线,并在不重开已完成发布整改工作的前提下定义下一轮明确里程碑。
 
 **Locked direction:**
-- 保持 DeepSeek-first，不做多模型适配。
-- npm package 与 CLI 命令均统一为 `reasonix-legacy`；不保留 `dsnix` 发布、shim、workspace 或兼容映射。
-- 强制测试标准仅为 Windows、Node.js 24.15.0、npm 11.16.0、PowerShell。
-- 修复生产依赖漏洞、版本权威、发布链、安全治理和最终 clean-install/pack/隔离安装验证。
+- 保持 DeepSeek-first,除非未来里程碑显式改变产品定位。
+- 继续把 npm package 与 CLI 公共身份统一为 `reasonix-legacy`。
+- 继续以 Windows + Node.js 24.15.0 + npm 11.16.0 + PowerShell 作为当前维护基线,直到新里程碑明确调整。
+- 继续把远程 GitHub 管理、tag/publish 操作和 live credential/TTY UAT 明确视为人工/operator 步骤,不伪装成仓库自动化。
 
 ## Requirements
 
@@ -38,45 +38,46 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 - ✓ **Tauri 桌面 GUI 剥离** — `desktop/` + 3555 行 sidecar god module + `src/desktop/` 移除,`reasonix desktop` 退役为 i18n 薄 stub(exit 1),机器人接入不受影响 — v1.0 (Phase 3, 2026-07-04)
 - ✓ **构建链简化** — `postinstall.mjs`/`sync-desktop-version.mjs`/`release.yml` 退役,`package.json`/`ci.yml`/`.claude/CLAUDE.md` 对齐纯 CLI,`npm pack` 输出干净 CLI-only tarball(无 postinstall 钩子) — v1.0 (Phase 4, 2026-07-05)
 - ✓ **纯 CLI 路径零回归** — 19 个命令 `--help` 全绿、8 个离线命令功能冒烟、tree-sitter `code-query` 跨 6 语言 e2e 存活;核心 loop/工具/记忆/MCP/AcP 零回归(14 baseline 红 → 3 evidence-deferred 预存红) — v1.0 (Phase 4, 2026-07-05)
-
 - ✓ **治理决策与身份对齐** — 版本、fork、开发分支与风险 coverage policy 已形成权威文档 — v1.1
-- ✓ **双语 i18n 边界** — 仅保留 `en`/`zh-CN`，支持 alias、migration、fallback 与 key parity — v1.1
+- ✓ **双语 i18n 边界** — 仅保留 `en`/`zh-CN`,支持 alias、migration、fallback 与 key parity — v1.1
 - ✓ **关键路径离线保护** — TUI、关键 CLI command、Telegram/Weixin 生命周期具备确定性特征测试 — v1.1
 - ✓ **CI 与 flaky 可见性** — 活跃路径具备完整门禁和首轮失败/诊断重试报告 — v1.1
-- ✓ **统一发布身份** — root npm package、CLI bin、运行时帮助与维护文档统一为 `reasonix-legacy@1.3.0`，`reasonix`/`dsnix` 当前入口及 dsnix workspace/publish path 已删除 — v1.3 Phase 10
-- ✓ **当前版本权威** — package、lockfile root、运行时版本、README、CHANGELOG、governance、SECURITY 与 milestone 对齐到 `1.3.0` / `v1.3`，并有自动漂移 guard — v1.3 Phase 10
+- ✓ **统一发布身份** — root npm package、CLI bin、运行时帮助与维护文档统一为 `reasonix-legacy@1.3.0`,`reasonix`/`dsnix` 当前入口及 dsnix workspace/publish path 已删除 — v1.3 Phase 10
+- ✓ **当前版本权威** — package、lockfile root、运行时版本、README、CHANGELOG、governance、SECURITY 与 milestone 对齐到 `1.3.0` / `v1.3`,并有自动漂移 guard — v1.3 Phase 10
+- ✓ **稳定版安全整改** — 生产依赖 high/critical 风险已清零,`SECURITY.md` 与 install-script provenance 记录已对齐当前 CLI-only 表面,redaction regression 已重验 — v1.3 Phase 11
+- ✓ **Windows 发布自动化与发布权威** — CI、CodeQL、branch 指引和 npm publish workflow 与 `v1`/`dev`、Windows 基线和 `v1.3.0` tag convention 一致,release contract 收敛为 npm-only — v1.3 Phase 12
+- ✓ **Windows 候选包验证与本地稳定版复评** — clean install、全量 verify、tarball inventory、隔离安装和生产 audit 已在当前 Windows 基线下完成,最终 verdict 绑定候选 SHA `d595d30b7e56` — v1.3 Phase 13
 
 ### Active
 
-- [ ] **稳定版安全整改** — 修复生产依赖高危漏洞，并对齐 `SECURITY.md` 的当前支持边界与 install-script provenance 记录。
-- [ ] **Windows 发布自动化与发布权威** — CI、CodeQL、branch 指引、npm publish workflow 与 `v1`/`dev`、Windows 基线和 `v1.3.0` tag convention 一致。
-- [ ] **Windows 候选包验证** — 以 Windows + Node.js 24.15.0 + npm 11.16.0 + PowerShell 完成 clean install、全量 verify、pack、隔离安装和最终稳定版复评。
+- [ ] **HeadlessHost channel streaming** — 让 QQ/Telegram/微信 channel 转发 reasoning/tool events,补齐当前共享无头宿主的可见性缺口,且不回归现有 channel 生命周期。
+- [ ] **Protected core decomposition** — 在现有 characterization tests 保护下拆分 `App.tsx`、`config.ts`、`loop.ts` 和大型 tools,降低后续维护风险。
+- [ ] **Maintainer release runbook hardening** — 如未来仍需强化 ship 流程,补充 maintainer-only 的 tag/publish/live-UAT runbook 或检查清单,但不把远程或凭据依赖步骤伪装为本地自动化。
 
 ### Out of Scope
 
-- Web 面板(`dashboard/`) 与 Tauri desktop GUI — v1.0 已物理移除，不重新引入。
-- 多模型/provider 适配 — v1.3 保持 DeepSeek-first，避免稀释针对 DeepSeek 的缓存与工具调用优化。
+- Web 面板(`dashboard/`) 与 Tauri desktop GUI — v1.0 已物理移除,不重新引入。
+- 多模型/provider 适配 — 默认仍保持 DeepSeek-first,避免稀释针对 DeepSeek 的缓存与工具调用优化。
 - 保留 `dsnix` 兼容入口或双命令迁移期 — 用户已决定直接统一为 `reasonix-legacy`。
-- 重写聊天机器人 channel 协议 — 只验证现有入口不因发布身份整改回归。
-- 自动修改 GitHub branch protection 或未经授权推送 tag/release — 属于外部 operator action。
-- `App.tsx`、`config.ts`、`loop.ts` 或大型 tools 的结构性重构 — 不与稳定版发布整改混合。
+- 重写聊天机器人 channel 协议 — 除非新里程碑显式立项,否则只在现有入口上做受保护的增量改动。
+- 自动修改 GitHub branch protection、自动 push tag/release 或执行未经授权的远程变更 — 属于外部 operator action。
+- 把真实 bot/model/TTY 流量包装成自动测试 — live UAT 仍与仓库内自动化分层处理。
 
 ## Context
 
 - 架构是 **multi-surface single-core**:核心 `CacheFirstLoop`(`src/loop.ts`)与所有 surface 单向依赖,核心不反向 import 任何 surface。详细地图见 `.planning/codebase/`(ARCHITECTURE / STACK / STRUCTURE / CONVENTIONS / INTEGRATIONS / TESTING / CONCERNS)。
-- **当前状态(2026-07-05,v1.0 Pure CLI shipped):** 项目已是纯 CLI——Web 面板与 Tauri 桌面 GUI 均已物理移除,QQ/Telegram/微信经独立 CLI 命令(`reasonix qq`/`telegram`/`weixin`)挂载同一 `HeadlessHost`(`src/cli/headless/`),脱离已删的桌面 sidecar。构建链干净:`npm run build` 绿,`npm pack` 输出 9.2 MB / 168 文件的 CLI-only tarball。`npm run verify`:build/lint/typecheck exit 0,test = 3 failed | 266 passed(3 个预存红 evidence-deferred 到 fix cycle)。
-- **关键红线(贯穿 v1.0,仍生效):** `scripts/copy-tree-sitter-grammars.mjs` + `src/code-query/` 服务 CLI 代码符号搜索,任何阶段必须保留。v1.0 全程未触及。
-- **已知技术债(留 fix cycle):**
-  - 3 个预存红测试:`tests/ssh-remote.test.ts`(RFC dry-run,SSH tunnel feature 未实现)、`tests/ui-mcp-marketplace-snapshot.test.ts`(`buildMarketplacePickerSnapshot` 从未导出)、`tests/ui-slash-suggestions.test.tsx`(命令数 10→9 drift)。
-  - `tests/hydrate-cards.test.ts:135` Biome suppressions/unused 预存警告。
-  - WR-05(3 个 command controller 的 raw `Error.message` 未脱敏直写 stderr,medium)+ IN-01..06(turn-driver error 恢复、gate 并发、weixin QR 窗口 SIGINT 等,02-VERIFICATION.md followups_deferred)。
-  - **HeadlessHost 渲染缺口(accepted-and-deferred):** `runTurn` 未订阅 `turn-driver` 的 `onEvent` 回调 → 全部 channel 都丢弃 reasoning/tool 事件(weixin UAT #2 暴露)。非回归,是 Phase-2 既存架构;stream-to-chat 是适用于全部 3 channel 的新功能,路由到未来 channel-streaming phase。
+- **当前状态(2026-07-18,v1.3 Stable Release Hardening shipped locally):** 项目维持纯 CLI 产品形态,当前公开 package 与唯一 bin 均为 `reasonix-legacy`。Windows 维护基线下的 clean `npm ci`、`npm run verify`、`node scripts/check-docs.mjs`、`npm pack --dry-run`、真实 `npm pack`、隔离 tarball 安装和 `npm audit --omit=dev` 已全部通过;当前候选 SHA 为 `d595d30b7e56`。
+- **关键红线(持续生效):** `scripts/copy-tree-sitter-grammars.mjs` + `src/code-query/` 服务 CLI 代码符号搜索,任何后续里程碑都必须保留。v1.3 打包验证已再次确认八个 grammar/runtime WASM 均进入 tarball。
+- **已知技术债 / 后续候选:**
+  - **HeadlessHost 渲染缺口(accepted-and-deferred):** `runTurn` 未订阅 `turn-driver` 的 `onEvent` 回调 → 全部 channel 都丢弃 reasoning/tool 事件。它是共享宿主层的既存缺口,不是 v1.3 回归,适合在独立 channel-streaming 里程碑内处理。
+  - **REF-01..04 protected refactor:** `App.tsx`、`config.ts`、`loop.ts` 和大型 tools 的结构拆分仍待后续里程碑在 characterization tests 保护下推进。
+  - **Live UAT / external release actions:** Telegram/Weixin/交互式 TTY 的真实凭据验证、GitHub branch protection、tag/push、npm publish 与 GitHub release 仍是显式人工步骤。
 
 ## Constraints
 
 - **Tech stack**: TypeScript + tsup；Ink/React TUI；Commander CLI；Vitest / Biome / Stryker。
-- **Mandatory runtime/test baseline for v1.3**: Windows + Node.js 24.15.0 + npm 11.16.0 + PowerShell；其他 OS/Node 组合不作为阻塞标准。
-- **Product identity**: npm package 与 CLI bin 统一为 `reasonix-legacy`；不得保留 `dsnix` 映射；保持 DeepSeek-first。
+- **Maintained runtime/test baseline (until explicitly changed)**: Windows + Node.js 24.15.0 + npm 11.16.0 + PowerShell；其他 OS/Node 组合不作为当前阻塞标准。
+- **Product identity**: npm package 与 CLI bin 统一为 `reasonix-legacy`；不得恢复 `dsnix` 映射；保持 DeepSeek-first。
 - **不回归**: 核心 loop / 工具 / 记忆 / MCP / ACP / chat channels；保留 tree-sitter grammars 构建链。
 
 ## Key Decisions
@@ -88,16 +89,17 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 | 机器人接入解耦为独立 CLI 命令(非删、非保留 GUI) | 删 GUI 前必须先把 QQ 从桌面 sidecar 解耦 | ✓ v1.0 — core reuse 零重实现,脱离 Tauri JSON-RPC(Phase 2) |
 | phase 依赖序 1→2→3→4 | 先剥耦合最低的面板,再解耦机器人(难点),删 GUI 前宿主就位,最后清构建+回归 | ✓ v1.0 — 4 phase 全绿,每个 phase 交付"系统仍可用"垂直切片 |
 | HeadlessHost 新建模块而非就地重构 desktop.ts | desktop.ts 3555 行混合 RPC/Tab/TUI,就地重构触碰不可回归面 | ✓ v1.0 — 复刻 buildRuntimeFor recipe,sidecar 字节级未动直到 Phase 3 才删 |
-| 三 channel 薄入口不抽 BaseChannelAdapter | qq/telegram/weixin ~150 行平行,但分歧(Telegram 无 onInfo、Weixin QR-login-before-start)是协议层差异 | ⚠️ Revisit — Phase 4 构建清理未抽,future fix cycle 可评估去重 |
-| HG-01：package semver 与 GSD milestone 对齐 | 避免 fork 的公开版本与规划版本再次漂移 | ✓ v1.1 — `package.json` 为对外权威；当前 `1.1.0` ↔ milestone `v1.1`；首次 Pure CLI release 为 `1.1.0`；历史 1.17.x tags 仅属 upstream lineage |
-| HG-02：当前维护身份属于 ZYist fork | 当前操作入口必须与历史来源清楚分离 | ✓ v1.1 — 当前链接与写操作仅指向 `ZYist/reasonix-legacy`；upstream 只读 attribution，禁止 push/tag/release |
-| HG-03：`dev` push 运行完整 CI | 活跃开发路径需要直接反馈，同时不虚构 GitHub 外部保护设置 | ✓ v1.1 — `dev` push 跑 CI；进 `main` 推荐 PR；branch protection 仅作为经验证的 operator action |
-| HG-04：采用风险导向 coverage policy | 单一全局百分比无法代表 TUI、command 与 channel 生命周期风险 | ✓ v1.1 — 67.39% 仅作 fresh-baseline 前的非回归参考；纯模块高覆盖；关键路径按离线行为场景验收；详见 `docs/governance.md` |
-
-| v1.3：package 与 CLI 统一为 `reasonix-legacy` | 单一公开身份消除 package/bin/docs/release 漂移 | ✓ Phase 10 — `reasonix-legacy@1.3.0` 与唯一同名 bin 已实现并验证 |
-| v1.3：删除全部 `dsnix` 遗留，不设兼容期 | 老旧映射已经损坏发布链，继续维护只增加歧义 | ✓ Phase 10 — workspace、shim/bin、lock records 与专用 publish workflow 已删除 |
-| v1.3：保持 DeepSeek-first，不做多模型适配 | 保护针对 DeepSeek 的 cache-first 与工具调用修复差异化 | — Approved 2026-07-17；实现与验证待 v1.3 |
-| v1.3：仅 Windows / Node 24.15.0 为强制测试标准 | 与当前真实维护环境一致，避免为未支持矩阵阻塞稳定版 | — Approved 2026-07-17；实现与验证待 v1.3 |
+| 三 channel 薄入口不抽 BaseChannelAdapter | qq/telegram/weixin ~150 行平行,但分歧(Telegram 无 onInfo、Weixin QR-login-before-start)是协议层差异 | ⚠️ Revisit — 当前仍维持薄适配器策略;若后续做 channel-streaming,再评估抽象收益 |
+| HG-01：package semver 与 GSD milestone 对齐 | 避免 fork 的公开版本与规划版本再次漂移 | ✓ v1.1 — `package.json` 为对外权威；当前里程碑与维护版本事实已通过文档/测试/workflow guard 共同约束 |
+| HG-02：当前维护身份属于 ZYist fork | 当前操作入口必须与历史来源清楚分离 | ✓ v1.1 — 当前链接与写操作仅指向 `ZYist/reasonix-legacy`;upstream 只读 attribution,禁止 push/tag/release |
+| HG-03：`dev` push 运行完整 CI | 活跃开发路径需要直接反馈,同时不虚构 GitHub 外部保护设置 | ✓ v1.1 / v1.3 — `dev` push 跑 CI；branch protection 始终作为经验证的 operator action 单独披露 |
+| HG-04：采用风险导向 coverage policy | 单一全局百分比无法代表 TUI、command 与 channel 生命周期风险 | ✓ v1.1 — characterization + risk-based 验收已成为后续里程碑默认方法 |
+| v1.3：package 与 CLI 统一为 `reasonix-legacy` | 单一公开身份消除 package/bin/docs/release 漂移 | ✓ Phase 10 — 当前 package、唯一 bin、docs 与 guards 已统一到 `reasonix-legacy@1.3.0` |
+| v1.3：删除全部 `dsnix` 遗留,不设兼容期 | 老旧映射已经损坏发布链,继续维护只增加歧义 | ✓ Phase 10 — workspace、shim/bin、lock records 与专用 publish workflow 已删除 |
+| v1.3：保持 DeepSeek-first,不做多模型适配 | 保护针对 DeepSeek 的 cache-first 与工具调用修复差异化 | ✓ v1.3 — hardening 全程维持单模型定位,没有引入 provider abstraction |
+| v1.3：仅 Windows / Node 24.15.0 为强制测试标准 | 与当前真实维护环境一致,避免为未支持矩阵阻塞稳定版 | ✓ Phases 12-13 — CI/docs/candidate verification 已统一到 Windows + Node.js 24.15.0 + npm 11.16.0 + PowerShell |
+| v1.3：稳定候选必须从 packed tarball 与隔离安装证明 | warm dev checkout 会掩盖真正的发布缺陷 | ✓ Phase 13 — isolated install 暴露并修复了 production `workspace:*` 依赖泄漏,最终候选已重验 |
+| v1.3：远程发布与 live UAT 不伪装为仓库自动化 | 本地 PASS 不等于 tag/publish/凭据驱动 UAT 已完成 | ✓ v1.3 — audit/verification 始终把 branch protection、tag/publish、GitHub release 与 live UAT 保留为 manual/external |
 
 ## Evolution
 
@@ -117,5 +119,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-17 after Phase 10 package identity unification*
-
+*Last updated: 2026-07-18 after v1.3 milestone closeout*

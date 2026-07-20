@@ -2,46 +2,44 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Stable Release Hardening
-current_phase: 12
-current_phase_name: Windows Release Automation
-status: ready_to_discuss
-stopped_at: Phase 11 complete; ready to discuss Phase 12
-last_updated: "2026-07-19T09:19:43.676Z"
+current_phase: 13
+status: Awaiting next milestone
+stopped_at: Milestone v1.3 completed and archived
+last_updated: "2026-07-18T16:47:14+08:00"
 last_activity: 2026-07-19
 last_activity_desc: Assessed readability and maintenance risk of commits ahead of origin/dev
 progress:
   total_phases: 4
-  completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
-  percent: 50
+  completed_phases: 4
+  total_plans: 8
+  completed_plans: 8
+  percent: 100
+current_phase_name: Candidate Packaging and Stable Reassessment (archived)
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-07-17)
+See: .planning/PROJECT.md (updated 2026-07-18)
 
 **Core value:** 在终端里跑一个低成本、不中断的 DeepSeek 编程 agent——缓存优先压低 token 成本，工具调用 JSON 自修复保证 loop 不被坏输出打断。
-**Current focus:** Phase 12 — Windows Release Automation
+**Current focus:** Planning the next milestone while preserving the shipped v1.3 baseline and keeping any maintainer-only release actions explicit.
 
 ## Current Position
 
-Phase: 12 of 13 (Windows Release Automation)
-Plan: Not started
-Status: Ready to discuss
+Phase: Milestone v1.3 complete
+Plan: —
+Status: Awaiting next milestone
 Last activity: 2026-07-19 — Assessed readability and maintenance risk of commits ahead of origin/dev
-
-Progress: [██████████░░░░░░░░░░] 50%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 21 across v1.0, v1.1, and v1.3
-- v1.3 plans completed: 4 across Phases 10-11
-- Completed v1.3 phases: 2 of 4
+- Total plans completed: 25 across v1.0, v1.1, and v1.3
+- v1.3 plans completed: 8 across Phases 10-13
+- Completed v1.3 phases: 4 of 4
 
 **By Phase:**
 
@@ -54,31 +52,35 @@ Progress: [██████████░░░░░░░░░░] 50%
 | 5-9. Risk Foundations | 9/9 | Complete |
 | 10. Package Identity Unification | 2/2 | Complete |
 | 11. Supply Chain and Security Contract | 2/2 | Complete |
+| 12. Windows Release Automation | 2/2 | Complete |
+| 13. Candidate Packaging and Stable Reassessment | 2/2 | Complete |
 
 **Recent Trend:**
 
-- Stable-release hardening has closed package identity plus dependency/security contract work.
-- Remaining v1.3 blockers are Phase 12 automation alignment and Phase 13 candidate packaging evidence.
+- The only real Phase 13 blocker was a packaged production `workspace:*` dependency leak through root `ink`; it is now fixed by moving `ink` to `devDependencies`, refreshing the lockfile, and guarding against regressions in `tests/package-identity.test.ts`.
+- Stable-release hardening is locally complete: clean verify, tarball inventory, isolated install, and production audit evidence all pass on the maintained Windows baseline.
+- The planning surface is now normalized for post-v1.3 work: closeout archives exist, stale handoff/checkpoint artifacts are cleared, and the repository is ready for next-milestone definition.
 
 ## Accumulated Context
 
 ### Decisions
 
-- v1.1 governance, repository truth, bilingual i18n, critical-path tests, and CI/flaky visibility are verified and archived.
-- v1.3 remains DeepSeek-first; no multi-model/provider adaptation.
-- npm package and CLI bin will both be `reasonix-legacy`; all `dsnix` compatibility and publication surfaces will be removed.
-- Mandatory v1.3 test baseline is Windows + Node.js 24.15.0 + npm 11.16.0 + PowerShell only.
-- Phase 11 locked in a maintained install-script provenance contract and aligned `SECURITY.md` to the real CLI / TUI + ACP / MCP + QQ / Telegram / Weixin surface.
+- v1.1 governance, repository truth, bilingual i18n, critical-path tests, and CI/flaky visibility remain verified and archived.
+- v1.3 remained DeepSeek-first throughout the hardening work; no provider abstraction or multi-model release surface was introduced.
+- npm package and CLI bin both remain `reasonix-legacy`; `reasonix` and `dsnix` are absent from the maintained shipped surface.
+- Mandatory maintained verification baseline remains Windows + Node.js 24.15.0 + npm 11.16.0 + PowerShell until a later milestone explicitly changes it.
+- Phase 13 and the v1.3 audit were kept strictly evidence-based: no fake publish, no remote GitHub mutation, and no fake live bot / TTY UAT were performed.
 
 ### Pending Todos
 
-None recorded for this milestone.
+- Define the next milestone and seed fresh scoped requirements via `$gsd-new-milestone`.
+- Optional maintainer actions outside repository automation: branch protection review, tag/push, npm publish, GitHub release, and live UAT.
 
 ### Blockers/Concerns
 
-- Stable release remains blocked on Phase 12 release automation alignment and Phase 13 candidate packaging / reassessment evidence.
+- No local blocker remains for the shipped v1.3 baseline.
 - Remote GitHub settings, tag creation/push, and release publication remain explicit operator actions.
-- Credential/network/TTY-dependent live UAT remains manual and must not be represented as automated coverage.
+- Credential/network/TTY-dependent live UAT remains manual, and the shared HeadlessHost reasoning/tool-event rendering limitation remains deferred future work.
 
 ### Quick Tasks Completed
 
@@ -95,16 +97,18 @@ None recorded for this milestone.
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| v1.2 refactor | REF-01..04: App/config/loop/tools decomposition | Deferred until Phase 8 protection exists | v1.1 scope |
-| Live UAT | Credential/TTY-dependent Telegram, Weixin and interactive checks | Record explicitly; do not fake as automated coverage | v1.0/v1.1 |
-| Operator action | GitHub branch protection or other admin settings | Pending HG-03 and manual execution | Phase 5 |
+| Protected refactor | REF-01..04: App/config/loop/tools decomposition | Deferred until a dedicated post-v1.3 milestone with characterization protection | v1.3 closeout |
+| Live UAT | Credential/TTY-dependent Telegram, Weixin and interactive checks | Record explicitly; do not fake as automated coverage | v1.0/v1.1/v1.3 |
+| Operator action | GitHub branch protection, tag/push, npm publish, or GitHub release creation | Manual external work only | v1.3 closeout |
+| Channel streaming | HeadlessHost reasoning/tool-event rendering limitation | Deferred future improvement; not covered by Phase 13 | v1.0 accepted gap |
 
 ## Session Continuity
 
-Last session: 2026-07-18T13:00:00+08:00
-Stopped at: Phase 11 complete; ready to discuss Phase 12
+Last session: 2026-07-18T16:47:14+08:00
+Stopped at: Milestone v1.3 completed and archived
 Resume file: None
 
 ## Operator Next Steps
 
-- Discuss Phase 12 with `$gsd-discuss-phase 12`
+- Start the next milestone with `$gsd-new-milestone`
+- If shipping the current candidate externally, perform the manual release actions separately and keep them out of repository automation claims

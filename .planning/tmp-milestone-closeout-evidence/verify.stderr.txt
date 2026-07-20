@@ -1,0 +1,31 @@
+[90mstderr[2m | tests/skills.test.ts[2m > [22m[2mapplySkillsIndex[2m > [22m[2msurfaces skills with blank descriptions using a placeholder so the model can name + flag them (#583)
+[22m[39m[skills] "no-desc" at C:\Users\ZHANGY~1\AppData\Local\Temp\reasonix-skills-idx-sMVp2t\.reasonix\skills\no-desc\SKILL.md has no description: — it will be loaded but won't appear in the skills index.
+
+▸ session "c333": healed 1 entry (dropped dangling tool_calls tail). Rewrote session file.
+▸ session "c364": healed 1 entry (dropped dangling tool_calls tail). Rewrote session file.
+send failed: POST https://api.telegram.org/[redacted]/sendMessage
+⌘ MCP · fs              ↻ handshake…   initialise → tools/list → resources/list
+⌘ MCP · fs              ⚡ tools ready  2 tools · 1ms
+⌘ MCP · fs              ✓ connected    2 tools · 1ms
+⌘ MCP · ctx7            ↻ handshake…   initialise → tools/list → resources/list
+⌘ MCP · ctx7            ✖ failed       ECONNREFUSED 127.0.0.1:1
+  → → run `reasonix-legacy setup` to remove this entry, or fix the underlying issue (missing npm package, network, etc.).
+⌘ MCP · ctx7            ↻ handshake…   initialise → tools/list → resources/list
+⌘ MCP · ctx7            ✖ failed       transient
+  → → run `reasonix-legacy setup` to remove this entry, or fix the underlying issue (missing npm package, network, etc.).
+⌘ MCP · ctx7            ↻ handshake…   initialise → tools/list → resources/list
+⌘ MCP · ctx7            ⚡ tools ready  0 tools · 1ms
+⌘ MCP · ctx7            ✓ connected    0 tools · 1ms
+⌘ MCP · ctx7            ↻ handshake…   initialise → tools/list → resources/list
+⌘ MCP · ctx7            ✖ failed       boom
+  → → run `reasonix-legacy setup` to remove this entry, or fix the underlying issue (missing npm package, network, etc.).
+⌘ MCP · svc             ↻ handshake…   initialise → tools/list → resources/list
+⌘ MCP · svc             ⚡ tools ready  0 tools · 0ms
+⌘ MCP · svc             ✓ connected    0 tools · 0ms
+⌘ MCP · svc             ↻ handshake…   initialise → tools/list → resources/list
+⌘ MCP · svc             ⚡ tools ready  0 tools · 0ms
+⌘ MCP · svc             ✓ connected    0 tools · 0ms
+⌘ MCP · fs              ↻ 握手中…         初始化 → tools/list → resources/list
+⌘ MCP · fs              ✓ 已连接          1 tools · 0ms
+⌘ MCP · db              ↻ 握手中…         初始化 → tools/list → resources/list
+⌘ MCP · db              ✓ 已连接          1 tools · 0ms
