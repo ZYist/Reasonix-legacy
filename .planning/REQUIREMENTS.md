@@ -73,33 +73,39 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| REL-01 | TBD | Pending |
-| REL-02 | TBD | Pending |
-| REL-03 | TBD | Pending |
-| LTS-01 | TBD | Pending |
-| LTS-02 | TBD | Pending |
-| LTS-03 | TBD | Pending |
-| LTS-04 | TBD | Pending |
-| LTS-05 | TBD | Pending |
-| MIG-01 | TBD | Pending |
-| MIG-02 | TBD | Pending |
-| MIG-03 | TBD | Pending |
-| VER-01 | TBD | Pending |
-| VER-02 | TBD | Pending |
-| VER-03 | TBD | Pending |
-| VER-04 | TBD | Pending |
-| OPS-01 | TBD | Pending |
-| OPS-02 | TBD | Pending |
-| OPS-03 | TBD | Pending |
-| OPS-04 | TBD | Pending |
-| OPS-05 | TBD | Pending |
-| OPS-06 | TBD | Pending |
+| REL-01 | Phase 14 | Pending |
+| REL-02 | Phase 14 | Pending |
+| REL-03 | Phase 16 | Pending |
+| LTS-01 | Phase 14 | Pending |
+| LTS-02 | Phase 14 | Pending |
+| LTS-03 | Phase 14 | Pending |
+| LTS-04 | Phase 14 | Pending |
+| LTS-05 | Phase 14 | Pending |
+| MIG-01 | Phase 15 | Pending |
+| MIG-02 | Phase 15 | Pending |
+| MIG-03 | Phase 15 | Pending |
+| VER-01 | Phase 16 | Pending |
+| VER-02 | Phase 16 | Pending |
+| VER-03 | Phase 16 | Pending |
+| VER-04 | Phase 16 | Pending |
+| OPS-01 | Phase 15 | Pending |
+| OPS-02 | Phase 16 | Pending |
+| OPS-03 | Phase 17 | Pending |
+| OPS-04 | Phase 15 | Pending |
+| OPS-05 | Phase 15 | Pending |
+| OPS-06 | Phase 15 | Pending |
 
 **Coverage:**
 - v1.3.1 requirements: 21 total
-- Mapped to phases: 0
-- Unmapped: 21 ⚠️
+- Mapped to phases: 21
+- Unmapped: 0
+
+**Phase mapping:**
+- Phase 14 (1.3.1 Identity and LTS Contract): REL-01, REL-02, LTS-01, LTS-02, LTS-03, LTS-04, LTS-05
+- Phase 15 (Migration and Release Runbook): MIG-01, MIG-02, MIG-03, OPS-01, OPS-04, OPS-05, OPS-06
+- Phase 16 (Immutable Candidate and Publish Gates): REL-03, VER-01, VER-02, VER-03, VER-04, OPS-02
+- Phase 17 (External Release Validation and LTS Promotion): OPS-03
 
 ---
 *Requirements defined: 2026-07-22*
-*Last updated: 2026-07-22 after milestone scope confirmation*
+*Last updated: 2026-07-22 after roadmap phase mapping (21/21 mapped)*
