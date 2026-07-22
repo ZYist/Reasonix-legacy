@@ -1,593 +1,314 @@
 {
   "_meta": {
-    "updated_at": "2026-07-16T10:31:32.179Z",
-    "version": 4
+    "updated_at": "2026-07-22T08:18:34.412Z",
+    "version": 6
   },
   "entries": {
     "commander": {
       "version": "^12.1.0",
       "type": "production",
-      "invocation": "require",
       "used_by": [
-        "src/cli/index.ts"
+        "dev",
+        "chat",
+        "build"
       ],
-      "purpose": "CLI argv parsing and subcommand routing."
-    },
-    "undici": {
-      "version": "^8.2.0",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "src/client.ts",
-        "src/tools/web.ts",
-        "src/net/proxy.ts"
-      ],
-      "purpose": "HTTP client + global dispatcher (proxy support)."
-    },
-    "eventsource-parser": {
-      "version": "^3.0.0",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "src/client.ts",
-        "src/loop/streaming.ts"
-      ],
-      "purpose": "SSE stream parsing for DeepSeek streaming responses."
-    },
-    "zod": {
-      "version": "^4.4.1",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "src/tools",
-        "src/mcp/types.ts",
-        "src/config.ts"
-      ],
-      "purpose": "Runtime schema validation for tool args / MCP / config."
-    },
-    "ws": {
-      "version": "^8.20.1",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "src/qq/bot.ts",
-        "src/weixin/bot.ts"
-      ],
-      "purpose": "WebSocket bot transports (QQ gateway, WeChat). No HTTP/WS server remains after dashboard removal."
-    },
-    "grammy": {
-      "version": "^1.43.0",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "src/telegram/bot.ts"
-      ],
-      "purpose": "Telegram bot framework."
-    },
-    "web-tree-sitter": {
-      "version": "^0.26.9",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "src/code-query/parser.ts",
-        "src/java/index.ts"
-      ],
-      "purpose": "WASM tree-sitter host for code symbol parsing."
-    },
-    "node-html-parser": {
-      "version": "^7.1.0",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "src/tools/web.ts"
-      ],
-      "purpose": "HTML parsing for web fetch results."
-    },
-    "iconv-lite": {
-      "version": "^0.7.2",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "src/code/file-encoding.ts",
-        "src/tools/web.ts"
-      ],
-      "purpose": "Non-UTF8 encoding handling."
-    },
-    "qrcode": {
-      "version": "^1.5.4",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "src/cli/ui",
-        "src/weixin/bot.ts"
-      ],
-      "purpose": "Render QR codes in the TUI / WeChat login."
-    },
-    "picomatch": {
-      "version": "^4.0.4",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "src/gitignore.ts",
-        "src/tools/fs/glob.ts"
-      ],
-      "purpose": "Glob/gitignore pattern matching."
-    },
-    "ignore": {
-      "version": "^7.0.5",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "src/gitignore.ts"
-      ],
-      "purpose": ".gitignore semantics."
-    },
-    "semver": {
-      "version": "^7.6.3",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "src/version.ts",
-        "packages/ink"
-      ],
-      "purpose": "Version comparison / update checks."
-    },
-    "lodash-es": {
-      "version": "^4.17.21",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "packages/ink",
-        "src/cli/ui"
-      ],
-      "purpose": "Utility helpers (debounce/throttle/etc)."
+      "invocation": "import in src/cli/index.ts"
     },
     "react": {
       "version": "^19.2.6",
       "type": "production",
-      "invocation": "require",
       "used_by": [
-        "src/cli/ui",
-        "packages/ink"
+        "dev",
+        "chat",
+        "build",
+        "test"
       ],
-      "purpose": "React — used as the Ink TUI render tree."
+      "invocation": "import in src/cli/ui/App.tsx and packages/ink/src/index.ts"
     },
     "react-reconciler": {
       "version": "^0.32.0",
       "type": "production",
-      "invocation": "require",
       "used_by": [
-        "packages/ink"
+        "dev",
+        "chat",
+        "build",
+        "test"
       ],
-      "purpose": "Custom React reconciler for the terminal."
+      "invocation": "import in packages/ink/src/renderer.ts"
     },
     "yoga-layout": {
       "version": "^3.2.1",
       "type": "production",
-      "invocation": "require",
       "used_by": [
-        "packages/ink"
+        "dev",
+        "chat",
+        "build",
+        "test"
       ],
-      "purpose": "Flexbox layout engine for the TUI."
+      "invocation": "import in packages/ink/src/layout/yoga.ts"
     },
-    "chalk": {
-      "version": "^5.3.0",
+    "eventsource-parser": {
+      "version": "^3.0.0",
       "type": "production",
-      "invocation": "require",
       "used_by": [
-        "packages/ink",
-        "src/cli/ui"
+        "dev",
+        "chat",
+        "build",
+        "test"
       ],
-      "purpose": "Terminal colors."
+      "invocation": "import in src/client.ts, src/mcp/sse.ts, and src/mcp/streamable-http.ts"
     },
-    "cli-highlight": {
-      "version": "^2.1.11",
+    "undici": {
+      "version": "^8.7.0",
       "type": "production",
-      "invocation": "require",
       "used_by": [
-        "src/cli/ui"
+        "dev",
+        "chat",
+        "build",
+        "test"
       ],
-      "purpose": "Syntax highlighting in TUI."
+      "invocation": "import in src/net/proxy.ts"
     },
-    "cli-boxes": {
-      "version": "^4.0.1",
+    "zod": {
+      "version": "^4.4.1",
       "type": "production",
-      "invocation": "require",
       "used_by": [
-        "packages/ink"
+        "dev",
+        "chat",
+        "build",
+        "test"
       ],
-      "purpose": "Box drawing for TUI."
+      "invocation": "import in src/config.ts"
     },
-    "slice-ansi": {
+    "web-tree-sitter": {
+      "version": "^0.26.9",
+      "type": "production",
+      "used_by": [
+        "dev",
+        "build",
+        "test"
+      ],
+      "invocation": "import in src/code-query/parser.ts"
+    },
+    "grammy": {
+      "version": "^1.43.0",
+      "type": "production",
+      "used_by": [
+        "dev",
+        "build",
+        "test"
+      ],
+      "invocation": "import in src/telegram/bot.ts"
+    },
+    "ws": {
+      "version": "^8.21.1",
+      "type": "production",
+      "used_by": [
+        "dev",
+        "build",
+        "test"
+      ],
+      "invocation": "import in src/qq/bot.ts"
+    },
+    "qrcode": {
+      "version": "^1.5.4",
+      "type": "production",
+      "used_by": [
+        "dev",
+        "build",
+        "test"
+      ],
+      "invocation": "import in src/weixin/bot.ts"
+    },
+    "node-html-parser": {
       "version": "^7.1.0",
       "type": "production",
-      "invocation": "require",
       "used_by": [
-        "packages/ink"
+        "dev",
+        "build",
+        "test"
       ],
-      "purpose": "ANSI-aware string slicing."
+      "invocation": "import in src/tools/web.ts"
     },
-    "wrap-ansi": {
-      "version": "^9.0.0",
+    "iconv-lite": {
+      "version": "^0.7.2",
       "type": "production",
-      "invocation": "require",
       "used_by": [
-        "packages/ink"
+        "dev",
+        "build",
+        "test"
       ],
-      "purpose": "ANSI-aware wrapping."
+      "invocation": "import in src/code/file-encoding.ts"
     },
-    "string-width": {
-      "version": "^7.2.0",
+    "ignore": {
+      "version": "^7.0.5",
       "type": "production",
-      "invocation": "require",
       "used_by": [
-        "packages/ink"
+        "dev",
+        "build",
+        "test"
       ],
-      "purpose": "Display-width of strings (CJK aware)."
+      "invocation": "import in src/gitignore.ts"
     },
-    "strip-ansi": {
-      "version": "^7.1.0",
+    "picomatch": {
+      "version": "^4.0.4",
       "type": "production",
-      "invocation": "require",
       "used_by": [
-        "packages/ink",
-        "src/cli/ui"
+        "dev",
+        "build",
+        "test"
       ],
-      "purpose": "Strip ANSI escape codes."
-    },
-    "signal-exit": {
-      "version": "^4.1.0",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "packages/ink"
-      ],
-      "purpose": "Run cleanup on exit signals."
-    },
-    "auto-bind": {
-      "version": "^5.0.1",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "packages/ink"
-      ],
-      "purpose": "Auto-bind class methods."
-    },
-    "usehooks-ts": {
-      "version": "^3.1.0",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "packages/ink",
-        "src/cli/ui"
-      ],
-      "purpose": "React hook utilities."
-    },
-    "indent-string": {
-      "version": "^5.0.0",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "packages/ink"
-      ],
-      "purpose": "String indentation helper."
-    },
-    "code-excerpt": {
-      "version": "^4.0.0",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "packages/ink"
-      ],
-      "purpose": "Extract code excerpts for stack traces."
-    },
-    "stack-utils": {
-      "version": "^2.0.6",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "packages/ink"
-      ],
-      "purpose": "Stack-trace parsing."
-    },
-    "bidi-js": {
-      "version": "^1.0.3",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "packages/ink"
-      ],
-      "purpose": "BiDi text algorithm for TUI."
-    },
-    "@alcalzone/ansi-tokenize": {
-      "version": "^0.3.0",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "packages/ink"
-      ],
-      "purpose": "ANSI-aware tokenization."
-    },
-    "get-east-asian-width": {
-      "version": "^1.3.0",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "packages/ink"
-      ],
-      "purpose": "East-Asian character width."
-    },
-    "emoji-regex": {
-      "version": "^10.4.0",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "packages/ink"
-      ],
-      "purpose": "Emoji detection regex."
-    },
-    "supports-hyperlinks": {
-      "version": "^4.0.0",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "packages/ink"
-      ],
-      "purpose": "Detect terminal hyperlink support."
-    },
-    "ink (workspace)": {
-      "version": "workspace:*",
-      "type": "production",
-      "invocation": "require",
-      "used_by": [
-        "src/cli/ui",
-        "src/cli/commands/chat.tsx",
-        "src/cli/commands/code.tsx"
-      ],
-      "purpose": "Custom Ink TUI runtime (path-aliased to packages/ink/src)."
-    },
-    "@reasonix/core-utils (workspace)": {
-      "version": "workspace:*",
-      "type": "development",
-      "invocation": "require",
-      "used_by": [
-        "src/cli",
-        "src/code"
-      ],
-      "purpose": "Shared utilities (compaction, tildeify, tool-kind, permission types, approval prompt)."
-    },
-    "@biomejs/biome": {
-      "version": "^1.9.4",
-      "type": "development",
-      "invocation": "npm run lint",
-      "used_by": [
-        "src",
-        "tests"
-      ],
-      "purpose": "Lint + format."
+      "invocation": "import in src/hooks.ts"
     },
     "tsup": {
       "version": "^8.3.5",
       "type": "development",
-      "invocation": "npm run build",
       "used_by": [
-        "src/index.ts",
-        "src/cli/index.ts"
+        "build",
+        "verify",
+        "prepublishOnly"
       ],
-      "purpose": "ESM bundler for library + CLI dist."
-    },
-    "esbuild": {
-      "version": "^0.21.5",
-      "type": "development",
-      "invocation": "npm run build",
-      "used_by": [
-        "tsup.config.ts"
-      ],
-      "purpose": "Bundler used by tsup."
+      "invocation": "npm run build"
     },
     "tsx": {
       "version": "^4.19.2",
       "type": "development",
-      "invocation": "npm run dev",
       "used_by": [
-        "src/cli/index.ts"
+        "dev",
+        "chat"
       ],
-      "purpose": "TypeScript execution for `npm run dev` / `npm run chat`."
+      "invocation": "npm run dev"
     },
     "typescript": {
       "version": "^5.6.3",
       "type": "development",
-      "invocation": "npm run typecheck",
       "used_by": [
-        "tsconfig.json"
+        "typecheck",
+        "verify",
+        "prepublishOnly"
       ],
-      "purpose": "Type checker (noEmit)."
+      "invocation": "npm run typecheck"
+    },
+    "@biomejs/biome": {
+      "version": "^1.9.4",
+      "type": "development",
+      "used_by": [
+        "lint",
+        "lint:fix",
+        "format",
+        "verify"
+      ],
+      "invocation": "npm run lint"
     },
     "vitest": {
       "version": "^2.1.5",
       "type": "development",
-      "invocation": "npm test",
       "used_by": [
-        "tests",
-        "src"
+        "test",
+        "test:watch",
+        "test:coverage",
+        "verify"
       ],
-      "purpose": "Unit test runner (pool: forks)."
+      "invocation": "npm test"
     },
     "@vitest/coverage-v8": {
       "version": "^2.1.5",
       "type": "development",
-      "invocation": "npm run test:coverage",
       "used_by": [
-        "vitest.config.ts"
+        "test:coverage"
       ],
-      "purpose": "V8 coverage provider."
+      "invocation": "npm run test:coverage"
     },
     "@stryker-mutator/core": {
       "version": "^9.6.1",
       "type": "development",
-      "invocation": "npm run test:mutation",
       "used_by": [
-        "stryker.config.mjs"
+        "test:mutation"
       ],
-      "purpose": "Mutation testing."
+      "invocation": "npm run test:mutation"
     },
     "@stryker-mutator/vitest-runner": {
       "version": "^9.6.1",
       "type": "development",
-      "invocation": "npm run test:mutation",
       "used_by": [
-        "stryker.config.mjs"
+        "test:mutation"
       ],
-      "purpose": "Stryker vitest runner."
+      "invocation": "npm run test:mutation"
     },
-    "jsdom": {
-      "version": "^29.1.1",
+    "@reasonix/core-utils": {
+      "version": "workspace:*",
       "type": "development",
-      "invocation": "npm test",
       "used_by": [
-        "tests"
+        "build",
+        "typecheck",
+        "test"
       ],
-      "purpose": "DOM env for select component tests."
+      "invocation": "import from packages/core-utils/src/index.ts"
     },
-    "@testing-library/react": {
-      "version": "^16.3.2",
+    "ink": {
+      "version": "workspace:*",
       "type": "development",
-      "invocation": "npm test",
       "used_by": [
-        "tests"
+        "dev",
+        "chat",
+        "build",
+        "test"
       ],
-      "purpose": "React component tests."
-    },
-    "react-test-renderer": {
-      "version": "^19.2.6",
-      "type": "development",
-      "invocation": "npm test",
-      "used_by": [
-        "tests"
-      ],
-      "purpose": "React test renderer."
-    },
-    "ink-testing-library": {
-      "version": "^4.0.0",
-      "type": "development",
-      "invocation": "npm test",
-      "used_by": [
-        "tests"
-      ],
-      "purpose": "Ink component testing."
-    },
-    "tree-sitter-go": {
-      "version": "^0.25.0",
-      "type": "development",
-      "invocation": "scripts/copy-tree-sitter-grammars.mjs",
-      "used_by": [
-        "build"
-      ],
-      "purpose": "Go grammar (bundled as wasm)."
-    },
-    "tree-sitter-java": {
-      "version": "^0.23.5",
-      "type": "development",
-      "invocation": "scripts/copy-tree-sitter-grammars.mjs",
-      "used_by": [
-        "build"
-      ],
-      "purpose": "Java grammar."
-    },
-    "tree-sitter-javascript": {
-      "version": "^0.25.0",
-      "type": "development",
-      "invocation": "scripts/copy-tree-sitter-grammars.mjs",
-      "used_by": [
-        "build"
-      ],
-      "purpose": "JavaScript grammar."
-    },
-    "tree-sitter-python": {
-      "version": "^0.25.0",
-      "type": "development",
-      "invocation": "scripts/copy-tree-sitter-grammars.mjs",
-      "used_by": [
-        "build"
-      ],
-      "purpose": "Python grammar."
-    },
-    "tree-sitter-rust": {
-      "version": "^0.24.0",
-      "type": "development",
-      "invocation": "scripts/copy-tree-sitter-grammars.mjs",
-      "used_by": [
-        "build"
-      ],
-      "purpose": "Rust grammar."
+      "invocation": "tsconfig.json alias to packages/ink/src/index.ts"
     },
     "tree-sitter-typescript": {
       "version": "^0.23.2",
       "type": "development",
-      "invocation": "scripts/copy-tree-sitter-grammars.mjs",
       "used_by": [
-        "build"
+        "build",
+        "test"
       ],
-      "purpose": "TypeScript grammar."
+      "invocation": "scripts/copy-tree-sitter-grammars.mjs"
     },
-    "marked": {
-      "version": "^15.0.12",
+    "tree-sitter-javascript": {
+      "version": "^0.25.0",
       "type": "development",
-      "invocation": "require",
       "used_by": [
-        "src/cli/ui/markdown.tsx",
-        "src/cli/ui/markdown-lines.ts"
+        "build",
+        "test"
       ],
-      "purpose": "Markdown rendering inside the TUI (retained after dashboard removal)."
+      "invocation": "scripts/copy-tree-sitter-grammars.mjs"
     },
-    "highlight.js": {
-      "version": "^11.10.0",
+    "tree-sitter-python": {
+      "version": "^0.25.0",
       "type": "development",
-      "invocation": "require",
       "used_by": [
-        "src/cli/ui/markdown.tsx",
-        "src/cli/ui/markdown-lines.ts"
+        "build",
+        "test"
       ],
-      "purpose": "Code-block highlighting inside the TUI markdown renderer."
+      "invocation": "scripts/copy-tree-sitter-grammars.mjs"
     },
-    "uplot": {
-      "version": "^1.6.31",
+    "tree-sitter-go": {
+      "version": "^0.25.0",
       "type": "development",
-      "invocation": "—",
-      "used_by": [],
-      "purpose": "Residual devDependency — dashboard-only consumer removed in v1.0; no current src/ import."
-    },
-    "preact": {
-      "version": "^10.22.0",
-      "type": "development",
-      "invocation": "—",
-      "used_by": [],
-      "purpose": "Residual devDependency — dashboard-only consumer removed in v1.0; no current src/ import."
-    },
-    "htm": {
-      "version": "^3.1.1",
-      "type": "development",
-      "invocation": "—",
-      "used_by": [],
-      "purpose": "Residual devDependency — dashboard-only consumer removed in v1.0; no current src/ import."
-    },
-    "simple-git-hooks": {
-      "version": "^2.13.1",
-      "type": "development",
-      "invocation": "npm run prepare",
       "used_by": [
-        "package.json"
+        "build",
+        "test"
       ],
-      "purpose": "pre-commit (lint) / pre-push (verify) hooks."
+      "invocation": "scripts/copy-tree-sitter-grammars.mjs"
     },
-    "reasonix-legacy (self, file:)": {
-      "version": "file:../..",
-      "type": "production",
-      "invocation": "bin",
+    "tree-sitter-java": {
+      "version": "^0.23.5",
+      "type": "development",
       "used_by": [
-        "packages/dsnix"
+        "build",
+        "test"
       ],
-      "purpose": "dsnix alias package depends on the root package."
+      "invocation": "scripts/copy-tree-sitter-grammars.mjs"
+    },
+    "tree-sitter-rust": {
+      "version": "^0.24.0",
+      "type": "development",
+      "used_by": [
+        "build",
+        "test"
+      ],
+      "invocation": "scripts/copy-tree-sitter-grammars.mjs"
     }
   }
 }

@@ -1,11 +1,11 @@
 {
   "hashes": {
-    "file-roles.json": "ad83290a700eb1e6cc98bd05a6331d9f2c9a4281061687349fb12977f2647540",
-    "api-map.json": "009dde24c6363b209a6f90086205d1acbe23f2991654949d33871790a20ab818",
-    "dependency-graph.json": "a80608ccd668fe924aad791d35f40c32954cdb7bdb804b7e5bc3ed5a953e6a44",
-    "arch-decisions.json": "b611519989598c75ae317bc6f2fdc317ae37e094e2ab7d89ce3817ff19a484b0",
-    "stack.json": "f7a5c36cff74e31ad0a1a6caafa4273d1c19ad18a69c53e992e6712eb37d24a0"
+    "file-roles.json": "4f3b4130b91f943584157f2333266e83f6252667e50c5eebd540b5eab27a2d60",
+    "api-map.json": "925a5f7be245c301bc7c39bdf06b9f9c2307dd7125737da3c7909be1705a8d06",
+    "dependency-graph.json": "8287b4392ae6770828ed1676e089758260c0daa6e1b046d71916e8d44b927ad4",
+    "arch-decisions.json": "364001ac6dd75ebf117e8538b94270d32cd731cd219f6840826efcd39d1c217b",
+    "stack.json": "14d11c2f52bcb34bf4ccd8079caf55b9274b960cb10e3c2e68adaa68b2e5a1ff"
   },
-  "timestamp": "2026-07-16T10:31:45.421Z",
+  "timestamp": "2026-07-22T08:26:58.786Z",
   "version": 1
 }

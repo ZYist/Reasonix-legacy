@@ -1,93 +1,37 @@
 {
   "_meta": {
-    "updated_at": "2026-07-16T10:31:32.286Z",
-    "version": 4
+    "updated_at": "2026-07-22T08:18:34.087Z",
+    "version": 6
   },
   "languages": [
     "TypeScript",
-    "JavaScript"
+    "TSX",
+    "JavaScript ESM"
   ],
   "frameworks": [
-    "React 19",
-    "Ink (custom fork, TUI)",
-    "React-Reconciler",
-    "Yoga Layout",
-    "Commander 12",
-    "Grammy (Telegram bot)"
+    "React 19 (src/cli/ui/App.tsx)",
+    "Repository-owned Ink/React Reconciler/Yoga TUI (packages/ink/src/index.ts)",
+    "Commander 12 CLI (src/cli/index.ts)",
+    "GrammY Telegram client (src/telegram/bot.ts)"
   ],
   "tools": [
-    "tsup 8",
-    "esbuild 0.21",
-    "Biome 1.9",
-    "Vitest 2 (with @vitest/coverage-v8)",
-    "Stryker 9 (mutation testing)",
-    "tsx 4",
-    "Tree-sitter (web-tree-sitter 0.26)",
-    "highlight.js (TUI markdown code highlight)",
-    "marked (TUI markdown render)",
-    "simple-git-hooks",
-    "Marp (pitch deck)"
+    "tsup 8 (tsup.config.ts)",
+    "TypeScript 5 (tsconfig.json)",
+    "Biome 1.9 (biome.json)",
+    "Vitest 2 with V8 coverage (vitest.config.ts)",
+    "Stryker 9 mutation testing (stryker.config.mjs)",
+    "tsx 4 (package.json)",
+    "web-tree-sitter 0.26 (src/code-query/parser.ts)",
+    "GitHub Actions (ci/codeql/publish workflows)"
   ],
-  "build_system": "npm scripts (tsup ESM bundles -> dist/)",
-  "test_framework": "Vitest (pool: forks, per-file isolation), Stryker for mutation tests",
-  "package_manager": "npm (workspaces: packages/*)",
-  "runtimes": [
-    "Node.js >=22"
-  ],
-  "key_dependencies": {
-    "production": [
-      "commander (CLI parsing)",
-      "undici (HTTP / fetch + global proxy dispatcher)",
-      "eventsource-parser (SSE streaming)",
-      "zod (schema validation)",
-      "ws (WebSocket — QQ/WeChat bot transports)",
-      "grammy (Telegram bot framework)",
-      "web-tree-sitter (syntax parsing)",
-      "node-html-parser, iconv-lite (web/content tools)",
-      "qrcode, chalk, cli-highlight, cli-boxes (TUI/CLI rendering)",
-      "react, react-reconciler, yoga-layout (Ink TUI runtime)",
-      "semver, lodash-es, picomatch, ignore"
-    ],
-    "development": [
-      "@biomejs/biome (lint/format)",
-      "tsup, esbuild, tsx, typescript",
-      "vitest, @stryker-mutator/core",
-      "tree-sitter-{go,java,javascript,python,rust,typescript}",
-      "jsdom, @testing-library/react, react-test-renderer, ink-testing-library",
-      "marked, highlight.js (TUI markdown rendering)"
-    ]
-  },
+  "build_system": "npm scripts; tsup emits ESM library and bundled reasonix-legacy CLI, then scripts copy the CLI marker and tree-sitter WASM grammars (package.json, tsup.config.ts)",
+  "test_framework": "Vitest with fork isolation and V8 coverage; Stryker for targeted mutation tests (vitest.config.ts, stryker.config.mjs)",
+  "package_manager": "npm workspaces: packages/core-utils and packages/ink (package.json, packages/core-utils/package.json, packages/ink/package.json)",
   "content_formats": [
-    "TypeScript/TSX (core + Ink TUI components)",
-    "Markdown (README, docs, skills, prompt fragments)",
-    "YAML (frontmatter config in skills)",
-    "JSON (config, intel, session transcripts)",
-    "EJS-like templates (i18n message strings)",
-    "Gzipped data (data/deepseek-tokenizer.json.gz)"
-  ],
-  "i18n": {
-    "active_locales": [
-      "en",
-      "zh-CN"
-    ],
-    "removed_locales": [
-      "JA",
-      "de",
-      "ru"
-    ],
-    "runtime": "src/i18n/index.ts (t() lookup, locale detection, fallback to en)"
-  },
-  "monorepo": {
-    "root_package": "reasonix-legacy",
-    "workspaces": [
-      "packages/core-utils (@reasonix/core-utils — shared TS utilities)",
-      "packages/ink (forked Ink TUI runtime, workspace:*)",
-      "packages/dsnix (short CLI alias bin)"
-    ]
-  },
-  "entrypoints": {
-    "library": "src/index.ts -> dist/index.js",
-    "cli": "src/cli/index.ts -> dist/cli/index.js (bin: reasonix, dsnix)"
-  },
-  "surface_mode": "pure CLI/TUI (no web dashboard, no desktop/Tauri shell — removed in v1.0)"
+    "Markdown documentation and prompt content (README.md, docs/)",
+    "YAML GitHub Actions workflows (.github/workflows/)",
+    "JSON and JSONL configuration/session/index data (package.json, src/memory/session.ts, src/index/semantic/store.ts)",
+    "Gzip tokenizer data (data/deepseek-tokenizer.json.gz)",
+    "WebAssembly tree-sitter grammars copied by scripts/copy-tree-sitter-grammars.mjs"
+  ]
 }

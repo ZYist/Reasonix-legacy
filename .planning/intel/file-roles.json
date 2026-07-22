@@ -1,1081 +1,625 @@
 {
   "_meta": {
-    "updated_at": "2026-07-16T10:29:59.183Z",
-    "version": 4
+    "updated_at": "2026-07-22T08:18:34.194Z",
+    "version": 6
   },
   "entries": {
     "src/index.ts": {
-      "type": "entry-point",
-      "role": "Library entry point. Re-exports the public API surface (DeepSeekClient, CacheFirstLoop, ToolRegistry, repair, MCP, memory, transcript, telemetry, hooks, config).",
       "exports": [
         "DeepSeekClient",
         "Usage",
         "CacheFirstLoop",
-        "formatLoopError",
         "ToolRegistry",
+        "MemoryStore",
         "ToolCallRepair",
         "McpClient",
-        "MemoryStore",
-        "SessionStats",
+        "StdioTransport",
+        "SseTransport",
+        "StreamableHttpTransport",
         "fetchWithRetry",
-        "VERSION"
+        "VERSION",
+        "codeSystemPrompt",
+        "registerFilesystemTools",
+        "registerShellTools",
+        "registerWebTools"
       ],
       "imports": [
         "./client.js",
         "./loop.js",
         "./tools.js",
+        "./memory/user.js",
         "./repair/index.js",
         "./mcp/client.js",
-        "./memory/user.js"
-      ]
+        "./mcp/stdio.js",
+        "./mcp/sse.js",
+        "./mcp/streamable-http.js",
+        "./retry.js",
+        "./version.js",
+        "./code/prompt.js"
+      ],
+      "type": "entry-point"
     },
     "src/cli/index.ts": {
-      "type": "entry-point",
-      "role": "CLI entry point (bin: reasonix/dsnix). Guards node/runtime prerequisites, installs proxy/BEL handling, sets the terminal tab title for interactive/task entrypoints, and wires Commander subcommands (setup, code, chat, run, acp, qq, telegram, weixin, stats, doctor, doctor-cache, commit, sessions, prune-sessions, events, replay, diff, mcp, version, update, index). The `desktop` subcommand is retained only as a retired stub that errors and redirects to qq/telegram/weixin.",
       "exports": [],
       "imports": [
         "commander",
         "../config.js",
         "../i18n/index.js",
-        "./resolve.js",
-        "./startup-profile.js",
-        "./tab-title.js"
-      ]
-    },
-    "src/client.ts": {
-      "type": "module",
-      "role": "DeepSeekClient HTTP client. Streaming/non-streaming chat completions, usage accounting, model list, balance. Exports Usage and DeepSeekClient.",
-      "exports": [
-        "DeepSeekClient",
-        "Usage",
-        "ChatResponse",
-        "StreamChunk",
-        "DeepSeekClientOptions"
+        "../memory/session.js",
+        "../net/proxy.js",
+        "./commands/code.js",
+        "./commands/chat.js",
+        "./commands/run.js",
+        "./commands/acp.js",
+        "./commands/qq.js",
+        "./commands/telegram.js",
+        "./commands/weixin.js"
       ],
-      "imports": [
-        "undici",
-        "./retry.js",
-        "./types.js"
-      ]
+      "type": "entry-point"
     },
     "src/loop.ts": {
-      "type": "module",
-      "role": "CacheFirstLoop agent main loop — orchestrates turn iteration, tool dispatch, context shrink, healing, hook events, transcript writes.",
       "exports": [
+        "MID_TURN_STEER_WRAPPER",
         "CacheFirstLoop",
-        "formatLoopError",
         "fixToolCallPairing",
+        "formatLoopError",
         "healLoadedMessages",
         "healLoadedMessagesByTokens",
-        "stripHallucinatedToolMarkup"
+        "isThinkingModeModel",
+        "looksLikeCompleteJson",
+        "shrinkOversizedToolCallArgsByTokens",
+        "shrinkOversizedToolResults",
+        "shrinkOversizedToolResultsByTokens",
+        "stampMissingReasoningForThinkingMode",
+        "stripHallucinatedToolMarkup",
+        "thinkingModeForModel"
       ],
       "imports": [
         "./client.js",
         "./context-manager.js",
-        "./loop/dispatch.js",
-        "./loop/healing.js",
-        "./loop/shrink.js",
+        "./core/pause-gate.js",
+        "./memory/runtime.js",
+        "./repair/index.js",
         "./tools.js"
-      ]
+      ],
+      "type": "module"
     },
-    "src/context-manager.ts": {
-      "type": "module",
-      "role": "ContextManager — token budgeting, folds old turns past TURN_START_FOLD_THRESHOLD (normal/aggressive/forced-summary)."
+    "src/client.ts": {
+      "exports": [
+        "pickPrimaryBalance",
+        "Usage",
+        "DeepSeekClient"
+      ],
+      "imports": [
+        "eventsource-parser",
+        "./config.js",
+        "./retry.js",
+        "./types.js"
+      ],
+      "type": "module"
     },
     "src/tools.ts": {
-      "type": "module",
-      "role": "ToolRegistry — registry of ToolDefinitions, interceptors, result augmenters, audit listeners, allow-lists, plan-mode gating, rate limiting.",
       "exports": [
-        "ToolRegistry",
-        "ToolDefinition",
-        "ToolCallContext"
-      ]
-    },
-    "src/config.ts": {
-      "type": "config",
-      "role": "Reads/writes ~/.reasonix/config.json — API keys, base URL, proxy config, reasoning effort, index config. DeepSeek key resolution from env/config."
-    },
-    "src/types.ts": {
-      "type": "type-def",
-      "role": "Shared types: ChatMessage, ToolCall, ToolSpec, Role, JSONSchema."
-    },
-    "src/env.ts": {
-      "type": "module",
-      "role": "loadDotenv() — minimal hand-rolled .env parser; does not override already-set vars."
-    },
-    "src/version.ts": {
-      "type": "module",
-      "role": "Version detection, DISPLAY_VERSION, npm install source, npx detection, latest version fetcher, compareVersions."
-    },
-    "src/hooks.ts": {
-      "type": "module",
-      "role": "Hook system — loadHooks, runHooks, matchesTool, decideOutcome; settings dir/file resolution."
-    },
-    "src/retry.ts": {
-      "type": "module",
-      "role": "fetchWithRetry — exponential backoff (DEFAULT_RETRYABLE_STATUSES), never retries aborts/mid-stream errors."
-    },
-    "src/tokenizer.ts": {
-      "type": "module",
-      "role": "DeepSeek tokenizer (loads data/deepseek-tokenizer.json.gz)."
-    },
-    "src/at-mentions.ts": {
-      "type": "module",
-      "role": "@-mention file picker — expandAtMentions, parseAtQuery, rankPickerCandidates, walkFilesStream."
-    },
-    "src/at-mentions-url.ts": {
-      "type": "module",
-      "role": "URL-form @-mention handling."
-    },
-    "src/frontmatter.ts": {
-      "type": "module",
-      "role": "YAML frontmatter parser for skill/command files."
-    },
-    "src/gitignore.ts": {
-      "type": "module",
-      "role": "Parse .gitignore patterns via ignore/picomatch."
-    },
-    "src/skills.ts": {
-      "type": "module",
-      "role": "Skill catalog/discovery layer. Finds skill roots, validates frontmatter, expands built-in/inlined skill content, and embeds maintained docs/help links for built-in QQ guidance.",
-      "exports": [
-        "validateSkillFrontmatter",
-        "skillPathStatus",
-        "builtinSkillDescription",
-        "applySkillsIndex",
-        "SKILLS_DIRNAME",
-        "SKILL_FILE",
-        "SKILLS_INDEX_MAX_CHARS",
-        "SkillStore",
-        "SkillScope",
-        "SkillPathStatus",
-        "SkillRunAs",
-        "Skill",
-        "SkillRoot",
-        "SkillStoreOptions"
+        "ToolRegistry"
       ],
       "imports": [
-        "node:fs",
-        "node:os",
-        "node:path",
-        "./frontmatter.js",
-        "./i18n/index.js",
-        "./prompt-fragments.js"
-      ]
+        "./core/pause-gate.js",
+        "./mcp/registry.js",
+        "./repair/flatten.js",
+        "./tools/rate-limit.js",
+        "./tools/read-tracker.js"
+      ],
+      "type": "module"
     },
-    "src/slash-usage.ts": {
-      "type": "module",
-      "role": "Slash command usage tracking."
-    },
-    "src/session-import.ts": {
-      "type": "module",
-      "role": "Session import helpers (import-sessions command backend)."
-    },
-    "src/session-title.ts": {
-      "type": "module",
-      "role": "Generate session titles."
-    },
-    "src/workspaces.ts": {
-      "type": "module",
-      "role": "Multi-workspace support."
-    },
-    "src/prompt-fragments.ts": {
-      "type": "module",
-      "role": "Reusable prompt fragments (escalationContract etc.) fed into system prompts."
-    },
-    "src/demo-utils.ts": {
-      "type": "module",
-      "role": "Demo/example helpers."
-    },
-    "src/loop/dispatch.ts": {
-      "type": "module",
-      "role": "dispatchToolCallsChunked — chunked tool-call execution with inflight tracking."
-    },
-    "src/loop/healing.ts": {
-      "type": "module",
-      "role": "Tool-call pairing repair, message healing, reasoning stamping."
-    },
-    "src/loop/shrink.ts": {
-      "type": "module",
-      "role": "shrinkOversizedToolCallArgsByTokens / shrinkOversizedToolResults — context compaction."
-    },
-    "src/loop/errors.ts": {
-      "type": "module",
-      "role": "Loop error classification (4xx/5xx, host reachability probe, formatLoopError)."
-    },
-    "src/loop/force-summary.ts": {
-      "type": "module",
-      "role": "forceSummaryAfterIterLimit — cap iteration count."
-    },
-    "src/loop/messages.ts": {
-      "type": "module",
-      "role": "buildAssistantMessage / buildSyntheticAssistantMessage."
-    },
-    "src/loop/streaming.ts": {
-      "type": "module",
-      "role": "SSE stream → message assembly."
-    },
-    "src/loop/thinking.ts": {
-      "type": "module",
-      "role": "Thinking/reasoning-mode handling."
-    },
-    "src/loop/reasoning-retention.ts": {
-      "type": "module",
-      "role": "stripDroppableReasoningContent — drop reasoning across turns to save cache."
-    },
-    "src/loop/hook-events.ts": {
-      "type": "module",
-      "role": "Hook event emission inside loop, safeParseToolArgs."
-    },
-    "src/loop/types.ts": {
-      "type": "type-def",
-      "role": "Loop event/role/option types."
-    },
-    "src/repair/index.ts": {
-      "type": "module",
-      "role": "Tool-call repair barrel — ToolCallRepair, scavengeToolCalls, repairTruncatedJson, StormBreaker, schema flatten.",
+    "src/context-manager.ts": {
       "exports": [
-        "ToolCallRepair",
-        "scavengeToolCalls",
-        "repairTruncatedJson",
-        "StormBreaker",
-        "analyzeSchema",
-        "flattenSchema",
-        "nestArguments"
-      ]
-    },
-    "src/repair/scavenge.ts": {
-      "type": "module",
-      "role": "Scavenge tool calls from malformed model output."
-    },
-    "src/repair/truncation.ts": {
-      "type": "module",
-      "role": "repairTruncatedJson — fix truncated JSON args."
-    },
-    "src/repair/flatten.ts": {
-      "type": "module",
-      "role": "Flatten/nest JSON schema arguments (flattenSchema, nestArguments)."
-    },
-    "src/repair/storm.ts": {
-      "type": "module",
-      "role": "StormBreaker — break runaway tool-call storms."
-    },
-    "src/mcp/client.ts": {
-      "type": "module",
-      "role": "McpClient — MCP protocol client.",
-      "exports": [
-        "McpClient"
-      ]
-    },
-    "src/mcp/registry.ts": {
-      "type": "module",
-      "role": "bridgeMcpTools, flattenMcpResult, truncateForModel(ByTokens) — bridge MCP tools into ToolRegistry."
-    },
-    "src/mcp/stdio.ts": {
-      "type": "module",
-      "role": "StdioTransport for MCP servers."
-    },
-    "src/mcp/sse.ts": {
-      "type": "module",
-      "role": "SseTransport for MCP servers."
-    },
-    "src/mcp/streamable-http.ts": {
-      "type": "module",
-      "role": "StreamableHttpTransport for MCP servers."
-    },
-    "src/mcp/spec.ts": {
-      "type": "module",
-      "role": "parseMcpSpec — parse MCP server specs from CLI/config."
-    },
-    "src/mcp/inspect.ts": {
-      "type": "module",
-      "role": "inspectMcpServer — health/capability inspection."
-    },
-    "src/mcp/types.ts": {
-      "type": "type-def",
-      "role": "MCP JSON-RPC types (McpTool, CallToolResult, JsonRpcMessage, etc.)."
-    },
-    "src/mcp/catalog.ts": {
-      "type": "module",
-      "role": "MCP server catalog/registry discovery."
-    },
-    "src/mcp/reconnect.ts": {
-      "type": "module",
-      "role": "MCP transport reconnect logic."
-    },
-    "src/mcp/latency.ts": {
-      "type": "module",
-      "role": "MCP server latency probing."
-    },
-    "src/mcp/preflight.ts": {
-      "type": "module",
-      "role": "MCP pre-launch checks."
-    },
-    "src/mcp/drift.ts": {
-      "type": "module",
-      "role": "MCP tool drift detection."
-    },
-    "src/mcp/dot-mcp-json.ts": {
-      "type": "module",
-      "role": ".mcp.json file loader."
-    },
-    "src/mcp/summary.ts": {
-      "type": "module",
-      "role": "MCP server summary rendering."
-    },
-    "src/mcp/shell-split.ts": {
-      "type": "module",
-      "role": "Shell-arg splitter for stdio MCP commands."
-    },
-    "src/mcp/transport-from-spec.ts": {
-      "type": "module",
-      "role": "Pick transport from a parsed spec."
-    },
-    "src/mcp/registry-fetch.ts": {
-      "type": "module",
-      "role": "Fetch remote MCP registry catalogs."
-    },
-    "src/mcp/registry-types.ts": {
-      "type": "type-def",
-      "role": "Registry catalog types."
+        "estimateFoldEconomics",
+        "HISTORY_FOLD_THRESHOLD",
+        "HISTORY_FOLD_TAIL_FRACTION",
+        "HISTORY_FOLD_AGGRESSIVE_THRESHOLD",
+        "HISTORY_FOLD_AGGRESSIVE_TAIL_FRACTION",
+        "HISTORY_FOLD_MIN_SAVINGS_FRACTION",
+        "FORCE_SUMMARY_THRESHOLD",
+        "TURN_START_FOLD_THRESHOLD",
+        "HISTORY_FOLD_SUMMARY_TIMEOUT_MS",
+        "HISTORY_FOLD_ECONOMIC_HORIZON_TURNS",
+        "HISTORY_FOLD_MIN_ECONOMIC_SAVINGS_FRACTION",
+        "HISTORY_FOLD_MIN_ECONOMIC_SAVINGS_USD",
+        "HISTORY_FOLD_SUMMARY_RESERVE_TOKENS",
+        "HISTORY_FOLD_MARKER",
+        "SKILL_PIN_MEMO_HEADER",
+        "ContextManager"
+      ],
+      "imports": [
+        "@reasonix/core-utils",
+        "./client.js",
+        "./memory/runtime.js",
+        "./memory/session.js",
+        "./tokenizer.js"
+      ],
+      "type": "module"
     },
     "src/memory/runtime.ts": {
-      "type": "module",
-      "role": "Runtime memory tiers: ImmutablePrefix, AppendOnlyLog, VolatileScratch; sortToolSpecs (locale-independent)."
-    },
-    "src/memory/project.ts": {
-      "type": "module",
-      "role": "Project-scoped memory file (PROJECT_MEMORY_FILE) discovery + apply."
-    },
-    "src/memory/user.ts": {
-      "type": "module",
-      "role": "User-scoped MemoryStore, applyMemoryStack, applyUserMemory, projectHash."
+      "exports": [
+        "sortToolSpecs",
+        "ImmutablePrefix",
+        "AppendOnlyLog",
+        "VolatileScratch"
+      ],
+      "imports": [
+        "node:crypto",
+        "../types.js",
+        "./session.js"
+      ],
+      "type": "module"
     },
     "src/memory/session.ts": {
-      "type": "module",
-      "role": "Session persistence (listSessions, loadSessionMessages, appendSessionMessage, deleteSession)."
-    },
-    "src/memory/subdir.ts": {
-      "type": "module",
-      "role": "Memory subdir resolution."
-    },
-    "src/transcript/log.ts": {
-      "type": "module",
-      "role": "Transcript read/write: writeRecord, parseTranscript, readTranscript, recordFromLoopEvent."
-    },
-    "src/transcript/replay.ts": {
-      "type": "module",
-      "role": "replayFromFile, computeReplayStats — replay saved transcripts."
-    },
-    "src/transcript/diff.ts": {
-      "type": "module",
-      "role": "diffTranscripts, similarity — compare two transcripts."
-    },
-    "src/telemetry/stats.ts": {
-      "type": "module",
-      "role": "SessionStats, costUsd, inputCostUsd, claudeEquivalentCost."
-    },
-    "src/telemetry/usage.ts": {
-      "type": "module",
-      "role": "Usage log: aggregateUsage, appendUsage, bucketCacheHitRatio, readUsageLog."
-    },
-    "src/telemetry/subagent-distillation.ts": {
-      "type": "module",
-      "role": "Subagent spawn telemetry, computeSpawnDistillation, countSpawnStorms."
-    },
-    "src/telemetry/cache-diagnostics.ts": {
-      "type": "module",
-      "role": "Cache efficiency/stability diagnostics (appendCacheDiagnostic)."
-    },
-    "src/code/edit-blocks.ts": {
-      "type": "module",
-      "role": "parseEditBlocks, applyEditBlock, snapshotBeforeEdits — SEARCH/REPLACE edit application with rollback."
-    },
-    "src/code/prompt.ts": {
-      "type": "module",
-      "role": "CODE_SYSTEM_PROMPT, codeSystemPrompt — system prompt for code mode."
-    },
-    "src/code/lifecycle.ts": {
-      "type": "module",
-      "role": "Code-mode lifecycle orchestration."
-    },
-    "src/code/lifecycle-policy.ts": {
-      "type": "module",
-      "role": "Lifecycle policy decisions."
-    },
-    "src/code/checkpoints.ts": {
-      "type": "module",
-      "role": "Edit checkpoints (create/restore/delete/diff)."
-    },
-    "src/code/auto-git-rollback.ts": {
-      "type": "module",
-      "role": "Auto git rollback on edit failure."
-    },
-    "src/code/diff-preview.ts": {
-      "type": "module",
-      "role": "Render diffs for confirmation UI."
-    },
-    "src/code/pending-edits.ts": {
-      "type": "module",
-      "role": "Pending edit queue."
-    },
-    "src/code/file-encoding.ts": {
-      "type": "module",
-      "role": "File encoding detection (iconv-lite)."
-    },
-    "src/code/plan-store.ts": {
-      "type": "module",
-      "role": "Plan store for code-mode plans."
-    },
-    "src/code/setup.ts": {
-      "type": "module",
-      "role": "Code-mode setup/bootstrap."
-    },
-    "src/code-query/parser.ts": {
-      "type": "module",
-      "role": "Tree-sitter parser host (web-tree-sitter)."
-    },
-    "src/code-query/symbols.ts": {
-      "type": "module",
-      "role": "Symbol extraction via tree-sitter."
-    },
-    "src/code-query/find-in-code.ts": {
-      "type": "module",
-      "role": "Code search tool implementation."
-    },
-    "src/code-query/grammar-map.ts": {
-      "type": "module",
-      "role": "Map language → tree-sitter grammar wasm."
-    },
-    "src/index/semantic/builder.ts": {
-      "type": "module",
-      "role": "Semantic index builder (chunks files, computes embeddings)."
-    },
-    "src/index/semantic/store.ts": {
-      "type": "module",
-      "role": "Semantic vector store (persist/load)."
-    },
-    "src/index/semantic/embedding.ts": {
-      "type": "module",
-      "role": "Embedding provider abstraction."
-    },
-    "src/index/semantic/chunker.ts": {
-      "type": "module",
-      "role": "Code chunker (splits files into indexable chunks)."
-    },
-    "src/index/semantic/tool.ts": {
-      "type": "module",
-      "role": "Semantic-search tool registration."
-    },
-    "src/index/semantic/preflight.ts": {
-      "type": "module",
-      "role": "Embedding preflight checks."
-    },
-    "src/index/semantic/ollama-launcher.ts": {
-      "type": "module",
-      "role": "Auto-launch local Ollama for embeddings."
-    },
-    "src/index/config.ts": {
-      "type": "config",
-      "role": "Semantic index configuration loader."
-    },
-    "src/tools/filesystem.ts": {
-      "type": "module",
-      "role": "registerFilesystemTools — read/write/list/edit filesystem tools."
-    },
-    "src/tools/memory.ts": {
-      "type": "module",
-      "role": "registerMemoryTools — memory read/write tools."
-    },
-    "src/tools/choice.ts": {
-      "type": "module",
-      "role": "registerChoiceTool — multiple-choice confirmation tool."
-    },
-    "src/tools/plan.ts": {
-      "type": "module",
-      "role": "registerPlanTool — plan proposal/revision tool."
-    },
-    "src/tools/todo.ts": {
-      "type": "module",
-      "role": "registerTodoTool — todo list tool."
-    },
-    "src/tools/subagent.ts": {
-      "type": "module",
-      "role": "registerSubagentTool, forkRegistryExcluding — spawn subagent loops."
-    },
-    "src/tools/shell.ts": {
-      "type": "module",
-      "role": "registerShellTools, runCommand, prepareSpawn — shell execution tool with allow-list."
-    },
-    "src/tools/web.ts": {
-      "type": "module",
-      "role": "registerWebTools, webSearch, webFetch — Bing/SearXNG/Brave/etc search + page fetch."
-    },
-    "src/tools/code-query.ts": {
-      "type": "module",
-      "role": "Code-query tool registration (symbols/search)."
-    },
-    "src/tools/java-source.ts": {
-      "type": "module",
-      "role": "Java source/JAR inspection tool."
-    },
-    "src/tools/skills.ts": {
-      "type": "module",
-      "role": "Skills listing/invocation tool."
-    },
-    "src/tools/scaffold.ts": {
-      "type": "module",
-      "role": "Project scaffolding tool."
-    },
-    "src/tools/rate-limit.ts": {
-      "type": "module",
-      "role": "Per-tool rate limiter."
-    },
-    "src/tools/read-tracker.ts": {
-      "type": "module",
-      "role": "Track files read by the model for grounding."
-    },
-    "src/tools/truncated-result-saver.ts": {
-      "type": "module",
-      "role": "Save truncated tool results to disk for later retrieval."
-    },
-    "src/tools/jobs.ts": {
-      "type": "module",
-      "role": "Long-running job tracking."
-    },
-    "src/tools/shell-chain.ts": {
-      "type": "module",
-      "role": "Shell chain (&&/||) parsing."
-    },
-    "src/tools/plan-core.ts": {
-      "type": "module",
-      "role": "Plan tool shared core."
-    },
-    "src/tools/plan-errors.ts": {
-      "type": "module",
-      "role": "Plan tool error types."
-    },
-    "src/tools/plan-types.ts": {
-      "type": "type-def",
-      "role": "Plan tool types."
-    },
-    "src/tools/subagent-types.ts": {
-      "type": "type-def",
-      "role": "Subagent tool types."
-    },
-    "src/tools/fs/edit.ts": {
-      "type": "module",
-      "role": "Filesystem edit tool impl."
-    },
-    "src/tools/fs/glob.ts": {
-      "type": "module",
-      "role": "Glob tool impl."
-    },
-    "src/tools/fs/outline.ts": {
-      "type": "module",
-      "role": "Symbol-outline tool impl."
-    },
-    "src/tools/fs/regex-runner.ts": {
-      "type": "module",
-      "role": "Regex search runner."
-    },
-    "src/tools/fs/search.ts": {
-      "type": "module",
-      "role": "File-content search tool."
-    },
-    "src/tools/shell/exec.ts": {
-      "type": "module",
-      "role": "Shell exec implementation."
-    },
-    "src/tools/shell/parse.ts": {
-      "type": "module",
-      "role": "Shell command tokenizer/parser."
-    },
-    "src/core/eventize.ts": {
-      "type": "module",
-      "role": "Minimal event emitter mixin."
-    },
-    "src/core/events.ts": {
-      "type": "module",
-      "role": "Event type definitions (LoopEvent discriminated union)."
-    },
-    "src/core/event-redaction.ts": {
-      "type": "module",
-      "role": "Redact secrets from emitted events."
-    },
-    "src/core/inflight.ts": {
-      "type": "module",
-      "role": "InflightSet — track in-flight async operations."
-    },
-    "src/core/lru.ts": {
-      "type": "module",
-      "role": "LRU cache."
-    },
-    "src/core/lazy.ts": {
-      "type": "module",
-      "role": "Lazy<T> deferred init."
-    },
-    "src/core/atomic-write.ts": {
-      "type": "module",
-      "role": "Atomic file write (tmp + rename)."
-    },
-    "src/core/pause-gate.ts": {
-      "type": "module",
-      "role": "PauseGate singleton — confirmation/approval gate injected into tools and loop."
-    },
-    "src/core/pause-policy.ts": {
-      "type": "module",
-      "role": "Pause policy decisions."
-    },
-    "src/core/reducers.ts": {
-      "type": "module",
-      "role": "State reducers (pure projections over LoopEvent)."
-    },
-    "src/ports/model-client.ts": {
-      "type": "module",
-      "role": "Model-client port abstraction (decouples loop from DeepSeekClient)."
-    },
-    "src/ports/tool-host.ts": {
-      "type": "module",
-      "role": "Tool-host port abstraction."
-    },
-    "src/ports/event-sink.ts": {
-      "type": "module",
-      "role": "Event sink port."
-    },
-    "src/ports/hook-runner.ts": {
-      "type": "module",
-      "role": "Hook runner port."
-    },
-    "src/ports/memory-store.ts": {
-      "type": "module",
-      "role": "Memory store port."
-    },
-    "src/ports/checkpoint-store.ts": {
-      "type": "module",
-      "role": "Checkpoint store port."
-    },
-    "src/adapters/event-sink-jsonl.ts": {
-      "type": "module",
-      "role": "JSONL event sink adapter."
-    },
-    "src/adapters/event-source-jsonl.ts": {
-      "type": "module",
-      "role": "JSONL event source adapter."
-    },
-    "src/cli/commands/chat.tsx": {
-      "type": "entry-point",
-      "role": "Chat command — boots the Ink TUI app (interactive)."
-    },
-    "src/cli/commands/run.ts": {
-      "type": "entry-point",
-      "role": "Non-interactive run command (single task)."
-    },
-    "src/cli/commands/acp.ts": {
-      "type": "entry-point",
-      "role": "ACP (Agent Client Protocol) stdio JSON-RPC command."
-    },
-    "src/cli/commands/commit.ts": {
-      "type": "entry-point",
-      "role": "AI-assisted git commit command."
-    },
-    "src/cli/commands/code.tsx": {
-      "type": "entry-point",
-      "role": "Code-mode command (default TUI; bare `reasonix` lands here after setup)."
-    },
-    "src/cli/commands/diff.ts": {
-      "type": "entry-point",
-      "role": "Transcript diff command."
-    },
-    "src/cli/commands/replay.ts": {
-      "type": "entry-point",
-      "role": "Replay a saved transcript."
-    },
-    "src/cli/commands/sessions.ts": {
-      "type": "entry-point",
-      "role": "List/manage sessions."
-    },
-    "src/cli/commands/prune-sessions.ts": {
-      "type": "entry-point",
-      "role": "Prune old sessions."
-    },
-    "src/cli/commands/import-sessions.ts": {
-      "type": "entry-point",
-      "role": "Import external sessions."
-    },
-    "src/cli/commands/stats.ts": {
-      "type": "entry-point",
-      "role": "Print session stats / costs."
-    },
-    "src/cli/commands/doctor.ts": {
-      "type": "entry-point",
-      "role": "Health diagnostics (auth, cache stability, env)."
-    },
-    "src/cli/commands/setup.tsx": {
-      "type": "entry-point",
-      "role": "Interactive setup wizard."
-    },
-    "src/cli/commands/update.ts": {
-      "type": "entry-point",
-      "role": "Self-update command."
-    },
-    "src/cli/commands/version.ts": {
-      "type": "entry-point",
-      "role": "Print version + install source."
-    },
-    "src/cli/commands/events.ts": {
-      "type": "entry-point",
-      "role": "Stream live loop events to stdout."
-    },
-    "src/cli/commands/mcp.ts": {
-      "type": "entry-point",
-      "role": "MCP CLI subcommands (list/search/install)."
-    },
-    "src/cli/commands/mcp-browse.tsx": {
-      "type": "entry-point",
-      "role": "Interactive MCP marketplace browser."
-    },
-    "src/cli/commands/mcp-inspect.ts": {
-      "type": "entry-point",
-      "role": "Inspect an MCP server."
-    },
-    "src/cli/commands/mcp-runtime.ts": {
-      "type": "entry-point",
-      "role": "MCP runtime subcommand."
-    },
-    "src/cli/commands/index.ts": {
-      "type": "entry-point",
-      "role": "Semantic index build command (progress to stderr)."
-    },
-    "src/cli/commands/qq.ts": {
-      "type": "entry-point",
-      "role": "QQ bot CLI command — CLI-hosted headless channel adapter."
-    },
-    "src/cli/commands/telegram.ts": {
-      "type": "entry-point",
-      "role": "Telegram bot CLI command — CLI-hosted headless channel adapter."
-    },
-    "src/cli/commands/weixin.ts": {
-      "type": "entry-point",
-      "role": "WeChat bot CLI command — CLI-hosted headless channel adapter."
-    },
-    "src/cli/ui/App.tsx": {
-      "type": "template",
-      "role": "Root Ink TUI app component. Orchestrates the interactive chat/code session, channel bridges, slash-command flows, MCP panels, and uses Ink's imperative app handle to force a full repaint after `/new`, `/clear`, and `/reset`.",
       "exports": [
-        "App",
-        "AppProps"
-      ]
-    },
-    "src/cli/ui/ComposerArea.tsx": {
-      "type": "template",
-      "role": "Prompt input composer area."
-    },
-    "src/cli/ui/PromptInput.tsx": {
-      "type": "template",
-      "role": "Prompt input box."
-    },
-    "src/cli/ui/LiveActivityArea.tsx": {
-      "type": "template",
-      "role": "Live activity / tool output area."
-    },
-    "src/cli/ui/markdown.tsx": {
-      "type": "template",
-      "role": "Markdown renderer (TUI) — uses marked + highlight.js."
-    },
-    "src/cli/ui/PlanPanel.tsx": {
-      "type": "template",
-      "role": "Plan display panel."
-    },
-    "src/cli/ui/StatsPanel.tsx": {
-      "type": "template",
-      "role": "Session stats panel."
-    },
-    "src/cli/ui/McpHub.tsx": {
-      "type": "template",
-      "role": "MCP hub view."
-    },
-    "src/cli/ui/EditConfirm.tsx": {
-      "type": "template",
-      "role": "Edit confirmation UI."
-    },
-    "src/cli/ui/ShellConfirm.tsx": {
-      "type": "template",
-      "role": "Shell command confirmation UI."
-    },
-    "src/cli/ui/Setup.tsx": {
-      "type": "template",
-      "role": "Setup wizard TUI screens."
-    },
-    "src/cli/ui/ReplayApp.tsx": {
-      "type": "template",
-      "role": "Transcript replay TUI."
-    },
-    "src/cli/ui/DiffApp.tsx": {
-      "type": "template",
-      "role": "Transcript diff TUI."
-    },
-    "src/i18n/index.ts": {
-      "type": "module",
-      "role": "t()/tObj() i18n lookup; locale detection; only en + zh-CN active (getSupportedLanguages)."
-    },
-    "src/i18n/EN.ts": {
-      "type": "data",
-      "role": "English strings."
-    },
-    "src/i18n/zh-CN.ts": {
-      "type": "data",
-      "role": "Simplified Chinese strings."
-    },
-    "src/acp/server.ts": {
-      "type": "module",
-      "role": "ACP JSON-RPC server (stdio NDJSON)."
-    },
-    "src/acp/dispatch.ts": {
-      "type": "module",
-      "role": "ACP task dispatch."
-    },
-    "src/acp/protocol.ts": {
-      "type": "module",
-      "role": "ACP protocol types/serialization."
-    },
-    "src/acp/gates.ts": {
-      "type": "module",
-      "role": "ACP permission gates."
-    },
-    "src/qq/bot.ts": {
-      "type": "module",
-      "role": "QQBot — QQ channel bot (EventEmitter, ws gateway).",
-      "exports": [
-        "QQBot"
-      ]
-    },
-    "src/qq/channel.ts": {
-      "type": "module",
-      "role": "QQ channel integration into loop."
-    },
-    "src/qq/access.ts": {
-      "type": "module",
-      "role": "QQ access control."
-    },
-    "src/qq/use-qq-channel.ts": {
-      "type": "module",
-      "role": "QQ channel hook (qq command wiring)."
-    },
-    "src/qq/strings.ts": {
-      "type": "data",
-      "role": "QQ UI strings."
-    },
-    "src/telegram/bot.ts": {
-      "type": "module",
-      "role": "TelegramBot — Telegram bot (EventEmitter, grammy).",
-      "exports": [
-        "TelegramBot"
-      ]
-    },
-    "src/telegram/channel.ts": {
-      "type": "module",
-      "role": "Telegram channel integration."
-    },
-    "src/telegram/access.ts": {
-      "type": "module",
-      "role": "Telegram access control."
-    },
-    "src/telegram/use-telegram-channel.ts": {
-      "type": "module",
-      "role": "Telegram channel hook."
-    },
-    "src/telegram/strings.ts": {
-      "type": "data",
-      "role": "Telegram UI strings."
-    },
-    "src/weixin/bot.ts": {
-      "type": "module",
-      "role": "WeixinBot — WeChat bot (EventEmitter, qrcode login).",
-      "exports": [
-        "WeixinBot"
-      ]
-    },
-    "src/weixin/channel.ts": {
-      "type": "module",
-      "role": "WeChat channel integration."
-    },
-    "src/weixin/account.ts": {
-      "type": "module",
-      "role": "WeChat account management."
-    },
-    "src/weixin/access.ts": {
-      "type": "module",
-      "role": "WeChat access control."
-    },
-    "src/weixin/use-weixin-channel.ts": {
-      "type": "module",
-      "role": "WeChat channel hook."
-    },
-    "src/weixin/strings.ts": {
-      "type": "data",
-      "role": "WeChat UI strings."
-    },
-    "src/net/proxy.ts": {
-      "type": "module",
-      "role": "installProxyIfConfigured — install undici global dispatcher for HTTP(S) proxy."
-    },
-    "src/java/index.ts": {
-      "type": "module",
-      "role": "Java source/JAR inspection entry."
-    },
-    "src/java/zip-reader.ts": {
-      "type": "module",
-      "role": "Read entries from .jar/.zip."
-    },
-    "src/java/class-source-finder.ts": {
-      "type": "module",
-      "role": "Find Java source files in JARs."
-    },
-    "packages/core-utils/src/index.ts": {
-      "type": "module",
-      "role": "@reasonix/core-utils barrel — shared TS utilities (compaction, derive-prefix, tildeify, tool-kind, permission-types, approval-prompt)."
-    },
-    "packages/ink/src/index.ts": {
-      "type": "entry-point",
-      "role": "Custom Ink fork entry — React reconciler + Yoga + terminal renderer; path-aliased as 'ink'."
-    },
-    "packages/dsnix/bin.cjs": {
-      "type": "script",
-      "role": "dsnix alias bin — forwards to reasonix CLI."
-    },
-    "scripts/copy-tree-sitter-grammars.mjs": {
-      "type": "script",
-      "role": "Copy tree-sitter .wasm grammars into dist (build step)."
-    },
-    "scripts/write-cli-package-marker.mjs": {
-      "type": "script",
-      "role": "Write CLI package marker file post-build."
-    },
-    "scripts/ci-test-with-retry.mjs": {
-      "type": "script",
-      "role": "CI flaky-test retry wrapper (cross-platform)."
-    },
-    "biome.json": {
-      "type": "config",
-      "role": "Biome lint/format config."
-    },
-    "tsconfig.json": {
-      "type": "config",
-      "role": "TypeScript config — paths: @/* → src/*, ink → packages/ink/src/index.ts."
-    },
-    "tsup.config.ts": {
-      "type": "config",
-      "role": "tsup build config — ESM library bundle + CLI bundle (noExternal all)."
-    },
-    "vitest.config.ts": {
-      "type": "config",
-      "role": "Vitest config (pool: forks; aliases react/ink)."
-    },
-    "stryker.config.mjs": {
-      "type": "config",
-      "role": "Stryker mutation testing config."
-    },
-    "src/cli/tab-title.ts": {
-      "type": "module",
-      "role": "Terminal-title keeper for CLI/TUI sessions. Emits OSC 0 title sequences (`reasonix-legacy`) and periodically re-emits them so Windows ConPTY and child processes do not overwrite the tab title; no-op on non-TTY stdout.",
-      "exports": [
-        "setTabTitle",
-        "stopTabTitleKeeper"
-      ],
-      "imports": []
-    },
-    "src/cli/cpu-prof.ts": {
-      "type": "module",
-      "role": "V8 CPU profiling helpers. Starts/stops the inspector profiler, gzips `.cpuprofile` output, and prints issue-report guidance targeting the maintained `ZYist/reasonix-legacy` fork.",
-      "exports": [
-        "startCpuProfile",
-        "stopAndSaveCpuProfile"
+        "sessionsDir",
+        "sessionPath",
+        "sanitizeName",
+        "freshSessionName",
+        "resolveSession",
+        "loadSessionMessages",
+        "appendSessionMessage",
+        "listSessions",
+        "renameSession",
+        "pruneStaleSessions",
+        "deleteSession",
+        "rewriteSession",
+        "archiveSession",
+        "loadSessionMessagesAsync",
+        "appendSessionMessageAsync",
+        "listSessionsAsync"
       ],
       "imports": [
         "node:fs",
-        "node:inspector/promises",
+        "node:fs/promises",
         "node:path",
-        "node:zlib"
-      ]
-    },
-    "src/cli/ui/feedback.ts": {
-      "type": "module",
-      "role": "Builds prefilled GitHub issue URLs and diagnostic payloads for in-product feedback/report flows; points users at the maintained `ZYist/reasonix-legacy` issue tracker.",
-      "exports": [
-        "FEEDBACK_ISSUE_URL",
-        "buildFeedbackIssueUrl",
-        "buildFeedbackDiagnostic",
-        "FeedbackDiagnosticInput"
-      ],
-      "imports": [
-        "../../version.js"
-      ]
-    },
-    "src/cli/ui/mcp-lifecycle.ts": {
-      "type": "module",
-      "role": "Formats concise MCP lifecycle/event status lines for the TUI, following the archived upstream terminal-design reference preserved under `docs/archive/upstream-reasonix/`.",
-      "exports": [
-        "formatMcpLifecycleEvent",
-        "McpLifecycleEvent"
-      ],
-      "imports": [
-        "../../i18n/index.js"
-      ]
-    },
-    "src/cli/ui/slash/handlers/basic.ts": {
-      "type": "module",
-      "role": "Slash-command handlers for basic/info flows such as `/help`, `/about`, `/theme`, and exit-style commands. `/about` advertises the maintained docs hub and repository URLs for reasonix-legacy.",
-      "exports": [
-        "handlers"
-      ],
-      "imports": [
-        "@/cli/ui/text-width.js",
-        "@/i18n/index.js",
-        "@/version.js",
-        "../../loop.js",
-        "../commands.js",
-        "../dispatch.js",
+        "../core/atomic-write.js",
         "../types.js"
-      ]
+      ],
+      "type": "module"
     },
-    "packages/ink/src/components/App.tsx": {
-      "type": "module",
-      "role": "Forked Ink root application component. Provides terminal-size/focus/stdin context, exit plumbing, and exposes `forceRedraw` through AppContext so descendants can request a full terminal repaint.",
+    "src/code/setup.ts": {
       "exports": [
-        "default"
+        "applyPlanMode",
+        "buildCodeToolset"
       ],
       "imports": [
-        "./AppContext.js",
-        "./StdinContext.js",
-        "./TerminalSizeContext.js"
-      ]
+        "../tools.js",
+        "../tools/filesystem.js",
+        "../tools/shell.js",
+        "../tools/memory.js",
+        "../tools/plan.js",
+        "../tools/code-query.js",
+        "../tools/subagent.js",
+        "../tools/web.js"
+      ],
+      "type": "module"
     },
-    "packages/ink/src/components/AppContext.ts": {
-      "type": "module",
-      "role": "Imperative Ink app context shared with descendants. Exposes `exit()` and `forceRedraw()` handles used by the reasonix TUI to request teardown or a full-screen repaint.",
+    "src/code/prompt.ts": {
       "exports": [
-        "Props",
-        "default"
+        "codeSystemBase",
+        "codeSystemPrompt",
+        "CODE_SYSTEM_PROMPT"
       ],
       "imports": [
-        "react"
-      ]
+        "node:fs",
+        "node:path",
+        "../memory/user.js",
+        "../prompt-fragments.js"
+      ],
+      "type": "module"
     },
-    "packages/ink/src/ink.tsx": {
-      "type": "module",
-      "role": "Forked Ink renderer/runtime entry. Owns terminal rendering, input dispatch, and the low-level `forceRedraw` capability that now flows into App via `onForceRedraw`.",
+    "src/core/eventize.ts": {
       "exports": [
-        "drainStdin",
-        "Options",
-        "default"
+        "Eventizer"
+      ],
+      "imports": [
+        "../loop.js",
+        "./event-redaction.js",
+        "./events.js"
+      ],
+      "type": "module"
+    },
+    "src/core/reducers.ts": {
+      "exports": [
+        "emptyConversation",
+        "emptyBudget",
+        "emptyPlan",
+        "emptyWorkspace",
+        "emptyCapabilities",
+        "emptyStatus",
+        "emptySessionMeta",
+        "emptyProjections",
+        "apply",
+        "replay"
+      ],
+      "imports": [
+        "../types.js",
+        "./events.js"
+      ],
+      "type": "module"
+    },
+    "src/core/pause-gate.ts": {
+      "exports": [
+        "pauseGate",
+        "PauseGate"
+      ],
+      "imports": [
+        "@reasonix/core-utils"
+      ],
+      "type": "module"
+    },
+    "src/core/atomic-write.ts": {
+      "exports": [
+        "atomicWriteSync",
+        "atomicWrite"
+      ],
+      "imports": [
+        "node:fs",
+        "node:fs/promises"
+      ],
+      "type": "module"
+    },
+    "src/mcp/client.ts": {
+      "exports": [
+        "McpClient"
+      ],
+      "imports": [
+        "node:path",
+        "node:url",
+        "../version.js",
+        "./stdio.js",
+        "./types.js"
+      ],
+      "type": "module"
+    },
+    "src/mcp/registry.ts": {
+      "exports": [
+        "registerSingleMcpTool",
+        "bridgeMcpTools",
+        "canonicalizeMcpToolForCache",
+        "canonicalizeSchemaForCache",
+        "flattenMcpResult",
+        "truncateForModel",
+        "truncateForModelByTokens",
+        "DEFAULT_MAX_RESULT_CHARS",
+        "DEFAULT_MAX_RESULT_TOKENS",
+        "DEFAULT_READY_TIMEOUT_MS"
+      ],
+      "imports": [
+        "../tools.js",
+        "./client.js",
+        "./types.js"
+      ],
+      "type": "module"
+    },
+    "src/mcp/spec.ts": {
+      "exports": [
+        "getMcpServerEnv",
+        "getMcpServerCwd",
+        "getMcpServerHeaders",
+        "overlayMatchedSpec",
+        "specToRaw",
+        "parseMcpSpec"
+      ],
+      "imports": [
+        "./shell-split.js"
+      ],
+      "type": "module"
+    },
+    "src/mcp/stdio.ts": {
+      "exports": [
+        "StdioTransport"
+      ],
+      "imports": [
+        "node:child_process",
+        "./types.js"
+      ],
+      "type": "module"
+    },
+    "src/mcp/sse.ts": {
+      "exports": [
+        "SseTransport"
+      ],
+      "imports": [
+        "eventsource-parser",
+        "./stdio.js",
+        "./types.js"
+      ],
+      "type": "module"
+    },
+    "src/mcp/streamable-http.ts": {
+      "exports": [
+        "StreamableHttpTransport"
+      ],
+      "imports": [
+        "eventsource-parser",
+        "./stdio.js",
+        "./types.js"
+      ],
+      "type": "module"
+    },
+    "src/acp/server.ts": {
+      "exports": [
+        "AcpServer"
+      ],
+      "imports": [
+        "node:readline",
+        "node:stream",
+        "./protocol.js"
+      ],
+      "type": "module"
+    },
+    "src/acp/dispatch.ts": {
+      "exports": [
+        "dispatchKernelEvent",
+        "toolKindFor"
+      ],
+      "imports": [
+        "@reasonix/core-utils",
+        "../core/events.js",
+        "./protocol.js",
+        "./server.js"
+      ],
+      "type": "module"
+    },
+    "src/cli/headless/host.ts": {
+      "exports": [
+        "resolveDir",
+        "formatHeadlessError",
+        "bootHeadlessHost",
+        "HeadlessHost",
+        "getActiveSessionId",
+        "headlessContext"
+      ],
+      "imports": [
+        "../../code/setup.js",
+        "../../core/eventize.js",
+        "../../index.js",
+        "../../memory/session.js",
+        "./turn-driver.js"
+      ],
+      "type": "module"
+    },
+    "src/cli/headless/turn-driver.ts": {
+      "exports": [
+        "getActiveSessionId",
+        "runHeadlessTurn",
+        "headlessContext"
+      ],
+      "imports": [
+        "node:async_hooks",
+        "../../core/eventize.js",
+        "../../loop.js",
+        "../../loop/errors.js"
+      ],
+      "type": "module"
+    },
+    "src/qq/bot.ts": {
+      "exports": [
+        "QQBot"
+      ],
+      "imports": [
+        "node:events",
+        "ws"
+      ],
+      "type": "module"
+    },
+    "src/qq/channel.ts": {
+      "exports": [
+        "splitQQMessage",
+        "normalizeQQMarkdownReply",
+        "QQChannel"
+      ],
+      "imports": [
+        "../config.js",
+        "./access.js",
+        "./bot.js",
+        "./strings.js"
+      ],
+      "type": "module"
+    },
+    "src/telegram/bot.ts": {
+      "exports": [
+        "formatTelegramBotError",
+        "TelegramBot"
+      ],
+      "imports": [
+        "node:events",
+        "grammy"
+      ],
+      "type": "module"
+    },
+    "src/telegram/channel.ts": {
+      "exports": [
+        "splitTelegramMessage",
+        "buildTelegramBotCommands",
+        "normalizeTelegramMarkdownReply",
+        "formatTelegramMarkdownV2",
+        "TelegramChannel"
+      ],
+      "imports": [
+        "../config.js",
+        "./access.js",
+        "./bot.js"
+      ],
+      "type": "module"
+    },
+    "src/weixin/bot.ts": {
+      "exports": [
+        "runWeixinQrLogin",
+        "WeixinBot"
+      ],
+      "imports": [
+        "node:events",
+        "qrcode"
+      ],
+      "type": "module"
+    },
+    "src/weixin/channel.ts": {
+      "exports": [
+        "splitWeixinMessage",
+        "normalizeWeixinMarkdownReply",
+        "WeixinChannel"
+      ],
+      "imports": [
+        "../config.js",
+        "../core/atomic-write.js",
+        "./access.js",
+        "./bot.js"
+      ],
+      "type": "module"
+    },
+    "src/code-query/parser.ts": {
+      "exports": [
+        "setGrammarDir",
+        "getParser",
+        "parseSource",
+        "GrammarName",
+        "grammarForPath"
+      ],
+      "imports": [
+        "node:fs",
+        "node:path",
+        "node:url",
+        "web-tree-sitter",
+        "./grammar-map.js"
+      ],
+      "type": "module"
+    },
+    "src/index/semantic/embedding.ts": {
+      "exports": [
+        "embed",
+        "embedAll",
+        "probeOllama",
+        "EmbeddingError"
+      ],
+      "imports": [],
+      "type": "module"
+    },
+    "src/index/semantic/store.ts": {
+      "exports": [
+        "readIndexMeta",
+        "compareIndexIdentity",
+        "wipeStoreFiles",
+        "openStore",
+        "normalize",
+        "STORE_VERSION",
+        "SemanticStore"
+      ],
+      "imports": [
+        "node:fs",
+        "node:path",
+        "../../config.js",
+        "./chunker.js"
+      ],
+      "type": "module"
+    },
+    "src/i18n/index.ts": {
+      "exports": [
+        "canonicalLanguage",
+        "detectSystemLanguage",
+        "resolveConfiguredLanguage",
+        "onLanguageChange",
+        "notifyLanguageChange",
+        "setLanguage",
+        "setLanguageRuntime",
+        "getLanguage",
+        "getSupportedLanguages",
+        "t"
+      ],
+      "imports": [
+        "../config.js",
+        "./EN.js",
+        "./types.js",
+        "./zh-CN.js"
+      ],
+      "type": "module"
+    },
+    "packages/core-utils/src/index.ts": {
+      "exports": [
+        "COMPACTION_SUMMARY_MARKER",
+        "isCompactionSummary",
+        "stripCompactionMarker",
+        "derivePrefix",
+        "tildeify",
+        "toolKindFor",
+        "toApprovalPrompt",
+        "resolveApprovalPrompt"
+      ],
+      "imports": [
+        "./approval-prompt.js",
+        "./compaction.js",
+        "./derive-prefix.js",
+        "./permission-types.js",
+        "./tildeify.js",
+        "./tool-kind.js"
+      ],
+      "type": "entry-point"
+    },
+    "packages/ink/src/index.ts": {
+      "exports": [
+        "Box",
+        "Text",
+        "Ansi",
+        "AlternateScreen",
+        "NoSelect",
+        "RawAnsi",
+        "useApp",
+        "useInput",
+        "useStdin",
+        "useTerminalSize",
+        "renderSync",
+        "createRoot"
       ],
       "imports": [
         "react",
-        "./components/App.js",
-        "./dom.js",
-        "./renderer.js"
-      ]
+        "./components/Box.js",
+        "./components/Text.js",
+        "./hooks/use-app.js",
+        "./hooks/use-input.js",
+        "./root.js"
+      ],
+      "type": "entry-point"
+    },
+    "tsup.config.ts": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "tsup"
+      ],
+      "type": "config"
+    },
+    "vitest.config.ts": {
+      "exports": [
+        "default"
+      ],
+      "imports": [
+        "node:path",
+        "node:url",
+        "vitest/config"
+      ],
+      "type": "config"
+    },
+    "scripts/copy-tree-sitter-grammars.mjs": {
+      "exports": [],
+      "imports": [
+        "node:fs",
+        "node:path"
+      ],
+      "type": "script"
+    },
+    "scripts/write-cli-package-marker.mjs": {
+      "exports": [],
+      "imports": [
+        "node:fs",
+        "node:path"
+      ],
+      "type": "script"
     }
   }
 }

@@ -2,240 +2,242 @@
 
 > Generated from `.planning/intel/api-map.json`. Do not edit by hand.
 
-## `CLI reasonix [code]`
+## `CLI reasonix-legacy`
 
-- **method:** -
-- **path:** bin: reasonix
-- **file:** src/cli/commands/code.tsx
-- **description:** Default action: setup wizard on first run, otherwise interactive code-mode TUI.
-
-## `CLI reasonix setup`
-
-- **method:** -
-- **path:** bin: reasonix setup
-- **file:** src/cli/commands/setup.tsx
-- **description:** Interactive setup wizard (forces API-key step).
-
-## `CLI reasonix code [dir]`
-
-- **method:** -
-- **path:** bin: reasonix code
-- **file:** src/cli/commands/code.tsx
-- **description:** Code-mode TUI over a directory; supports --resume/--new/--budget/--profile; ssh:// targets need --dry-run (RFC #2140).
-
-## `CLI reasonix chat`
-
-- **method:** -
-- **path:** bin: reasonix chat
-- **file:** src/cli/commands/chat.tsx
-- **description:** Interactive chat TUI (filesystem-less).
-
-## `CLI reasonix run <task>`
-
-- **method:** -
-- **path:** bin: reasonix run
-- **file:** src/cli/commands/run.ts
-- **description:** Non-interactive single-task run.
-
-## `CLI reasonix acp`
-
-- **method:** -
-- **path:** bin: reasonix acp
-- **file:** src/cli/commands/acp.ts
-- **description:** ACP stdio NDJSON JSON-RPC agent server (editor integrations).
-
-## `CLI reasonix desktop`
-
-- **method:** -
-- **path:** bin: reasonix desktop
+- **method:** CLI
+- **path:** reasonix-legacy
+- **params:** --continue, --no-mouse, --no-proxy
 - **file:** src/cli/index.ts
-- **description:** RETIRED stub — prints t('commands.desktop.retired') and exits 1; redirects to qq/telegram/weixin.
+- **description:** Runs setup when unconfigured, otherwise opens code mode in the current workspace.
 
-## `CLI reasonix qq`
+## `CLI reasonix-legacy setup`
 
-- **method:** -
-- **path:** bin: reasonix qq
-- **file:** src/cli/commands/qq.ts
-- **description:** Run the QQ bot as a CLI-hosted headless channel adapter.
+- **method:** CLI
+- **path:** reasonix-legacy setup
+- **params:** 
+- **file:** src/cli/index.ts
+- **description:** Runs the interactive setup command.
 
-## `CLI reasonix telegram`
+## `CLI reasonix-legacy code`
 
-- **method:** -
-- **path:** bin: reasonix telegram
-- **file:** src/cli/commands/telegram.ts
-- **description:** Run the Telegram bot as a CLI-hosted headless channel adapter.
+- **method:** CLI
+- **path:** reasonix-legacy code [dir]
+- **params:** model, effort, resume, new, budget, profile
+- **file:** src/cli/index.ts
+- **description:** Starts the workspace-aware coding TUI.
 
-## `CLI reasonix weixin`
+## `CLI reasonix-legacy chat`
 
-- **method:** -
-- **path:** bin: reasonix weixin
-- **file:** src/cli/commands/weixin.ts
-- **description:** Run the WeChat bot as a CLI-hosted headless channel adapter.
+- **method:** CLI
+- **path:** reasonix-legacy chat
+- **params:** model, system, session, mcp, budget
+- **file:** src/cli/index.ts
+- **description:** Starts the filesystem-independent chat TUI.
 
-## `CLI reasonix stats [transcript]`
+## `CLI reasonix-legacy run`
 
-- **method:** -
-- **path:** bin: reasonix stats
-- **file:** src/cli/commands/stats.ts
-- **description:** Print session stats / costs.
+- **method:** CLI
+- **path:** reasonix-legacy run <task>
+- **params:** model, system, mcp, budget, transcript
+- **file:** src/cli/index.ts
+- **description:** Runs one non-interactive agent task.
 
-## `CLI reasonix doctor`
+## `CLI reasonix-legacy acp`
 
-- **method:** -
-- **path:** bin: reasonix doctor
-- **file:** src/cli/commands/doctor.ts
-- **description:** Health diagnostics (--json, --cache).
+- **method:** CLI
+- **path:** reasonix-legacy acp
+- **params:** model, dir, budget, mcp, yolo
+- **file:** src/cli/index.ts
+- **description:** Serves ACP newline-delimited JSON-RPC over stdin/stdout.
 
-## `CLI reasonix doctor-cache`
+## `CLI reasonix-legacy qq`
 
-- **method:** -
-- **path:** bin: reasonix doctor-cache
-- **file:** src/cli/commands/doctor.ts
-- **description:** Cache-stability health check (--json).
+- **method:** CLI
+- **path:** reasonix-legacy qq
+- **params:** model, workspace, budget
+- **file:** src/cli/index.ts
+- **description:** Runs the QQ headless channel.
 
-## `CLI reasonix commit`
+## `CLI reasonix-legacy telegram`
 
-- **method:** -
-- **path:** bin: reasonix commit
-- **file:** src/cli/commands/commit.ts
-- **description:** AI-assisted git commit (-m model, -y skip confirm).
+- **method:** CLI
+- **path:** reasonix-legacy telegram
+- **params:** model, workspace, budget
+- **file:** src/cli/index.ts
+- **description:** Runs the Telegram headless channel.
 
-## `CLI reasonix sessions [name]`
+## `CLI reasonix-legacy weixin`
 
-- **method:** -
-- **path:** bin: reasonix sessions
-- **file:** src/cli/commands/sessions.ts
-- **description:** List/manage sessions (-v verbose).
+- **method:** CLI
+- **path:** reasonix-legacy weixin
+- **params:** model, workspace, budget
+- **file:** src/cli/index.ts
+- **description:** Runs the Weixin headless channel.
 
-## `CLI reasonix prune-sessions`
+## `CLI reasonix-legacy stats`
 
-- **method:** -
-- **path:** bin: reasonix prune-sessions
-- **file:** src/cli/commands/prune-sessions.ts
-- **description:** Prune old sessions (--days, --dry-run).
+- **method:** CLI
+- **path:** reasonix-legacy stats [transcript]
+- **params:** transcript
+- **file:** src/cli/index.ts
+- **description:** Prints transcript or session usage statistics.
 
-## `CLI reasonix events <name>`
+## `CLI reasonix-legacy doctor`
 
-- **method:** -
-- **path:** bin: reasonix events
-- **file:** src/cli/commands/events.ts
-- **description:** Stream live loop events (--type/--since/--tail/--json/--projection).
+- **method:** CLI
+- **path:** reasonix-legacy doctor
+- **params:** json, cache
+- **file:** src/cli/index.ts
+- **description:** Runs environment and cache diagnostics.
 
-## `CLI reasonix replay <transcript>`
+## `CLI reasonix-legacy doctor-cache`
 
-- **method:** -
-- **path:** bin: reasonix replay
-- **file:** src/cli/commands/replay.ts
-- **description:** Replay a transcript (--print/--head/--tail).
+- **method:** CLI
+- **path:** reasonix-legacy doctor-cache
+- **params:** json
+- **file:** src/cli/index.ts
+- **description:** Runs cache-stability diagnostics.
 
-## `CLI reasonix diff <a> <b>`
+## `CLI reasonix-legacy commit`
 
-- **method:** -
-- **path:** bin: reasonix diff
-- **file:** src/cli/commands/diff.ts
-- **description:** Diff two transcripts (--md/--print/--tui).
+- **method:** CLI
+- **path:** reasonix-legacy commit
+- **params:** model, yes
+- **file:** src/cli/index.ts
+- **description:** Creates an AI-assisted Git commit.
 
-## `CLI reasonix mcp list`
+## `CLI reasonix-legacy sessions`
 
-- **method:** -
-- **path:** bin: reasonix mcp list
-- **file:** src/cli/commands/mcp.ts
-- **description:** List MCP servers (--json/--local/--refresh/--limit/--pages/--all).
+- **method:** CLI
+- **path:** reasonix-legacy sessions [name]
+- **params:** name, verbose
+- **file:** src/cli/index.ts
+- **description:** Lists or inspects saved sessions.
 
-## `CLI reasonix mcp search <query>`
+## `CLI reasonix-legacy prune-sessions`
 
-- **method:** -
-- **path:** bin: reasonix mcp search
-- **file:** src/cli/commands/mcp.ts
-- **description:** Search MCP catalog.
+- **method:** CLI
+- **path:** reasonix-legacy prune-sessions
+- **params:** days, dry-run
+- **file:** src/cli/index.ts
+- **description:** Prunes old sessions.
 
-## `CLI reasonix mcp install <name>`
+## `CLI reasonix-legacy events`
 
-- **method:** -
-- **path:** bin: reasonix mcp install
-- **file:** src/cli/commands/mcp.ts
-- **description:** Install an MCP server from the catalog.
+- **method:** CLI
+- **path:** reasonix-legacy events <name>
+- **params:** type, since, tail, json, projection
+- **file:** src/cli/index.ts
+- **description:** Streams or projects persisted loop events.
 
-## `CLI reasonix mcp browse`
+## `CLI reasonix-legacy replay`
 
-- **method:** -
-- **path:** bin: reasonix mcp browse
-- **file:** src/cli/commands/mcp-browse.tsx
-- **description:** Interactive MCP marketplace browser (TUI).
+- **method:** CLI
+- **path:** reasonix-legacy replay <transcript>
+- **params:** print, head, tail
+- **file:** src/cli/index.ts
+- **description:** Replays a transcript.
 
-## `CLI reasonix mcp inspect <spec>`
+## `CLI reasonix-legacy diff`
 
-- **method:** -
-- **path:** bin: reasonix mcp inspect
-- **file:** src/cli/commands/mcp-inspect.ts
-- **description:** Inspect an MCP server (--json).
+- **method:** CLI
+- **path:** reasonix-legacy diff <a> <b>
+- **params:** md, print, tui, label-a, label-b
+- **file:** src/cli/index.ts
+- **description:** Compares two transcripts.
 
-## `CLI reasonix version`
+## `CLI reasonix-legacy mcp list`
 
-- **method:** -
-- **path:** bin: reasonix version
-- **file:** src/cli/commands/version.ts
-- **description:** Print version + install source.
+- **method:** CLI
+- **path:** reasonix-legacy mcp list
+- **params:** json, local, refresh, limit, pages, all
+- **file:** src/cli/index.ts
+- **description:** Lists configured or discoverable MCP servers.
 
-## `CLI reasonix update`
+## `CLI reasonix-legacy mcp search`
 
-- **method:** -
-- **path:** bin: reasonix update
-- **file:** src/cli/commands/update.ts
-- **description:** Self-update (--dry-run).
+- **method:** CLI
+- **path:** reasonix-legacy mcp search <query>
+- **params:** json, refresh, limit, max-pages
+- **file:** src/cli/index.ts
+- **description:** Searches MCP registries.
 
-## `CLI reasonix index`
+## `CLI reasonix-legacy mcp install`
 
-- **method:** -
-- **path:** bin: reasonix index
-- **file:** src/cli/commands/index.ts
-- **description:** Build the local semantic embedding index (--rebuild/--model/--ollama-url/-y).
+- **method:** CLI
+- **path:** reasonix-legacy mcp install <name>
+- **params:** refresh, max-pages
+- **file:** src/cli/index.ts
+- **description:** Installs an MCP server configuration.
 
-## `Library export DeepSeekClient`
+## `CLI reasonix-legacy mcp browse`
 
-- **method:** -
-- **path:** src/index.ts
-- **file:** src/client.ts
-- **description:** DeepSeek API client (chat completions, streaming, usage).
+- **method:** CLI
+- **path:** reasonix-legacy mcp browse
+- **params:** 
+- **file:** src/cli/index.ts
+- **description:** Opens the MCP marketplace TUI.
 
-## `Library export CacheFirstLoop`
+## `CLI reasonix-legacy mcp inspect`
 
-- **method:** -
-- **path:** src/index.ts
+- **method:** CLI
+- **path:** reasonix-legacy mcp inspect <spec>
+- **params:** json
+- **file:** src/cli/index.ts
+- **description:** Inspects an MCP server.
+
+## `CLI reasonix-legacy version`
+
+- **method:** CLI
+- **path:** reasonix-legacy version
+- **params:** 
+- **file:** src/cli/index.ts
+- **description:** Prints package version and install source.
+
+## `CLI reasonix-legacy update`
+
+- **method:** CLI
+- **path:** reasonix-legacy update
+- **params:** dry-run
+- **file:** src/cli/index.ts
+- **description:** Checks or performs self-update.
+
+## `CLI reasonix-legacy index`
+
+- **method:** CLI
+- **path:** reasonix-legacy index
+- **params:** rebuild, model, dir, ollama-url, yes
+- **file:** src/cli/index.ts
+- **description:** Builds the project-local semantic index.
+
+## `Library CacheFirstLoop`
+
+- **method:** ESM export
+- **path:** reasonix-legacy
+- **params:** CacheFirstLoopOptions
 - **file:** src/loop.ts
-- **description:** Main cache-first agent loop.
+- **description:** Shared cache-first model/tool orchestration state machine.
 
-## `Library export ToolRegistry`
+## `Library DeepSeekClient`
 
-- **method:** -
-- **path:** src/index.ts
+- **method:** ESM export
+- **path:** reasonix-legacy
+- **params:** DeepSeekClientOptions
+- **file:** src/client.ts
+- **description:** DeepSeek-compatible chat, streaming, model, and balance client.
+
+## `Library ToolRegistry`
+
+- **method:** ESM export
+- **path:** reasonix-legacy
+- **params:** ToolDefinition
 - **file:** src/tools.ts
-- **description:** Tool registry + interceptors.
+- **description:** Model-callable capability registration and dispatch boundary.
 
-## `Library export McpClient`
+## `Library McpClient`
 
-- **method:** -
-- **path:** src/index.ts
+- **method:** ESM export
+- **path:** reasonix-legacy
+- **params:** McpClientOptions
 - **file:** src/mcp/client.ts
-- **description:** MCP protocol client.
-
-## `Library export ToolCallRepair`
-
-- **method:** -
-- **path:** src/index.ts
-- **file:** src/repair/index.ts
-- **description:** Tool-call repair pipeline.
-
-## `Library export MemoryStore`
-
-- **method:** -
-- **path:** src/index.ts
-- **file:** src/memory/user.ts
-- **description:** User-scoped persistent memory store.
-
-## `Library export fetchWithRetry`
-
-- **method:** -
-- **path:** src/index.ts
-- **file:** src/retry.ts
-- **description:** HTTP retry wrapper with backoff.
+- **description:** MCP JSON-RPC client over configured transports.
