@@ -12,6 +12,9 @@ maintained surfaces.
 
 - [Getting started](getting-started.md) — install from the current GitHub source,
   build/link, configure, and run the first task.
+- [Migrating to 1.3.x](migrating-to-1.3.md) — move from the 1.2 command aliases to
+  the maintained `reasonix-legacy 1.3.1` LTS identity, with backup, verification,
+  and rollback.
 - [CLI reference](cli-reference.md) — every top-level shell command plus the TUI
   slash-command groups.
 - [Configuration](configuration.md) — `~/.reasonix/config.json`, environment
@@ -36,6 +39,7 @@ bot to other users.
 - [Channel lifecycle testing](channel-lifecycle-testing.md)
 - [Governance decisions](governance.md)
 - [1.3.x LTS support policy](lts-policy.md)
+- [Release runbook](release-runbook.md)
 - [CI and branch protection](ci-branch-protection.md)
 - [Contributing](../CONTRIBUTING.md)
 - [Security policy](../SECURITY.md)
