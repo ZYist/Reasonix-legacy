@@ -5,9 +5,9 @@ milestone_name: Stable Release Hardening
 current_phase: 13
 status: Awaiting next milestone
 stopped_at: Milestone v1.3 completed and archived
-last_updated: "2026-07-20T08:36:52+08:00"
-last_activity: 2026-07-20
-last_activity_desc: Backed up the workspace, documented the dev delta, and pushed a snapshot branch
+last_updated: "2026-07-22T08:45:00+08:00"
+last_activity: 2026-07-22
+last_activity_desc: Assessed 1.2 stable and 1.3 preview for user-side LTS suitability
 progress:
   total_phases: 4
   completed_phases: 4
@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-07-18)
 Phase: Milestone v1.3 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-07-20 — Backed up the workspace, documented the dev delta, and pushed backup/dev-snapshot-20260720
+Last activity: 2026-07-22 — Assessed 1.2 stable and 1.3 preview for user-side LTS suitability
 
 ## Performance Metrics
 
@@ -86,6 +86,7 @@ Last activity: 2026-07-20 — Backed up the workspace, documented the dev delta,
 
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
+| 260722-byv | 评估当前的1.2正式版和1.3预览版是否能作为用户侧的LTS版本使用 | 2026-07-22 | (current quick commit) | [260722-byv-1-2-1-3-lts](./quick/260722-byv-1-2-1-3-lts/) |
 | 260720-bsc | 备份并记录 dev 差异后推送新快照分支 | 2026-07-20 | 74ce8e44 | [260720-bsc-backup-push-dev-delta](./quick/260720-bsc-backup-push-dev-delta/) |
 | 260719-o2f | 评估领先提交的可读性与人工维护难度 | 2026-07-19 | (current quick commit) | [260719-o2f-assess-ahead-commit-readability](./quick/260719-o2f-assess-ahead-commit-readability/) |
 | 260717-bvq | Assess current version for stable release readiness | 2026-07-17 | (current quick commit) | [260717-bvq-assess-stable-release](./quick/260717-bvq-assess-stable-release/) |
@@ -113,4 +114,5 @@ Resume file: None
 
 - Start the next milestone with `$gsd-new-milestone`
 - If shipping the current candidate externally, perform the manual release actions separately and keep them out of repository automation claims
+
 
