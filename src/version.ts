@@ -44,7 +44,7 @@ export const VERSION: string = readPackageVersion();
 /** Public package and executable identity shown by --version and status surfaces. */
 const DISPLAY_NAME = "reasonix-legacy";
 
-/** `1.3.0` → `reasonix-legacy 1.3.0`. Keep bare semver for comparisons. */
+/** `1.3.1` → `reasonix-legacy 1.3.1`. Keep bare semver for comparisons. */
 export function toDisplayVersion(semver: string): string {
   return `${DISPLAY_NAME} ${semver}`;
 }

@@ -142,7 +142,7 @@ None of this is personal — it's how the codebase stays small.
 2. Add `## [X.Y.Z] — <date>` to `CHANGELOG.md` with a hand-written
    summary drawn from `git log` since the prior tag.
 3. `chore(release): X.Y.Z — <one-line summary>` commit.
-4. `git tag -a vX.Y.Z -m "..."`, push commit + tag. The current stable-release example is `v1.3.0`.
+4. `git tag -a vX.Y.Z -m "..."`, push commit + tag. The current stable-release example is `v1.3.1`.
 5. Wait for the Windows CI + CodeQL checks on `v1`/`dev` to go green, then trigger the root npm publish workflow. The maintained release artifact is the `reasonix-legacy` npm package only.
 
 ## Reporting security issues

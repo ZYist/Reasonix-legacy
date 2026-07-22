@@ -43,7 +43,7 @@ describe("write-cli-package-marker", () => {
     // from package.json rather than silently coercing to upstream reasonix.
     writeFileSync(
       join(tmp, "package.json"),
-      JSON.stringify({ name: "reasonix-legacy", version: "1.3.0" }),
+      JSON.stringify({ name: "reasonix-legacy", version: "1.3.1" }),
     );
     const script = resolve("scripts/write-cli-package-marker.mjs");
     const run = spawnSync(process.execPath, [script], { cwd: tmp, encoding: "utf8" });
@@ -52,7 +52,7 @@ describe("write-cli-package-marker", () => {
     const marker = JSON.parse(readFileSync(join(tmp, "dist/cli/package.json"), "utf8"));
     expect(marker).toEqual({
       name: "reasonix-legacy",
-      version: "1.3.0",
+      version: "1.3.1",
       type: "module",
     });
   });

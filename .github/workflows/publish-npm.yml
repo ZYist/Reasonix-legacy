@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Tag to publish after Windows release gates (for example v1.3.0)."
+        description: "Tag to publish after Windows release gates (for example v1.3.1)."
         required: true
         type: string
 
@@ -49,7 +49,7 @@ jobs:
             throw 'Missing tag input.'
           }
           if ($tag -notmatch '^v\d+\.\d+\.\d+$') {
-            throw "Tag '$tag' must use the plain vX.Y.Z format (for example v1.3.0)."
+            throw "Tag '$tag' must use the plain vX.Y.Z format (for example v1.3.1)."
           }
           if (-not (git tag --list $tag)) {
             throw "Tag '$tag' is not available in the checked-out repository."

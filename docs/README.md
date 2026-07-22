@@ -35,6 +35,7 @@ bot to other users.
 
 - [Channel lifecycle testing](channel-lifecycle-testing.md)
 - [Governance decisions](governance.md)
+- [1.3.x LTS support policy](lts-policy.md)
 - [CI and branch protection](ci-branch-protection.md)
 - [Contributing](../CONTRIBUTING.md)
 - [Security policy](../SECURITY.md)

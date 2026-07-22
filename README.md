@@ -130,7 +130,7 @@ reasonix-legacy code
 
 ## 版本、上游与归属
 
-当前版本为 **`reasonix-legacy 1.3.0`**；对应 npm semver 为 `1.3.0`，当前里程碑为 `v1.3`。发布记录见 [Releases](https://github.com/ZYist/reasonix-legacy/releases)。
+当前版本为 **`reasonix-legacy 1.3.1`**；对应 npm semver 为 `1.3.1`，当前里程碑为 `v1.3.1`。发布记录见 [Releases](https://github.com/ZYist/reasonix-legacy/releases)。
 
 本项目 fork 自 [`esengine/DeepSeek-Reasonix`](https://github.com/esengine/DeepSeek-Reasonix)，感谢上游作者与贡献者的开源工作。原始 README 与网站文档已经归档，并在 [历史存档索引](./docs/archive/upstream-reasonix/ARCHIVE.md) 中标明来源与适用范围。
 

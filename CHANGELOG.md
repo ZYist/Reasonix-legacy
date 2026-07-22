@@ -1,9 +1,19 @@
 # Changelog
 
-> **Current fork policy (2026-07-17):** `ZYist/reasonix-legacy` uses package version `1.3.0` with the sole `reasonix-legacy` executable and is maintained as CLI/TUI-only. Entries below preserve historical upstream and fork history; their older version numbers, command aliases, and links are not current operational identity. See [`docs/governance.md`](docs/governance.md).
+> **Current fork policy (2026-07-22):** `ZYist/reasonix-legacy` uses package version `1.3.1` with the sole `reasonix-legacy` executable and is maintained as CLI/TUI-only. Entries below preserve historical upstream and fork history; their older version numbers, command aliases, and links are not current operational identity. See [`docs/governance.md`](docs/governance.md).
 
 All notable changes to Reasonix. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.3.1] — 2026-07-22
+
+**LTS Release (identity and support contract).** The maintained package, lockfile,
+CLI runtime output, and documentation are unified on `reasonix-legacy 1.3.1`.
+A documented 1.3.x LTS support contract is introduced: support duration, allowed
+patch scope, security response, EOL notice, and parallel-maintenance rules. The
+release identity guard now asserts the 1.3.1 / v1.3.1 pair. No remote tag, publish,
+or release action is performed by this changeset; those remain explicit operator
+actions (see `docs/lts-policy.md`).
 
 ## [1.3.0] — 2026-07-17
 

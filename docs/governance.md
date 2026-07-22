@@ -9,8 +9,8 @@ This document is the durable authority for the four governance decisions made be
 ## HG-01 / GOV-01 — Version authority
 
 - `package.json` package semver is the public version authority for this fork.
-- The active GSD milestone must use the matching major/minor version. The current pair is package `1.3.0` and milestone `v1.3`; they may not evolve independently.
-- The maintained release tag convention is plain `vX.Y.Z`; the current stable-release example is `v1.3.0`.
+- The active GSD milestone must use the matching major/minor version. The current pair is package `1.3.1` and milestone `v1.3.1`; they may not evolve independently.
+- The maintained release tag convention is plain `vX.Y.Z`; the current stable-release example is `v1.3.1`.
 - The Pure CLI work completed on 2026-07-05 at the end of historical GSD Phase 4. The package at that delivery point was already `1.1.0`, so `1.1.0` is the first Pure CLI release version for this fork. Historical GSD milestone `v1.0` names the completed engineering scope; it is not a second public package version.
 - Existing `1.17.x`, `npm-v1.17.x`, and `desktop-v1.17.x` tags record upstream lineage. They are not releases of the current fork and must not be moved, deleted, or rewritten.
 - Publishing packages, creating releases, or changing tags always remains an explicit maintainer operation; planning automation does none of these actions.

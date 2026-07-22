@@ -13,6 +13,7 @@ const requiredDocs = [
   "docs/cli-reference.md",
   "docs/configuration.md",
   "docs/install-script-provenance.md",
+  "docs/lts-policy.md",
   "docs/architecture.md",
   "docs/qq-connect.md",
   "docs/qq-connect.zh-CN.md",
@@ -84,7 +85,7 @@ if (!structureOnly) {
   const packageLock = JSON.parse(read("package-lock.json"));
   const expectedBin = { "reasonix-legacy": "dist/cli/index.js" };
   if (packageJson.name !== "reasonix-legacy") fail("root package name is not reasonix-legacy");
-  if (packageJson.version !== "1.3.0") fail("root package version is not 1.3.0");
+  if (packageJson.version !== "1.3.1") fail("root package version is not 1.3.1");
   if (JSON.stringify(packageJson.bin) !== JSON.stringify(expectedBin)) {
     fail("root package must expose only the reasonix-legacy bin");
   }
@@ -146,17 +147,17 @@ if (!structureOnly) {
       fail(`obsolete executable identity in maintained surface: ${relativePath}`);
     }
   }
-  if (!read("README.md").includes("reasonix-legacy 1.3.0")) {
-    fail("README.md does not state reasonix-legacy 1.3.0");
+  if (!read("README.md").includes("reasonix-legacy 1.3.1")) {
+    fail("README.md does not state reasonix-legacy 1.3.1");
   }
-  if (!read("docs/governance.md").includes("package `1.3.0` and milestone `v1.3`")) {
+  if (!read("docs/governance.md").includes("package `1.3.1` and milestone `v1.3.1`")) {
     fail("docs/governance.md does not state the current package/milestone pair");
   }
-  if (!/^milestone: v1\.3$/m.test(read(".planning/STATE.md"))) {
-    fail(".planning/STATE.md does not declare milestone v1.3");
+  if (!/^milestone: v1\.3\.1$/m.test(read(".planning/STATE.md"))) {
+    fail(".planning/STATE.md does not declare milestone v1.3.1");
   }
-  if (!read("CHANGELOG.md").includes("## [1.3.0] — 2026-07-17")) {
-    fail("CHANGELOG.md does not contain the current v1.3 entry");
+  if (!read("CHANGELOG.md").includes("## [1.3.1] — 2026-07-22")) {
+    fail("CHANGELOG.md does not contain the current v1.3.1 entry");
   }
   const markdownLink = /!?(?:\[[^\]]*\])\(([^)\s]+)(?:\s+["'][^"']*["'])?\)/g;
   for (const relativePath of maintainedMarkdown) {
@@ -284,8 +285,8 @@ if (!structureOnly) {
   if (!/npm@11\.16\.0/.test(publishWorkflow)) {
     fail("publish-npm workflow must pin npm 11.16.0");
   }
-  if (!publishWorkflow.includes("v1.3.0")) {
-    fail("publish-npm workflow must document the current v1.3.0 tag example");
+  if (!publishWorkflow.includes("v1.3.1")) {
+    fail("publish-npm workflow must document the current v1.3.1 tag example");
   }
   if (/desktop|Tauri/i.test(publishWorkflow)) {
     fail("publish-npm workflow must not describe desktop/Tauri release tracks");
@@ -382,7 +383,7 @@ if (!structureOnly) {
   } catch (error) {
     fail(`could not run built CLI version: ${error.message}`);
   }
-  if (version !== "reasonix-legacy 1.3.0") {
+  if (version !== "reasonix-legacy 1.3.1") {
     fail(`built CLI version identity is ${JSON.stringify(version)}`);
   }
   try {

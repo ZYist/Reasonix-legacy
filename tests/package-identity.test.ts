@@ -56,7 +56,7 @@ describe("v1.3 package identity contract", () => {
   it("publishes one package, version, and executable identity", () => {
     const pkg = readJson("package.json");
     expect(pkg.name).toBe("reasonix-legacy");
-    expect(pkg.version).toBe("1.3.0");
+    expect(pkg.version).toBe("1.3.1");
     expect(pkg.bin).toEqual(expectedBin);
     expect(
       Object.entries(pkg.dependencies ?? {}).filter(([, version]) =>
@@ -64,7 +64,7 @@ describe("v1.3 package identity contract", () => {
       ),
     ).toEqual([]);
     expect(VERSION).toBe(pkg.version);
-    expect(DISPLAY_VERSION).toBe("reasonix-legacy 1.3.0");
+    expect(DISPLAY_VERSION).toBe("reasonix-legacy 1.3.1");
   });
 
   it("keeps the lockfile root synchronized and removes dsnix records", () => {
@@ -92,12 +92,12 @@ describe("v1.3 package identity contract", () => {
       const text = readFileSync(path, "utf8");
       expect(text, path).not.toMatch(obsoleteExecutable);
     }
-    expect(readFileSync("README.md", "utf8")).toContain("reasonix-legacy 1.3.0");
+    expect(readFileSync("README.md", "utf8")).toContain("reasonix-legacy 1.3.1");
     expect(readFileSync("docs/governance.md", "utf8")).toContain(
-      "package `1.3.0` and milestone `v1.3`",
+      "package `1.3.1` and milestone `v1.3.1`",
     );
-    expect(readFileSync(".planning/STATE.md", "utf8")).toMatch(/^milestone: v1\.3$/m);
-    expect(readFileSync("CHANGELOG.md", "utf8")).toContain("## [1.3.0] — 2026-07-17");
+    expect(readFileSync(".planning/STATE.md", "utf8")).toMatch(/^milestone: v1\.3\.1$/m);
+    expect(readFileSync("CHANGELOG.md", "utf8")).toContain("## [1.3.1] — 2026-07-22");
     expect(readFileSync("src/cli/index.ts", "utf8")).toContain('.name("reasonix-legacy")');
     expect(readFileSync("src/cli/commands/version.ts", "utf8")).toContain(
       "console.log(DISPLAY_VERSION)",
@@ -127,7 +127,7 @@ describe("v1.3 package identity contract", () => {
     expect(publish).toMatch(/runs-on:\s*windows-latest/);
     expect(publish).toMatch(/node-version:\s*"24\.15\.0"/);
     expect(publish).toMatch(/npm@11\.16\.0/);
-    expect(publish).toContain("v1.3.0");
+    expect(publish).toContain("v1.3.1");
     expect(publish).toContain("workflow_dispatch:");
     expect(publish).not.toMatch(/(^|\n)\s*push:/m);
     expect(publish).toContain("node scripts/check-docs.mjs");
