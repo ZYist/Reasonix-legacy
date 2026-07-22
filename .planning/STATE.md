@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-07-22)
 Phase: 17 — External Release Validation and LTS Promotion (delivered)
 Plan: —
 Status: v1.3.1 LTS shipped (npm published + registry smoke passed; GitHub tag/release pushed)
-Last activity: 2026-07-22 — v1.3.1 LTS Release delivered
+Last activity: 2026-07-22 — Completed quick task 260722-l5j: fix CI docs-gate ordering (Docs gate moved after Build)
 
 ## Performance Metrics
 
@@ -79,6 +79,7 @@ Last activity: 2026-07-22 — v1.3.1 LTS Release delivered
 |---|-------------|------|--------|-----------|
 | 260722-byv | 评估当前的1.2正式版和1.3预览版是否能作为用户侧的LTS版本使用 | 2026-07-22 | 81d077c3 | [260722-byv-1-2-1-3-lts](./quick/260722-byv-1-2-1-3-lts/) |
 | 260720-bsc | 备份并记录 dev 差异后推送新快照分支 | 2026-07-20 | 74ce8e44 | [260720-bsc-backup-push-dev-delta](./quick/260720-bsc-backup-push-dev-delta/) |
+| 260722-l5j | 修复 CI Docs gate 顺序：移到 Build 之后（方案 A） | 2026-07-22 | 80e2c9d1 | [260722-l5j-a-ci](./quick/260722-l5j-a-ci/) |
 
 ## Deferred Items
 
