@@ -1,20 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.3
-milestone_name: Stable Release Hardening
-current_phase: 13
-status: Awaiting next milestone
-stopped_at: Milestone v1.3 completed and archived
-last_updated: "2026-07-22T08:45:00+08:00"
+milestone: v1.3.1
+milestone_name: LTS Release
+status: planning
+last_updated: "2026-07-22T02:36:00.318Z"
 last_activity: 2026-07-22
-last_activity_desc: Assessed 1.2 stable and 1.3 preview for user-side LTS suitability
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 8
-  completed_plans: 8
-  percent: 100
-current_phase_name: Candidate Packaging and Stable Reassessment (archived)
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -28,10 +24,10 @@ See: .planning/PROJECT.md (updated 2026-07-18)
 
 ## Current Position
 
-Phase: Milestone v1.3 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-07-22 — Assessed 1.2 stable and 1.3 preview for user-side LTS suitability
+Status: Defining requirements
+Last activity: 2026-07-22 — Milestone v1.3.1 started
 
 ## Performance Metrics
 
@@ -114,5 +110,3 @@ Resume file: None
 
 - Start the next milestone with `$gsd-new-milestone`
 - If shipping the current candidate externally, perform the manual release actions separately and keep them out of repository automation claims
-
-

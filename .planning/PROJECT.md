@@ -10,15 +10,23 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 
 在终端里跑一个**低成本、不中断**的 DeepSeek 编程 agent——缓存优先把 token 成本压到最低,工具调用 JSON 自修复保证 loop 不被坏输出打断。这是面板/UI 都可以失败、唯独不能失败的那一件事。
 
-## Current Milestone: Awaiting next milestone definition
+## Current Milestone: v1.3.1 LTS Release
 
-**Goal:** 保持 v1.3 已验证的稳定基线,并在不重开已完成发布整改工作的前提下定义下一轮明确里程碑。
+**Goal:** 将已通过本地稳定版审计的 1.3 基线转化为用户可安装、可验证、具备明确支持期限与升级路径的 `reasonix-legacy@1.3.1` 正式 LTS 发布。
+
+**Target features:**
+- 把 package、lockfile、CLI 版本、文档和发布工作流统一提升到 `1.3.1`，并继续只暴露 `reasonix-legacy` 公共身份。
+- 固化 LTS 支持合同：至少支持 6 个月或下一稳定版本发布后 90 天（取较晚者），明确 patch 范围、安全响应、EOL 通知和 1.4 后并行维护规则。
+- 提供 1.2 → 1.3.1 的安装、命令迁移、升级验证和回滚说明。
+- 在不可变候选上完成 Windows clean verify、production audit、真实 pack、外部隔离安装和 registry tarball smoke 证据。
+- 对正式 tag、Windows CI、CodeQL、npm publish、GitHub Release、TTY 与 Telegram/Weixin UAT建立可审计的 operator gate，不伪造远端或凭据依赖步骤已完成。
 
 **Locked direction:**
-- 保持 DeepSeek-first,除非未来里程碑显式改变产品定位。
-- 继续把 npm package 与 CLI 公共身份统一为 `reasonix-legacy`。
-- 继续以 Windows + Node.js 24.15.0 + npm 11.16.0 + PowerShell 作为当前维护基线,直到新里程碑明确调整。
-- 继续把远程 GitHub 管理、tag/publish 操作和 live credential/TTY UAT 明确视为人工/operator 步骤,不伪装成仓库自动化。
+- 唯一 LTS 主线为 1.3.x；不把 1.2 重新包装为 LTS，也不维护常规 1.2 patch 分支。
+- 保持 DeepSeek-first，不引入多模型/provider 抽象或与 LTS 发布无关的新产品功能。
+- npm package 与 CLI 公共身份保持为 `reasonix-legacy`，不得恢复 `reasonix`/`dsnix` bin。
+- 强制发布验证基线继续为 Windows + Node.js 24.15.0 + npm 11.16.0 + PowerShell。
+- tag/push、npm publish、GitHub Release、branch protection 和真实凭据/TTY UAT 均属于需授权的 operator action；仓库自动化只能验证前置条件和记录结果。
 
 ## Requirements
 
@@ -50,9 +58,11 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 
 ### Active
 
-- [ ] **HeadlessHost channel streaming** — 让 QQ/Telegram/微信 channel 转发 reasoning/tool events,补齐当前共享无头宿主的可见性缺口,且不回归现有 channel 生命周期。
-- [ ] **Protected core decomposition** — 在现有 characterization tests 保护下拆分 `App.tsx`、`config.ts`、`loop.ts` 和大型 tools,降低后续维护风险。
-- [ ] **Maintainer release runbook hardening** — 如未来仍需强化 ship 流程,补充 maintainer-only 的 tag/publish/live-UAT runbook 或检查清单,但不把远程或凭据依赖步骤伪装为本地自动化。
+- [ ] **1.3.1 release identity** — package、lockfile、CLI、维护文档与发布合同一致指向 `reasonix-legacy@1.3.1`，并以自动 guard 阻止身份漂移。
+- [ ] **LTS support contract** — 发布前明确 1.3.x 支持期限、允许的 patch 类型、安全响应、EOL 通知和下一稳定版出现后的并行维护政策。
+- [ ] **User migration and rollback** — 为 1.2 用户提供从 `reasonix`/`dsnix` 迁移到 `reasonix-legacy` 的安装、验证和回滚路径。
+- [ ] **Reproducible release candidate** — 在不可变候选上完成 clean verify、生产审计、tarball 清单、隔离安装与校验和证据。
+- [ ] **Auditable release operations** — 正式 tag、Windows CI/CodeQL、npm registry smoke、GitHub Release 与人工 UAT具备可执行 runbook、明确授权边界和结果记录。
 
 ### Out of Scope
 
@@ -66,7 +76,7 @@ DeepSeek 原生的命令行编程 agent。通过 CLI/TUI 暴露一个**缓存优
 ## Context
 
 - 架构是 **multi-surface single-core**:核心 `CacheFirstLoop`(`src/loop.ts`)与所有 surface 单向依赖,核心不反向 import 任何 surface。详细地图见 `.planning/codebase/`(ARCHITECTURE / STACK / STRUCTURE / CONVENTIONS / INTEGRATIONS / TESTING / CONCERNS)。
-- **当前状态(2026-07-18,v1.3 Stable Release Hardening shipped locally):** 项目维持纯 CLI 产品形态,当前公开 package 与唯一 bin 均为 `reasonix-legacy`。Windows 维护基线下的 clean `npm ci`、`npm run verify`、`node scripts/check-docs.mjs`、`npm pack --dry-run`、真实 `npm pack`、隔离 tarball 安装和 `npm audit --omit=dev` 已全部通过;当前候选 SHA 为 `d595d30b7e56`。
+- **当前状态(2026-07-22,v1.3.1 LTS Release planning):** 项目维持纯 CLI 产品形态,当前公开 package 与唯一 bin 均为 `reasonix-legacy`。Windows 维护基线下的 clean `npm ci`、`npm run verify`、`node scripts/check-docs.mjs`、`npm pack --dry-run`、真实 `npm pack`、隔离 tarball 安装和 `npm audit --omit=dev` 已全部通过;当前候选 SHA 为 `d595d30b7e56`。
 - **关键红线(持续生效):** `scripts/copy-tree-sitter-grammars.mjs` + `src/code-query/` 服务 CLI 代码符号搜索,任何后续里程碑都必须保留。v1.3 打包验证已再次确认八个 grammar/runtime WASM 均进入 tarball。
 - **已知技术债 / 后续候选:**
   - **HeadlessHost 渲染缺口(accepted-and-deferred):** `runTurn` 未订阅 `turn-driver` 的 `onEvent` 回调 → 全部 channel 都丢弃 reasoning/tool 事件。它是共享宿主层的既存缺口,不是 v1.3 回归,适合在独立 channel-streaming 里程碑内处理。
@@ -119,4 +129,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-18 after v1.3 milestone closeout*
+*Last updated: 2026-07-22 after starting v1.3.1 LTS Release milestone*
