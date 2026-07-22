@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.3.1
 milestone_name: LTS Release
-current_phase: 14
-status: completed
+status: executing
 stopped_at: Milestone v1.3 completed and archived
-last_updated: "2026-07-22T03:20:11.650Z"
+last_updated: "2026-07-22T03:40:55.221Z"
 last_activity: 2026-07-22
-last_activity_desc: Phase 14 marked complete
+last_activity_desc: Phase null execution started
 progress:
   total_phases: 4
-  completed_phases: 1
-  total_plans: 1
-  completed_plans: 1
-  percent: 25
-current_phase_name: 1.3.1 Identity and LTS Contract
+  completed_phases: 2
+  total_plans: 2
+  completed_plans: 2
+  percent: 50
+current_phase: 17
+current_phase_name: External Release Validation and LTS Promotion
 ---
 
 # Project State
@@ -24,14 +24,14 @@ current_phase_name: 1.3.1 Identity and LTS Contract
 See: .planning/PROJECT.md (updated 2026-07-22)
 
 **Core value:** 在终端里跑一个低成本、不中断的 DeepSeek 编程 agent——缓存优先压低 token 成本，工具调用 JSON 自修复保证 loop 不被坏输出打断。
-**Current focus:** v1.3.1 LTS Release — 把已审计的 1.3 基线转化为可公开安装、可验证、具备明确支持期限与升级路径的 `reasonix-legacy@1.3.1` 正式 LTS。
+**Current focus:** Phase null
 
 ## Current Position
 
-Phase: 14 — COMPLETE
-Plan: —
-Status: Phase 14 complete
-Last activity: 2026-07-22 — Phase 14 marked complete
+Phase: null — EXECUTING
+Plan: 1 of ?
+Status: Executing Phase null
+Last activity: 2026-07-22 — Phase null execution started
 
 ## Performance Metrics
 
