@@ -9,8 +9,16 @@
 - Git
 - A DeepSeek API key, or credentials for a compatible endpoint
 
-`reasonix-legacy` is currently installed from the maintained GitHub repository.
-Do not assume that the `reasonix-legacy` package is published on npm.
+`reasonix-legacy` is published on npm as [`reasonix-legacy`](https://www.npmjs.com/package/reasonix-legacy); `npm install -g reasonix-legacy` is the easiest install. The source install below is for development or for tracking unreleased changes.
+
+## Install from npm
+
+```bash
+npm install -g reasonix-legacy
+reasonix-legacy --version
+```
+
+To uninstall: `npm uninstall -g reasonix-legacy`.
 
 ## Install from source
 

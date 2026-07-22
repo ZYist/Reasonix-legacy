@@ -38,7 +38,23 @@
 
 需要 Node.js **22 或更新版本**。支持 macOS、Linux 与 Windows（PowerShell、Git Bash、Windows Terminal）。
 
-reasonix-legacy 当前从 GitHub 源码安装：
+### 通过 npm 安装（推荐）
+
+```bash
+npm install -g reasonix-legacy
+```
+
+全局安装后，`reasonix-legacy` 命令即在 `PATH` 中。npm 包页面：<https://www.npmjs.com/package/reasonix-legacy>。
+
+不想全局安装，也可以用 `npx reasonix-legacy code` 直接运行最新发布版。
+
+**卸载：**
+
+```bash
+npm uninstall -g reasonix-legacy
+```
+
+### 从源码安装（开发或获取未发布的最新改动）
 
 ```bash
 git clone https://github.com/ZYist/reasonix-legacy.git
@@ -48,7 +64,11 @@ npm run build
 npm link
 ```
 
-`npm link` 会把唯一的 `reasonix-legacy` 命令加入 `PATH`。获取 [DeepSeek API Key →](https://platform.deepseek.com/api_keys)，然后运行：
+`npm link` 会把唯一的 `reasonix-legacy` 命令加入 `PATH`。
+
+### 首次运行
+
+获取 [DeepSeek API Key →](https://platform.deepseek.com/api_keys)，然后运行：
 
 ```bash
 reasonix-legacy setup
