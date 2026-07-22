@@ -81,6 +81,7 @@ Last activity: 2026-07-22 — Completed quick task 260722-lq3: 先重新 map cod
 | 260720-bsc | 备份并记录 dev 差异后推送新快照分支 | 2026-07-20 | 74ce8e44 | [260720-bsc-backup-push-dev-delta](./quick/260720-bsc-backup-push-dev-delta/) |
 | 260722-l5j | 修复 CI Docs gate 顺序：移到 Build 之后（方案 A） | 2026-07-22 | 80e2c9d1 | [260722-l5j-a-ci](./quick/260722-l5j-a-ci/) |
 | 260722-lq3 | 先重新 map codebase，然后刷新情报库 | 2026-07-22 | 9572d861 | [260722-lq3-map-codebase](./quick/260722-lq3-map-codebase/) |
+| 260722-act | 升级 actions/checkout/setup-node @v4→v5（node24 运行时，消除 Node 20 deprecation warning） | 2026-07-22 | 46d0ecf4 | — |
 
 ## Deferred Items
 
